@@ -1,23 +1,61 @@
 import { FhevmType } from "@fhevm/hardhat-plugin";
 import { expect } from "chai";
-import { ContractTransactionReceipt } from "ethers";
+import { BaseContract, ContractTransactionReceipt, Log, zeroPadValue } from "ethers";
 import { ethers, fhevm } from "hardhat";
 
-import { opaqueLogShape, opcodeShape, writePrivacyEvidence } from "../../scripts/privacy-scan";
+import { opcodeShape, writePrivacyEvidence } from "../../scripts/privacy-scan";
 import { asHandle, read } from "../draw/helpers";
 import { crankPrivacyParticipants, reachPrivacySweepB } from "./helpers";
 
 type DebugTrace = { structLogs: Array<{ depth: number; op: string }> };
 
-function creditedEventShape(
+type ComparableLogSlice = Array<{
+  raw: { address: string; topics: string[]; data: string };
+  parsed: { name: string; args: Record<string, string> };
+}>;
+
+function normalizeSubjectHex(value: string, subject: string): string {
+  const normalized = value.toLowerCase();
+  const topicAddress = zeroPadValue(subject, 32).toLowerCase();
+  const unpaddedAddress = subject.toLowerCase();
+  return normalized.replaceAll(topicAddress, "<participant>").replaceAll(unpaddedAddress.slice(2), "<participant>");
+}
+
+function stringifyParsedValue(value: unknown, subject: string): string {
+  if (typeof value === "bigint") return value.toString();
+  if (typeof value === "string") {
+    return value.toLowerCase() === subject.toLowerCase() ? "<participant>" : value.toLowerCase();
+  }
+  if (typeof value === "boolean") return String(value);
+  return JSON.stringify(value);
+}
+
+function compareUserLogSlices(
   receipt: ContractTransactionReceipt,
-  draw: Awaited<ReturnType<typeof reachPrivacySweepB>>["draw"],
-) {
+  draw: BaseContract,
+  subject: string,
+): ComparableLogSlice {
+  const drawAddress = (draw.target as string).toLowerCase();
   return receipt.logs.flatMap((log) => {
+    if (log.address.toLowerCase() !== drawAddress) return [];
     try {
       const parsed = draw.interface.parseLog(log);
       if (parsed?.name !== "PrizeCredited") return [];
-      return [{ name: parsed.name, drawId: parsed.args.drawId as bigint, argumentCount: parsed.args.length }];
+      const rawLog = log as Log;
+      const parsedArgs: Record<string, string> = {};
+      for (const input of parsed.fragment.inputs) {
+        parsedArgs[input.name] = stringifyParsedValue(parsed.args[input.name], subject);
+      }
+      return [
+        {
+          raw: {
+            address: log.address.toLowerCase(),
+            topics: rawLog.topics.map((topic) => normalizeSubjectHex(topic, subject)),
+            data: normalizeSubjectHex(rawLog.data, subject),
+          },
+          parsed: { name: parsed.name, args: parsedArgs },
+        },
+      ];
     } catch {
       return [];
     }
@@ -29,7 +67,7 @@ describe("Lok winner log indistinguishability", function () {
     if (!fhevm.isMock) this.skip();
   });
 
-  it("gives a non-final winner and loser identical event and execution shapes", async function () {
+  it("gives a winner and every loser identical participant log fields and matched execution shape", async function () {
     const fixture = await reachPrivacySweepB(7, { boundaryDust: true });
     const receipts = await crankPrivacyParticipants(fixture);
     const credits: bigint[] = [];
@@ -48,11 +86,16 @@ describe("Lok winner log indistinguishability", function () {
     expect(comparableLoserIndex).to.be.greaterThanOrEqual(0);
 
     const winnerReceipt = receipts[winnerIndex];
+    const winnerSlice = compareUserLogSlices(winnerReceipt, fixture.draw, fixture.participants[winnerIndex].address);
+    const comparedLoserIndices: number[] = [];
+    for (let index = 0; index < credits.length; index += 1) {
+      if (index === winnerIndex) continue;
+      const loserSlice = compareUserLogSlices(receipts[index], fixture.draw, fixture.participants[index].address);
+      expect(loserSlice, `raw and parsed PrizeCredited fields for loser ${index}`).to.deep.equal(winnerSlice);
+      comparedLoserIndices.push(index);
+    }
+
     const loserReceipt = receipts[comparableLoserIndex];
-    expect(creditedEventShape(winnerReceipt, fixture.draw)).to.deep.equal(
-      creditedEventShape(loserReceipt, fixture.draw),
-    );
-    expect(opaqueLogShape(winnerReceipt.logs)).to.deep.equal(opaqueLogShape(loserReceipt.logs));
 
     const winnerTrace = (await ethers.provider.send("debug_traceTransaction", [
       winnerReceipt.hash,
@@ -84,8 +127,8 @@ describe("Lok winner log indistinguishability", function () {
       participants: fixture.participants.length,
       winnerIndex,
       comparedLoserIndex: comparableLoserIndex,
-      creditedEventShapeEqual: true,
-      opaqueLogShapeEqual: true,
+      comparedLoserIndices,
+      comparedRawAndParsedPrizeCreditedFields: true,
       applicationCallBoundaryShapeEqual: true,
       note: "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal.",
     });

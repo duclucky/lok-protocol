@@ -20,7 +20,7 @@ contract LokSafetyInvariantTest is StdInvariant, Test {
         accounting.setController(address(handler));
         draw.setController(address(handler));
 
-        bytes4[] memory selectors = new bytes4[](21);
+        bytes4[] memory selectors = new bytes4[](22);
         selectors[0] = handler.deposit.selector;
         selectors[1] = handler.withdraw.selector;
         selectors[2] = handler.emergencyWithdraw.selector;
@@ -42,6 +42,7 @@ contract LokSafetyInvariantTest is StdInvariant, Test {
         selectors[18] = handler.abortDraw.selector;
         selectors[19] = handler.attemptReentrantMutation.selector;
         selectors[20] = handler.submitForgedTotals.selector;
+        selectors[21] = handler.settleDraw.selector;
         targetContract(address(handler));
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
     }
@@ -57,6 +58,7 @@ contract LokSafetyInvariantTest is StdInvariant, Test {
             "P-S2 custody partition mismatch"
         );
         assertTrue(accounting.allUsersRecoverPrincipal(), "P-S1 user principal not recoverable");
+        assertTrue(handler.allNetDepositsRecoverable(), "P-S1 net deposits not recoverable");
         assertTrue(accounting.lastRiskTransitionAuthorized(), "P-A8 unauthorized risk transition");
         assertTrue(accounting.lastForgedCheckpointRejected(), "P-O1 forged checkpoint accepted");
         assertTrue(accounting.lastReentrantMutationBlocked(), "P-S8 reentrant mutation accepted");

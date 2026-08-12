@@ -216,6 +216,18 @@ Run the UI:
 npm --prefix frontend run dev
 ```
 
+The Foundry defaults in `foundry.toml` are intentionally small (`64` invariant runs, shallow depth) for local smoke
+checks. They are not the tier-A evidence. Reproduce the audited sharded campaign with the PowerShell runner:
+
+```powershell
+.\scripts\run-invariants.ps1 -Campaign safety -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28 -ThreadsPerShard 1
+.\scripts\run-invariants.ps1 -Campaign fairness -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28 -ThreadsPerShard 1
+```
+
+The runner writes `artifacts/invariants/{safety,fairness,summary}.json`, records the Git commit hash, and includes the
+actual sequence and call counts parsed from Forge. The safety selector set must include `settleDraw`; `directCredit`
+alone is not settlement evidence.
+
 Sepolia deployment, keeper, verifier and benchmark commands require local secret variables described in
 [`docs/11-tooling.md`](docs/11-tooling.md). No private key, mnemonic or provider API key belongs in the repository.
 Deployment evidence and the final settled-draw gate live in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).

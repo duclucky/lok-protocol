@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { FhevmType } from "@fhevm/hardhat-plugin";
 import { BaseContract, ContractTransactionReceipt, Interface } from "ethers";
 import { fhevm } from "hardhat";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -58,8 +59,25 @@ describe("Lok static privacy surface", function () {
     const directory = mkdtempSync(path.join(tmpdir(), "lok-privacy-evidence-"));
     try {
       expect(() => collectPrivacyEvidence(directory)).to.throw("Missing privacy evidence");
-      writePrivacyEvidence("acl-uniformity", { status: "PASS", grantsPerParticipant: 1 }, directory);
-      writePrivacyEvidence("log-indistinguishability", { status: "PASS", logShapeEqual: true }, directory);
+      writePrivacyEvidence(
+        "acl-uniformity",
+        {
+          status: "PASS",
+          grantMultisetExact: true,
+          winnerGrantCount: 1,
+          loserGrantCounts: [1, 1],
+        },
+        directory,
+      );
+      writePrivacyEvidence(
+        "log-indistinguishability",
+        {
+          status: "PASS",
+          comparedRawAndParsedPrizeCreditedFields: true,
+          comparedLoserIndices: [0, 2],
+        },
+        directory,
+      );
       writePrivacyEvidence("gas-indistinguishability", { status: "PASS", globalHcuDelta: 0 }, directory);
       const evidence = collectPrivacyEvidence(directory);
       expect(evidence.status).to.equal("PASS");
@@ -83,24 +101,59 @@ describe("Lok static privacy surface", function () {
     const fixture = await reachPrivacySweepB();
     const receipts = await crankPrivacyParticipants(fixture);
     const grants = allowedLogs(receipts);
-    const grantCounts: number[] = [];
+    const participantAddresses = new Set(fixture.participants.map((user) => user.address.toLowerCase()));
+    const expectedPairs: string[] = [];
+    const actualPairs: string[] = [];
+    const grantCountsByUser = new Map<string, number>();
+    const credits: bigint[] = [];
+    const prizeHandleOwners = new Map<string, string>();
 
     for (const user of fixture.participants) {
       const handle = asHandle((await read(fixture.draw as BaseContract, "prizeCredit", [1n, user.address])) as bigint);
-      const matching = grants.filter(
-        ({ args }) =>
-          (args.account as string).toLowerCase() === user.address.toLowerCase() &&
-          (args.handle as string).toLowerCase() === handle.toLowerCase(),
-      );
-      expect(matching, `prize-credit grants for ${user.address}`).to.have.length(1);
-      grantCounts.push(matching.length);
+      const normalizedUser = user.address.toLowerCase();
+      const normalizedHandle = handle.toLowerCase();
+      prizeHandleOwners.set(normalizedHandle, normalizedUser);
+      expectedPairs.push(`${normalizedUser}:${normalizedHandle}`);
+      credits.push(await fhevm.userDecryptEuint(FhevmType.euint64, handle, await fixture.draw.getAddress(), user));
     }
+
+    const prizeHandleSet = new Set(prizeHandleOwners.keys());
+    for (const { args } of grants) {
+      const account = (args.account as string).toLowerCase();
+      const handle = (args.handle as string).toLowerCase();
+      if (!participantAddresses.has(account) || !prizeHandleSet.has(handle)) continue;
+      actualPairs.push(`${account}:${handle}`);
+      grantCountsByUser.set(account, (grantCountsByUser.get(account) ?? 0) + 1);
+    }
+
+    expectedPairs.sort();
+    actualPairs.sort();
+    expect(actualPairs, "participant-facing prize-credit ACL grant multiset").to.deep.equal(expectedPairs);
+
+    const winnerIndex = credits.findIndex((credit) => credit > 0n);
+    expect(winnerIndex, "one decrypted prize-credit winner").to.be.greaterThanOrEqual(0);
+    expect(
+      credits.filter((credit) => credit > 0n),
+      "exactly one non-zero prize credit",
+    ).to.have.length(1);
+
+    const winner = fixture.participants[winnerIndex].address.toLowerCase();
+    const winnerGrantCount = grantCountsByUser.get(winner) ?? 0;
+    const loserGrantCounts = fixture.participants
+      .filter((_, index) => index !== winnerIndex)
+      .map((user) => grantCountsByUser.get(user.address.toLowerCase()) ?? 0);
+    expect(loserGrantCounts.every((count) => count === winnerGrantCount)).to.equal(true);
+
     writePrivacyEvidence("acl-uniformity", {
       status: "PASS",
       proposition: "P-P2",
       participants: fixture.participants.length,
-      grantCounts,
-      winnerIndependent: true,
+      grantMultisetExact: true,
+      expectedPairs,
+      actualPairs,
+      winnerIndex,
+      winnerGrantCount,
+      loserGrantCounts,
     });
   });
 });

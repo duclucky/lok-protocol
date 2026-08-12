@@ -63,6 +63,34 @@ function New-DeterministicSeed([string]$Campaign, [int]$Shard) {
     }
 }
 
+function Get-CampaignSelectorSet([string]$Campaign) {
+    if ($Campaign -ne "safety") { return @() }
+    return @(
+        "deposit",
+        "withdraw",
+        "emergencyWithdraw",
+        "exit",
+        "setTheta",
+        "fundYield",
+        "directCredit",
+        "openCheckpoint",
+        "submitCheckpoint",
+        "submitForgedCheckpoint",
+        "moveCustody",
+        "proposeAdapter",
+        "advanceTime",
+        "activateAdapter",
+        "drainRetiringAdapter",
+        "removeRetiringAdapter",
+        "pause",
+        "openDraw",
+        "abortDraw",
+        "attemptReentrantMutation",
+        "submitForgedTotals",
+        "settleDraw"
+    )
+}
+
 $runsPerShard = [int][math]::Ceiling($Sequences / [double]$ShardsPerCampaign)
 $previousRuns = $env:FOUNDRY_INVARIANT_RUNS
 $previousDepth = $env:FOUNDRY_INVARIANT_DEPTH
@@ -183,6 +211,8 @@ try {
             reverts = $campaignReverts
             shards = $ShardsPerCampaign
             runsPerShard = $runsPerShard
+            selectorSet = Get-CampaignSelectorSet $campaign.Name
+            settlementSelectorIncluded = $campaign.Name -ne "safety" -or ((Get-CampaignSelectorSet $campaign.Name) -contains "settleDraw")
             shardResults = $shardReports
             durationSeconds = [math]::Round(([DateTime]::UtcNow - $startedAt).TotalSeconds, 3)
             forgeVersion = $forgeVersion

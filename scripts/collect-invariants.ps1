@@ -34,6 +34,34 @@ function New-DeterministicSeed([string]$Campaign, [int]$Shard) {
     }
 }
 
+function Get-CampaignSelectorSet([string]$Campaign) {
+    if ($Campaign -ne "safety") { return @() }
+    return @(
+        "deposit",
+        "withdraw",
+        "emergencyWithdraw",
+        "exit",
+        "setTheta",
+        "fundYield",
+        "directCredit",
+        "openCheckpoint",
+        "submitCheckpoint",
+        "submitForgedCheckpoint",
+        "moveCustody",
+        "proposeAdapter",
+        "advanceTime",
+        "activateAdapter",
+        "drainRetiringAdapter",
+        "removeRetiringAdapter",
+        "pause",
+        "openDraw",
+        "abortDraw",
+        "attemptReentrantMutation",
+        "submitForgedTotals",
+        "settleDraw"
+    )
+}
+
 $expected = @()
 foreach ($campaign in $campaigns) {
     for ($shard = 0; $shard -lt $ShardsPerCampaign; ++$shard) {
@@ -140,6 +168,8 @@ foreach ($campaign in $campaigns) {
         reverts = $campaignReverts
         shards = $ShardsPerCampaign
         runsPerShard = $runsPerShard
+        selectorSet = Get-CampaignSelectorSet $campaign.Name
+        settlementSelectorIncluded = $campaign.Name -ne "safety" -or ((Get-CampaignSelectorSet $campaign.Name) -contains "settleDraw")
         shardResults = $shardReports
         durationSeconds = $durationSeconds
         forgeVersion = $forgeVersion

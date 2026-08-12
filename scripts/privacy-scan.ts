@@ -488,14 +488,34 @@ export function buildPrivacyReport(
   const logPass = dynamicEvidence.fragments["log-indistinguishability"].status === "PASS";
   const aclPass = dynamicEvidence.fragments["acl-uniformity"].status === "PASS";
   const gasPass = dynamicEvidence.fragments["gas-indistinguishability"].status === "PASS";
+  const logEvidence = dynamicEvidence.fragments["log-indistinguishability"];
+  const aclEvidence = dynamicEvidence.fragments["acl-uniformity"];
+  const logEvidenceComplete =
+    logEvidence.comparedRawAndParsedPrizeCreditedFields === true &&
+    Array.isArray(logEvidence.comparedLoserIndices) &&
+    logEvidence.comparedLoserIndices.length > 0;
+  const aclEvidenceComplete =
+    aclEvidence.grantMultisetExact === true &&
+    typeof aclEvidence.winnerGrantCount === "number" &&
+    Array.isArray(aclEvidence.loserGrantCounts) &&
+    aclEvidence.loserGrantCounts.every((count) => count === aclEvidence.winnerGrantCount);
   const propositions = {
-    "P-P1": pass(logPass, "log-diff plus application call-boundary comparison"),
-    "P-P2": pass(aclPass && staticReport.acl.violations.length === 0, "exactly one prize-handle grant per participant"),
+    "P-P1": pass(
+      logPass && logEvidenceComplete,
+      "complete raw and parsed participant log-field diff plus call-boundary comparison",
+    ),
+    "P-P2": pass(
+      aclPass && aclEvidenceComplete && staticReport.acl.violations.length === 0,
+      "complete participant-facing prize-handle ACL grant multiset",
+    ),
     "P-P4": pass(staticReport.events.violations.length === 0, "ABI event-field scan"),
     "P-P5": pass(gasPass, "matched-position gas/HCU regression"),
     "P-P6": pass(staticReport.redTeam.anonymityFloor.status === "PASS", "MIN_PARTICIPANTS and aggregate masking scan"),
     "P-P7": pass(
-      logPass && staticReport.redTeam.fortuneResetUsesFheSelect && staticReport.redTeam.aggregateFortuneDisclosureOnly,
+      logPass &&
+        logEvidenceComplete &&
+        staticReport.redTeam.fortuneResetUsesFheSelect &&
+        staticReport.redTeam.aggregateFortuneDisclosureOnly,
       "Fortune ACL/public-decryption/log-shape scan",
     ),
     "P-P8": pass(
@@ -512,9 +532,15 @@ export function buildPrivacyReport(
         "frontend/ uses one Check my result path for every participant; runtime relayer-observable equality requires human review",
     },
   };
+  const machinePropositionsPass = Object.values(propositions).every(
+    ({ status }) => status === "PASS" || status === "NOT_TESTABLE",
+  );
   return {
     ...staticReport,
-    status: staticReport.status === "PASS" && dynamicEvidence.status === "PASS" ? ("PASS" as const) : ("FAIL" as const),
+    status:
+      staticReport.status === "PASS" && dynamicEvidence.status === "PASS" && machinePropositionsPass
+        ? ("PASS" as const)
+        : ("FAIL" as const),
     dynamicEvidence,
     propositions,
     reviewBoundary: {

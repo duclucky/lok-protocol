@@ -16,6 +16,9 @@ contract LokHandler {
     uint256 public depositCalls;
     uint256 public withdrawCalls;
     uint256 public drawCalls;
+    uint256 public settleDrawCalls;
+
+    mapping(address user => uint256 amount) public netDeposits;
 
     constructor(LokAccountingModel accounting_, LokDrawReference draw_) {
         accounting = accounting_;
@@ -33,7 +36,10 @@ contract LokHandler {
     }
 
     function deposit(uint256 userSeed, uint256 rawAmount) external {
-        accounting.deposit(_user(userSeed), _amount(rawAmount));
+        address user = _user(userSeed);
+        uint256 moved = _amount(rawAmount);
+        accounting.deposit(user, moved);
+        netDeposits[user] += moved;
         ++depositCalls;
     }
 
@@ -41,18 +47,23 @@ contract LokHandler {
         address user = _user(userSeed);
         uint256 moved = rawAmount % (accounting.balanceOf(user) + 1);
         accounting.withdraw(user, moved);
+        _debitNetDeposit(user, moved);
         ++withdrawCalls;
     }
 
     function emergencyWithdraw(uint256 userSeed) external {
         address user = _user(userSeed);
-        accounting.withdraw(user, accounting.balanceOf(user));
+        uint256 moved = accounting.balanceOf(user);
+        accounting.withdraw(user, moved);
+        _debitNetDeposit(user, moved);
         ++withdrawCalls;
     }
 
     function exit(uint256 userSeed) external {
         address user = _user(userSeed);
-        accounting.withdraw(user, accounting.balanceOf(user));
+        uint256 moved = accounting.balanceOf(user);
+        accounting.withdraw(user, moved);
+        _debitNetDeposit(user, moved);
         ++withdrawCalls;
     }
 
@@ -128,9 +139,13 @@ contract LokHandler {
     }
 
     function settleDraw(uint256 randomWord, uint256 rawPrize) external {
+        ++settleDrawCalls;
         uint256 available = accounting.availableYield();
         uint256 prize = rawPrize % (available + 1);
-        if (prize == 0) return;
+        if (prize == 0) {
+            _assertSettlementSafety();
+            return;
+        }
 
         uint256[] memory weights = new uint256[](_participants.length);
         uint256 totalWeight;
@@ -139,12 +154,27 @@ contract LokHandler {
             weights[i] = (accounting.balanceOf(user) * uint256(theta[user])) / 4;
             totalWeight += weights[i];
         }
-        if (totalWeight == 0) return;
+        if (totalWeight == 0) {
+            _assertSettlementSafety();
+            return;
+        }
 
         address winner = draw.settle(_participants, weights, randomWord, prize);
-        if (winner == address(0)) return;
+        if (winner == address(0)) {
+            _assertSettlementSafety();
+            return;
+        }
         accounting.creditFundedYield(winner, prize);
         ++drawCalls;
+        _assertSettlementSafety();
+    }
+
+    function allNetDepositsRecoverable() external view returns (bool) {
+        for (uint256 i; i < _participants.length; ++i) {
+            address user = _participants[i];
+            if (accounting.balanceOf(user) < netDeposits[user]) return false;
+        }
+        return true;
     }
 
     function _user(uint256 seed) private view returns (address) {
@@ -153,5 +183,18 @@ contract LokHandler {
 
     function _amount(uint256 rawAmount) private pure returns (uint256) {
         return rawAmount % (MAX_ACTION_AMOUNT + 1);
+    }
+
+    function _debitNetDeposit(address user, uint256 moved) private {
+        uint256 debit = moved < netDeposits[user] ? moved : netDeposits[user];
+        netDeposits[user] -= debit;
+    }
+
+    function _assertSettlementSafety() private view {
+        assert(accounting.totalAssets() >= accounting.totalLiability());
+        assert(accounting.totalLiability() >= accounting.totalPrincipal());
+        assert(accounting.sumBalances() == accounting.totalLiability());
+        assert(accounting.sumPrincipalBalances() == accounting.totalPrincipal());
+        assert(this.allNetDepositsRecoverable());
     }
 }

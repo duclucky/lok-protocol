@@ -4,6 +4,7 @@ import { ethers, fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
 import {
+  debugDecryptBool,
   decrypt64,
   deployVaultFixture,
   deposit,
@@ -21,18 +22,27 @@ describe("LokVault confidential solvency checkpoints", function () {
   });
 
   it("credits only the ERC-7984 amount actually moved and advances accountingVersion", async function () {
-    const fixture = await deployVaultFixture();
-    await mintToken(fixture.token, fixture.owner, fixture.alice.address, 9n);
-    await deposit(fixture, fixture.alice, 7n);
+    const cases = [
+      { minted: 0n, requests: [0n], expectedBalances: [0n], expectedStatuses: [true] },
+      { minted: 9n, requests: [9n], expectedBalances: [9n], expectedStatuses: [true] },
+      { minted: 9n, requests: [10n], expectedBalances: [0n], expectedStatuses: [false] },
+      { minted: 9n, requests: [7n, 7n], expectedBalances: [7n, 7n], expectedStatuses: [true, false] },
+    ] as const;
 
-    const balanceHandle = (await read(fixture.vault, "confidentialBalanceOf", [fixture.alice.address])) as bigint;
-    expect(await decrypt64(fixture.vault, fixture.alice, balanceHandle)).to.equal(7n);
-    expect(await read(fixture.vault, "accountingVersion")).to.equal(1n);
+    for (const testCase of cases) {
+      const fixture = await deployVaultFixture();
+      await mintToken(fixture.token, fixture.owner, fixture.alice.address, testCase.minted);
 
-    await deposit(fixture, fixture.alice, 7n);
-    const unchanged = (await read(fixture.vault, "confidentialBalanceOf", [fixture.alice.address])) as bigint;
-    expect(await decrypt64(fixture.vault, fixture.alice, unchanged)).to.equal(7n);
-    expect(await read(fixture.vault, "accountingVersion")).to.equal(2n);
+      for (let index = 0; index < testCase.requests.length; index += 1) {
+        await deposit(fixture, fixture.alice, testCase.requests[index]);
+
+        const balanceHandle = (await read(fixture.vault, "confidentialBalanceOf", [fixture.alice.address])) as bigint;
+        expect(await decrypt64(fixture.vault, fixture.alice, balanceHandle)).to.equal(testCase.expectedBalances[index]);
+        const status = (await read(fixture.vault, "lastActionStatus", [fixture.alice.address])) as bigint;
+        expect(await debugDecryptBool(status)).to.equal(testCase.expectedStatuses[index]);
+        expect(await read(fixture.vault, "accountingVersion")).to.equal(BigInt(index + 1));
+      }
+    }
   });
 
   it("accepts true and false checkpoint proofs without exposing numeric aggregates", async function () {
