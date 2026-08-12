@@ -106,7 +106,8 @@ p50/p95 is `2744/3148 ms`. Raw evidence is in `artifacts/hcu-benchmark.json`.
 
 ## Task 9 Publication
 
-- Canonical URL: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
+- Canonical URL: [https://lok-protocol.vercel.app](https://lok-protocol.vercel.app)
+- Legacy alias: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
 - Vercel project: `lok-protocol-app`; Git root directory: `frontend/`; runtime: Node.js `22.x`.
 - GitHub repository: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol), private.
 - Git production deployment: `dpl_9pjjjVU6E8AyYNnWEYztHQHL7xQs`.

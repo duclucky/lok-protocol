@@ -5,7 +5,7 @@ only aggregate draw evidence becomes public.
 
 ## 1. Live Demo And Sepolia Deployment
 
-- **Live demo:** [frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
+- **Live demo:** [lok-protocol.vercel.app](https://lok-protocol.vercel.app)
 - **Source repository:** [github.com/duclucky/lok-protocol](https://github.com/duclucky/lok-protocol) (private until
   submission publication)
 - **Vercel project:** `lok-protocol-app` (Git-connected; root directory `frontend/`)

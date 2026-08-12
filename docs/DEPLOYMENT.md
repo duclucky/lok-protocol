@@ -85,7 +85,8 @@ Fresh Gate 3 evidence from 2026-08-12 is in `artifacts/hcu-benchmark.json` and `
 
 ## Frontend
 
-- Canonical URL: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
+- Canonical URL: [https://lok-protocol.vercel.app](https://lok-protocol.vercel.app)
+- Legacy alias: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
 - Vercel project: `lok-protocol-app`; Git root directory: `frontend/`; runtime: Node.js `22.x`.
 - GitHub source: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol), private pending submission
   publication.
