@@ -30,7 +30,9 @@ function allowedLogs(receipts: ContractTransactionReceipt[]) {
 }
 
 describe("Lok static privacy surface", function () {
-  it("allowlists every public-decryption call and rejects winner-only ABI or amount events", function () {
+  const staticPrivacyIt = process.env.SOLIDITY_COVERAGE === "true" ? it.skip : it;
+
+  staticPrivacyIt("allowlists every public-decryption call and rejects winner-only ABI or amount events", function () {
     const report = scanPrivacySurface();
 
     expect(report.publicDecryption.calls).to.have.length(6);
@@ -52,7 +54,7 @@ describe("Lok static privacy surface", function () {
     expect(report.status).to.equal("PASS");
   });
 
-  it("requires all three dynamic evidence fragments before reporting PASS", function () {
+  staticPrivacyIt("requires all three dynamic evidence fragments before reporting PASS", function () {
     const directory = mkdtempSync(path.join(tmpdir(), "lok-privacy-evidence-"));
     try {
       expect(() => collectPrivacyEvidence(directory)).to.throw("Missing privacy evidence");
