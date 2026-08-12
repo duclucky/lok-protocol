@@ -1,0 +1,15 @@
+{
+  "seed": "draw-default-risk",
+  "stage": "pass-a",
+  "actual": {
+    "totalTickets": "0",
+    "totalBaseRiskWeight": "0",
+    "totalYieldWeight": "0"
+  },
+  "expected": {
+    "totalTickets": "24",
+    "totalBaseRiskWeight": "24",
+    "totalYieldWeight": "24"
+  },
+  "recordedAtUtc": "2026-08-12T13:19:25.289Z"
+}

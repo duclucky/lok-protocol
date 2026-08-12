@@ -1,0 +1,225 @@
+{
+  "measuredAt": "2026-08-12T16:04:21.755Z",
+  "network": "sepolia",
+  "chainId": "11155111",
+  "deployer": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+  "probe": "0xFf607974D31445fd82D6D052926FEAc700AB46ae",
+  "packageVersions": {
+    "fhevmSolidity": "0.11.1",
+    "fhevmHardhatPlugin": "0.4.2",
+    "relayerSdk": "0.4.1",
+    "hardhat": "2.28.6"
+  },
+  "measurements": {
+    "measureSyncUser": {
+      "measuredMaximum": 8,
+      "firstRejected": 9,
+      "sixtyPercentCap": 4,
+      "incrementalGlobalHCU": 2430032,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0xd331e27a0b7815ac5e34f7c2df089fbfbce6554038301c87cbbb65815c1e6b20",
+        "gasUsed": "307487",
+        "globalHCU": 2430032,
+        "maxHCUDepth": 1215032
+      },
+      "boundary": {
+        "iterations": 8,
+        "transactionHash": "0x07421d1501d2065616150e617651278976f0ba3d53f07972d35974f523ac61a1",
+        "gasUsed": "1144365",
+        "globalHCU": 19440256,
+        "maxHCUDepth": 1215032
+      }
+    },
+    "measureCrankA": {
+      "measuredMaximum": 6,
+      "firstRejected": 7,
+      "sixtyPercentCap": 3,
+      "incrementalGlobalHCU": 3001192,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0xb6424a03441ce31590376b782e496fad4697477836028fe4aed66cebd5dde5c2",
+        "gasUsed": "740569",
+        "globalHCU": 3582224,
+        "maxHCUDepth": 2261032
+      },
+      "boundary": {
+        "iterations": 6,
+        "transactionHash": "0x1c6c0ceb9779c484691b7c362c96e2dfc2c1a529c74e482359f0d7575262bff1",
+        "gasUsed": "2368274",
+        "globalHCU": 18588184,
+        "maxHCUDepth": 3071032
+      }
+    },
+    "measureCrankB": {
+      "measuredMaximum": 4,
+      "firstRejected": 5,
+      "sixtyPercentCap": 2,
+      "incrementalGlobalHCU": 4025320,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0xb14b30f052abc2dee978d3d44c335fa5506a3eaff041bf7c12153be969e41443",
+        "gasUsed": "727262",
+        "globalHCU": 4025320,
+        "maxHCUDepth": 3032096
+      },
+      "boundary": {
+        "iterations": 4,
+        "transactionHash": "0x4395fc2844dee2c92ed94d0ec5d0a5f11406ad677db0ba52d59cdbfa421951e3",
+        "gasUsed": "1837935",
+        "globalHCU": 16101280,
+        "maxHCUDepth": 3032096
+      }
+    },
+    "measureRandomness": {
+      "measuredMaximum": 16,
+      "firstRejected": 17,
+      "sixtyPercentCap": 9,
+      "incrementalGlobalHCU": 1211000,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0x2a4938b6672ad0d00d607c83512bce1328f18b474d6369610b0c01d224e3935a",
+        "gasUsed": "130867",
+        "globalHCU": 1211000,
+        "maxHCUDepth": 1211000
+      },
+      "boundary": {
+        "iterations": 16,
+        "transactionHash": "0x7e94d9bcfca65a31e5adbd56400d8b984fc27e397bdba2996d84d5ec7bb79eff",
+        "gasUsed": "691692",
+        "globalHCU": 19376000,
+        "maxHCUDepth": 1211000
+      }
+    },
+    "measureFortune": {
+      "measuredMaximum": 67,
+      "firstRejected": 68,
+      "sixtyPercentCap": 40,
+      "incrementalGlobalHCU": 294128,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0x99af5dbf19a0e3efa06d03a827eae8a7aacc4b4277ca978dfab8f0201ac55ebf",
+        "gasUsed": "209348",
+        "globalHCU": 294128,
+        "maxHCUDepth": 294032
+      },
+      "boundary": {
+        "iterations": 67,
+        "transactionHash": "0xbbc8983711ad8bb272e7a5cf44e8ebc4f56f04c81b16af74964ce6394ec0b894",
+        "gasUsed": "6304762",
+        "globalHCU": 19706576,
+        "maxHCUDepth": 294032
+      }
+    },
+    "measureSolvency": {
+      "measuredMaximum": 42,
+      "firstRejected": 43,
+      "sixtyPercentCap": 25,
+      "incrementalGlobalHCU": 476000,
+      "single": {
+        "iterations": 1,
+        "transactionHash": "0xb9bda72d4f4d3cf933e681f2b7b38c8f1dd6a21850d8a6cb28e152bad40018bc",
+        "gasUsed": "183427",
+        "globalHCU": 476000,
+        "maxHCUDepth": 476000
+      },
+      "boundary": {
+        "iterations": 42,
+        "transactionHash": "0x5a045dcbf43a8294df501c50a4d4de69ee3fb9040727d9dfc5718fefdbc32e42",
+        "gasUsed": "2281802",
+        "globalHCU": 19992000,
+        "maxHCUDepth": 476000
+      }
+    }
+  },
+  "comparisons": {
+    "measureSyncUser": {
+      "estimated": 2430000,
+      "measured": 2430032,
+      "differencePercent": 0.0013168724279835392
+    },
+    "measureCrankA": {
+      "estimated": 3556000,
+      "measured": 3001192,
+      "differencePercent": -15.602024746906636
+    },
+    "measureCrankB": {
+      "estimated": 3870000,
+      "measured": 4025320,
+      "differencePercent": 4.01343669250646
+    },
+    "measureRandomness": {
+      "estimated": 1211000,
+      "measured": 1211000,
+      "differencePercent": 0
+    },
+    "measureSolvency": {
+      "estimated": 473000,
+      "measured": 476000,
+      "differencePercent": 0.6342494714587738
+    }
+  },
+  "caps": {
+    "preSync": 4,
+    "crankA": 3,
+    "crankB": 2
+  },
+  "projections": {
+    "10": {
+      "preSync": 3,
+      "passA": 4,
+      "passB": 5,
+      "variable": 12
+    },
+    "100": {
+      "preSync": 25,
+      "passA": 34,
+      "passB": 50,
+      "variable": 109
+    },
+    "1000": {
+      "preSync": 250,
+      "passA": 334,
+      "passB": 500,
+      "variable": 1084
+    }
+  },
+  "latencyMs": {
+    "public": {
+      "samples": [
+        3609,
+        2733,
+        2644,
+        3189,
+        2658,
+        2819,
+        2675,
+        2665,
+        2647,
+        2650
+      ],
+      "p50": 2665,
+      "p95": 3609
+    },
+    "user": {
+      "samples": [
+        3148,
+        2741,
+        2935,
+        2869,
+        2713,
+        2732,
+        2744,
+        3029,
+        2732,
+        3032
+      ],
+      "p50": 2744,
+      "p95": 3148
+    }
+  },
+  "gate3": {
+    "passed": true,
+    "reasons": []
+  }
+}

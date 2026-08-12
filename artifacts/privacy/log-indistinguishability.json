@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "propositions": [
+    "P-P1",
+    "P-P7",
+    "P-P9-ABI"
+  ],
+  "participants": 7,
+  "winnerIndex": 1,
+  "comparedLoserIndex": 2,
+  "creditedEventShapeEqual": true,
+  "opaqueLogShapeEqual": true,
+  "applicationCallBoundaryShapeEqual": true,
+  "note": "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal."
+}

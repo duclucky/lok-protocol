@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "zama-protocol": {
+      "source": "zama-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/zama-protocol/SKILL.md",
+      "computedHash": "ccb6521ff783b963519a7443c6741edfe2193c9bc66e8d196bb4b9dd453438e5"
+    },
+    "zama-solidity": {
+      "source": "zama-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/zama-solidity/SKILL.md",
+      "computedHash": "77531876eb0644b15b139ef90a10bf1a0d57f542aa08950411f10ccf13c76124"
+    },
+    "zama-typescript": {
+      "source": "zama-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/zama-typescript/SKILL.md",
+      "computedHash": "201b81005d039091c707332fd778954855d49ad3bd92a28cac6a2eee83ecc900"
+    }
+  }
+}

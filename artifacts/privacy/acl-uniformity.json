@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "proposition": "P-P2",
+  "participants": 5,
+  "grantCounts": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "winnerIndependent": true
+}

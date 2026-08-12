@@ -1,0 +1,17 @@
+[profile.default]
+src = "test-foundry/reference"
+test = "test-foundry"
+out = "out-foundry"
+cache_path = "cache-foundry"
+libs = ["lib", "node_modules"]
+solc_version = "0.8.27"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 800
+fuzz = { runs = 256 }
+invariant = { runs = 64, depth = 32, fail_on_revert = true }
+remappings = [
+  "forge-std/=lib/forge-std/src/",
+  "@fhevm/=node_modules/@fhevm/",
+  "encrypted-types/=node_modules/encrypted-types/"
+]

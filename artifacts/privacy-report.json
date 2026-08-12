@@ -1,0 +1,1471 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-12T16:04:30.776Z",
+  "status": "PASS",
+  "buildInfo": [
+    "hardhat-artifacts/build-info/fa8a9ab466ac6065e897e72f7847f60f.json"
+  ],
+  "publicDecryption": {
+    "calls": [
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "openSolvencyCheckpoint",
+        "line": 289,
+        "expression": "_pendingSolvencyResult",
+        "classification": "checkpoint-specific aggregate solvency boolean"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_completePassB",
+        "line": 396,
+        "expression": "draw.cumPrizeCredits",
+        "classification": "fully-settled aggregate prize-credit sum"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_completePassB",
+        "line": 398,
+        "expression": "draw.r",
+        "classification": "post-settlement randomness"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_completePassA",
+        "line": 444,
+        "expression": "draw.cumRunning",
+        "classification": "aggregate effective-ticket total"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_completePassA",
+        "line": 445,
+        "expression": "draw.cumBaseRiskRunning",
+        "classification": "aggregate base-risk total"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_completePassA",
+        "line": 446,
+        "expression": "draw.cumYieldRunning",
+        "classification": "aggregate yield-weight total"
+      }
+    ],
+    "violations": [],
+    "settlementGuardVerified": true
+  },
+  "acl": {
+    "grants": [
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "deposit",
+        "line": 185,
+        "expression": "requested",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "exit",
+        "line": 234,
+        "expression": "requested",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "setTheta",
+        "line": 272,
+        "expression": "_theta[msg.sender]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "setTheta",
+        "line": 273,
+        "expression": "_theta[msg.sender]",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "openSolvencyCheckpoint",
+        "line": 288,
+        "expression": "_pendingSolvencyResult",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "drawInputsFor",
+        "line": 398,
+        "expression": "ticketDelta",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "drawInputsFor",
+        "line": 399,
+        "expression": "yieldDelta",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "drawInputsFor",
+        "line": 400,
+        "expression": "fortune",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "rollCheckpoint",
+        "line": 406,
+        "expression": "_prevCkptTickets[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "rollCheckpoint",
+        "line": 407,
+        "expression": "_prevCkptYield[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "creditDraw",
+        "line": 422,
+        "expression": "_fortune[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "creditDraw",
+        "line": 423,
+        "expression": "_fortune[user]",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "creditDraw",
+        "line": 424,
+        "expression": "directCredit",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_withdrawSynced",
+        "line": 443,
+        "expression": "available",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 476,
+        "expression": "_balance[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 477,
+        "expression": "_balance[user]",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 478,
+        "expression": "_principalBalance[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 479,
+        "expression": "_principalBalance[user]",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 480,
+        "expression": "_encryptedTotalLiability",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistUserAccounting",
+        "line": 481,
+        "expression": "_encryptedTotalPrincipal",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_setActionStatus",
+        "line": 486,
+        "expression": "status",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_setActionStatus",
+        "line": 487,
+        "expression": "status",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_ensureTheta",
+        "line": 494,
+        "expression": "_theta[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_ensureTheta",
+        "line": 495,
+        "expression": "_theta[user]",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_ensureFortune",
+        "line": 502,
+        "expression": "_fortune[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_ensureDrawWeights",
+        "line": 510,
+        "expression": "_drawTicketDelta[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_ensureDrawWeights",
+        "line": 511,
+        "expression": "_drawYieldDelta[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_recomputeRate",
+        "line": 518,
+        "expression": "_rate[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_accrue",
+        "line": 577,
+        "expression": "_accTickets[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_accrue",
+        "line": 578,
+        "expression": "_accYield[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistCheckpoint",
+        "line": 582,
+        "expression": "_ckptTickets[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistCheckpoint",
+        "line": 583,
+        "expression": "_ckptYield[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistCheckpoint",
+        "line": 584,
+        "expression": "_drawTicketDelta[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_persistCheckpoint",
+        "line": 585,
+        "expression": "_drawYieldDelta[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_setDrawStartBaseline",
+        "line": 591,
+        "expression": "_prevCkptTickets[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokVault.sol",
+        "contract": "LokVault",
+        "function": "_setDrawStartBaseline",
+        "line": 592,
+        "expression": "_prevCkptYield[user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "openDraw",
+        "line": 148,
+        "expression": "draw.cumPrizeCredits",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "openDraw",
+        "line": 149,
+        "expression": "_nonDustRunning",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "openRandom",
+        "line": 344,
+        "expression": "draw.r",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 385,
+        "expression": "userPrize",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 386,
+        "expression": "userPrize",
+        "classification": "allow"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 387,
+        "expression": "draw.cumPrizeCredits",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 388,
+        "expression": "userPrize",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 389,
+        "expression": "directCredit",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassB",
+        "line": 390,
+        "expression": "win",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassA",
+        "line": 429,
+        "expression": "_directWeight[drawId][user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassA",
+        "line": 430,
+        "expression": "_rangeStart[drawId][user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassA",
+        "line": 431,
+        "expression": "_rangeEnd[drawId][user]",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_processPassA",
+        "line": 432,
+        "expression": "_nonDustRunning",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_persistPassA",
+        "line": 451,
+        "expression": "draw.cumRunning",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_persistPassA",
+        "line": 452,
+        "expression": "draw.cumBaseRiskRunning",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/LokDrawManager.sol",
+        "contract": "LokDrawManager",
+        "function": "_persistPassA",
+        "line": 453,
+        "expression": "draw.cumYieldRunning",
+        "classification": "allowThis"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "confidentialAssets",
+        "line": 59,
+        "expression": "assets",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "withdrawToVault",
+        "line": 64,
+        "expression": "requested",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "withdrawToVault",
+        "line": 66,
+        "expression": "moved",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "withdrawAllToVault",
+        "line": 73,
+        "expression": "moved",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "withdrawAllToVault",
+        "line": 77,
+        "expression": "moved",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "harvest",
+        "line": 92,
+        "expression": "requested",
+        "classification": "allowTransient"
+      },
+      {
+        "source": "contracts/adapters/MockYieldAdapter.sol",
+        "contract": "MockYieldAdapter",
+        "function": "harvest",
+        "line": 94,
+        "expression": "moved",
+        "classification": "allowTransient"
+      }
+    ],
+    "violations": []
+  },
+  "events": {
+    "fields": [
+      {
+        "contract": "LokVault",
+        "event": "AdapterActivated",
+        "name": "active",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterActivated",
+        "name": "retiring",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterActivated",
+        "name": "riskEpoch",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterProposed",
+        "name": "adapter",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterProposed",
+        "name": "activateAfter",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterRetired",
+        "name": "adapter",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "AdapterRetired",
+        "name": "riskEpoch",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "Deposited",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "DrawManagerSet",
+        "name": "drawManager",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "ExitFinalized",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "ExitFinalized",
+        "name": "requestId",
+        "type": "bytes32",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "ExitRequested",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "ExitRequested",
+        "name": "requestId",
+        "type": "bytes32",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "OwnershipTransferStarted",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "OwnershipTransferStarted",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "OwnershipTransferred",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "OwnershipTransferred",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "PublicDecryptionVerified",
+        "name": "handlesList",
+        "type": "bytes32[]",
+        "indexed": false
+      },
+      {
+        "contract": "LokVault",
+        "event": "PublicDecryptionVerified",
+        "name": "abiEncodedCleartexts",
+        "type": "bytes",
+        "indexed": false
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointOpened",
+        "name": "riskEpoch",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointOpened",
+        "name": "nonce",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointOpened",
+        "name": "handle",
+        "type": "bytes32",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointSubmitted",
+        "name": "riskEpoch",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointSubmitted",
+        "name": "nonce",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "SolvencyCheckpointSubmitted",
+        "name": "isSolvent",
+        "type": "bool",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "ThetaChanged",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokVault",
+        "event": "Withdrawn",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawAborted",
+        "name": "drawId",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawAborted",
+        "name": "previousState",
+        "type": "uint8",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawOpened",
+        "name": "drawId",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawOpened",
+        "name": "tStart",
+        "type": "uint64",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawOpened",
+        "name": "tEnd",
+        "type": "uint64",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawOpened",
+        "name": "strict",
+        "type": "bool",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawSettled",
+        "name": "drawId",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawSettled",
+        "name": "realisedYield",
+        "type": "uint64",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "DrawSettled",
+        "name": "prizeAmount",
+        "type": "uint64",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "OwnershipTransferStarted",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "OwnershipTransferStarted",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "OwnershipTransferred",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "OwnershipTransferred",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "PrizeCredited",
+        "name": "drawId",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "PrizeCredited",
+        "name": "user",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "PublicDecryptionVerified",
+        "name": "handlesList",
+        "type": "bytes32[]",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "PublicDecryptionVerified",
+        "name": "abiEncodedCleartexts",
+        "type": "bytes",
+        "indexed": false
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "RandomnessCommitted",
+        "name": "drawId",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "RandomnessCommitted",
+        "name": "handle",
+        "type": "bytes32",
+        "indexed": true
+      },
+      {
+        "contract": "LokDrawManager",
+        "event": "RandomnessCommitted",
+        "name": "blockNumber",
+        "type": "uint256",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "OwnershipTransferStarted",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "OwnershipTransferStarted",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "OwnershipTransferred",
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "OwnershipTransferred",
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "VaultBound",
+        "name": "vault",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "YieldFunded",
+        "name": "amount",
+        "type": "uint64",
+        "indexed": true
+      },
+      {
+        "contract": "MockYieldAdapter",
+        "event": "YieldHarvested",
+        "name": "amount",
+        "type": "uint64",
+        "indexed": true
+      }
+    ],
+    "violations": []
+  },
+  "roles": [
+    {
+      "contract": "LokVault",
+      "function": "<fallback>",
+      "modifiers": [
+        "Ownable"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 128
+    },
+    {
+      "contract": "LokVault",
+      "function": "setDrawManager",
+      "modifiers": [
+        "onlyOwner"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 142
+    },
+    {
+      "contract": "LokVault",
+      "function": "deposit",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 181
+    },
+    {
+      "contract": "LokVault",
+      "function": "withdraw",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 212
+    },
+    {
+      "contract": "LokVault",
+      "function": "withdrawAll",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 218
+    },
+    {
+      "contract": "LokVault",
+      "function": "emergencyWithdraw",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 223
+    },
+    {
+      "contract": "LokVault",
+      "function": "exit",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 228
+    },
+    {
+      "contract": "LokVault",
+      "function": "finalizeExit",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 244
+    },
+    {
+      "contract": "LokVault",
+      "function": "setTheta",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 267
+    },
+    {
+      "contract": "LokVault",
+      "function": "openSolvencyCheckpoint",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 278
+    },
+    {
+      "contract": "LokVault",
+      "function": "submitSolvencyCheckpoint",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 300
+    },
+    {
+      "contract": "LokVault",
+      "function": "proposeAdapter",
+      "modifiers": [
+        "onlyOwner"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 327
+    },
+    {
+      "contract": "LokVault",
+      "function": "activateAdapter",
+      "modifiers": [
+        "onlyOwner"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 340
+    },
+    {
+      "contract": "LokVault",
+      "function": "drainRetiringAdapter",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 357
+    },
+    {
+      "contract": "LokVault",
+      "function": "removeRetiringAdapter",
+      "modifiers": [
+        "onlyOwner"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 364
+    },
+    {
+      "contract": "LokVault",
+      "function": "harvestRealisedYield",
+      "modifiers": [
+        "onlyDrawManager",
+        "nonReentrant"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 376
+    },
+    {
+      "contract": "LokVault",
+      "function": "preSync",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 381
+    },
+    {
+      "contract": "LokVault",
+      "function": "drawInputsFor",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 392
+    },
+    {
+      "contract": "LokVault",
+      "function": "rollCheckpoint",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 403
+    },
+    {
+      "contract": "LokVault",
+      "function": "creditDraw",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 410
+    },
+    {
+      "contract": "LokVault",
+      "function": "onDrawOpened",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 427
+    },
+    {
+      "contract": "LokVault",
+      "function": "onDrawClosed",
+      "modifiers": [
+        "onlyDrawManager"
+      ],
+      "source": "contracts/LokVault.sol",
+      "line": 435
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "<fallback>",
+      "modifiers": [
+        "Ownable"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 105
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "openDraw",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 128
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "pauseDraws",
+      "modifiers": [
+        "onlyOwner",
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 162
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "unpauseDraws",
+      "modifiers": [
+        "onlyOwner",
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 166
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "abortDraw",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 170
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "preSyncA",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 201
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "commitEntropy",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 220
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "revealEntropy",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 227
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "enterReveal",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 238
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "crankA",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 248
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "submitTotals",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 281
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "openRandom",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 329
+    },
+    {
+      "contract": "LokDrawManager",
+      "function": "crankB",
+      "modifiers": [
+        "nonReentrant"
+      ],
+      "source": "contracts/LokDrawManager.sol",
+      "line": 352
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "<fallback>",
+      "modifiers": [
+        "Ownable"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 30
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "setVault",
+      "modifiers": [
+        "onlyOwner"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 44
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "confidentialAssets",
+      "modifiers": [
+        "onlyVault"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 57
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "withdrawToVault",
+      "modifiers": [
+        "onlyVault",
+        "nonReentrant"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 62
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "withdrawAllToVault",
+      "modifiers": [
+        "onlyVault",
+        "nonReentrant"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 69
+    },
+    {
+      "contract": "MockYieldAdapter",
+      "function": "harvest",
+      "modifiers": [
+        "onlyVault",
+        "nonReentrant"
+      ],
+      "source": "contracts/adapters/MockYieldAdapter.sol",
+      "line": 83
+    }
+  ],
+  "abi": {
+    "winnerOnlyCandidates": [],
+    "hasUniformCreditCheckPath": true
+  },
+  "redTeam": {
+    "newChannels": [
+      "S9"
+    ],
+    "fortuneResetUsesFheSelect": true,
+    "anonymityFloor": {
+      "status": "PASS",
+      "minimum": 5,
+      "maskedAggregateCount": 3
+    },
+    "aggregateFortuneDisclosureOnly": true,
+    "checkpointTiming": {
+      "status": "COVERED",
+      "reference": "docs/08-threat-model.md S7"
+    },
+    "participantChurn": {
+      "status": "COVERED",
+      "reference": "docs/08-threat-model.md sections 2 and S4"
+    },
+    "handleMutationTiming": {
+      "status": "COVERED",
+      "finding": "No Lok event emits a persistent per-user ciphertext handle; action timing and membership are public."
+    },
+    "relayerRequestShape": {
+      "status": "PARTIAL",
+      "finding": "ABI and frontend use one prizeCredit(drawId,user) check path; runtime relayer-observable equality remains a human review boundary."
+    },
+    "revertDifferences": {
+      "status": "COVERED",
+      "finding": "Winner selection and Fortune reset use encrypted select; no winner-only ABI or event exists."
+    },
+    "frontendTelemetry": {
+      "status": "HUMAN_REVIEW_REQUIRED",
+      "finding": "frontend/ is present and exposes one outcome-independent Check my result action; P-P9 UX and runtime telemetry equality remain a human review gate."
+    },
+    "aggregatePrizeCreditSum": {
+      "status": "DOCUMENTED",
+      "reference": "docs/08-threat-model.md S9"
+    }
+  },
+  "dynamicEvidence": {
+    "status": "PASS",
+    "fragments": {
+      "acl-uniformity": {
+        "status": "PASS",
+        "proposition": "P-P2",
+        "participants": 5,
+        "grantCounts": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "winnerIndependent": true
+      },
+      "log-indistinguishability": {
+        "status": "PASS",
+        "propositions": [
+          "P-P1",
+          "P-P7",
+          "P-P9-ABI"
+        ],
+        "participants": 7,
+        "winnerIndex": 4,
+        "comparedLoserIndex": 1,
+        "creditedEventShapeEqual": true,
+        "opaqueLogShapeEqual": true,
+        "applicationCallBoundaryShapeEqual": true,
+        "note": "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal."
+      },
+      "gas-indistinguishability": {
+        "status": "PASS",
+        "proposition": "P-P5",
+        "comparison": {
+          "status": "PASS",
+          "winnerGas": "722888",
+          "loserGas": "722888",
+          "gasDelta": "0",
+          "gasDeltaBps": 0,
+          "winnerGlobalHcu": 4025320,
+          "loserGlobalHcu": 4025320,
+          "globalHcuDelta": 0,
+          "winnerMaxHcuDepth": 3032096,
+          "loserMaxHcuDepth": 3032096,
+          "maxHcuDepthDelta": 0,
+          "gasThresholdBps": 100
+        },
+        "sample": [
+          {
+            "index": 0,
+            "outcome": "loser",
+            "gasUsed": "735682"
+          },
+          {
+            "index": 1,
+            "outcome": "loser",
+            "gasUsed": "722888"
+          },
+          {
+            "index": 2,
+            "outcome": "loser",
+            "gasUsed": "722888"
+          },
+          {
+            "index": 3,
+            "outcome": "loser",
+            "gasUsed": "722888"
+          },
+          {
+            "index": 4,
+            "outcome": "loser",
+            "gasUsed": "722888"
+          },
+          {
+            "index": 5,
+            "outcome": "winner",
+            "gasUsed": "722888"
+          }
+        ],
+        "positionalControl": "winner and loser are both non-first and non-final crankB(1) transactions",
+        "firstCrankGasVarianceIsPublicPositionDependent": true
+      }
+    }
+  },
+  "propositions": {
+    "P-P1": {
+      "status": "PASS",
+      "evidence": "log-diff plus application call-boundary comparison"
+    },
+    "P-P2": {
+      "status": "PASS",
+      "evidence": "exactly one prize-handle grant per participant"
+    },
+    "P-P4": {
+      "status": "PASS",
+      "evidence": "ABI event-field scan"
+    },
+    "P-P5": {
+      "status": "PASS",
+      "evidence": "matched-position gas/HCU regression"
+    },
+    "P-P6": {
+      "status": "PASS",
+      "evidence": "MIN_PARTICIPANTS and aggregate masking scan"
+    },
+    "P-P7": {
+      "status": "PASS",
+      "evidence": "Fortune ACL/public-decryption/log-shape scan"
+    },
+    "P-P8": {
+      "status": "PASS",
+      "evidence": "AST public-decryption allowlist and full-PASS-B guard"
+    },
+    "P-P9-ABI": {
+      "status": "PASS",
+      "evidence": "ABI winner-only scan"
+    },
+    "P-P9-UX": {
+      "status": "NOT_TESTABLE",
+      "evidence": "frontend/ uses one Check my result path for every participant; runtime relayer-observable equality requires human review"
+    }
+  },
+  "reviewBoundary": {
+    "status": "APPROVED SAME-CONTEXT OWNER EXCEPTION",
+    "independentReviewPerformed": false,
+    "frontendHumanReviewPerformed": false
+  }
+}

@@ -1,0 +1,731 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-12T13:41:14.313Z",
+  "status": "PASS",
+  "methodology": {
+    "rng": "SplitMix64 deterministic full-width uint64 output",
+    "winnerMapping": "raw uint64 modulo total effective weight, then exact half-open prefix partition",
+    "confidenceInterval": "two-sided Bonferroni simultaneous 99% family-wise prediction intervals around theoretical probabilities",
+    "chiSquare": "Pearson goodness-of-fit over positive-weight categories; upper-tail p-value via regularized gamma Q",
+    "seedPolicy": "four fixed published seeds; failures are reported and never rerolled"
+  },
+  "propositions": {
+    "P-F1": {
+      "status": "PASS",
+      "draws": 2000000,
+      "scenarios": 2
+    },
+    "P-F1'": {
+      "status": "PASS",
+      "draws": 2000000,
+      "scenarios": 2
+    }
+  },
+  "trustBoundary": {
+    "proposition": "P-F4",
+    "status": "DOCUMENTED",
+    "statement": "Lok tests winner mapping under uniform 64-bit inputs; uniformity of FHE.rand is a Zama platform assumption."
+  },
+  "checks": {
+    "zeroWeightNeverWins": true,
+    "splitBoostWithinSingleAddressCap": true,
+    "splitBoost": "4504",
+    "unsplitBoost": "4506",
+    "splitRoundingMargin": "3",
+    "allModuloBoundsPass": true
+  },
+  "scenarios": [
+    {
+      "id": "base-geometric",
+      "proposition": "P-F1",
+      "status": "PASS",
+      "draws": 1000000,
+      "seed": "0x4c4f4b5046310001",
+      "totalWeight": "35905",
+      "chiSquare": 4.38969514732329,
+      "degreesOfFreedom": 7,
+      "pValue": 0.7339558785858294,
+      "confidenceZ99": 3.2272184231870726,
+      "moduloBias": {
+        "remainder": "6061",
+        "maxRelativeDeviationNumerator": "29844",
+        "denominator": "18446744073709551616",
+        "frozenBoundNumerator": "35905",
+        "withinFrozenBound": true
+      },
+      "participants": [
+        {
+          "id": "balance-1",
+          "balanceMicroUnits": "1000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "140",
+          "boost": "0",
+          "effectiveWeight": "140",
+          "expectedCount": 3899.178387411224,
+          "observedCount": 3936,
+          "expectedProbability": 0.003899178387411224,
+          "observedProbability": 0.003936,
+          "confidenceInterval99": {
+            "lower": 0.0036980531537793796,
+            "upper": 0.004100303621043068,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-2",
+          "balanceMicroUnits": "2000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "281",
+          "boost": "0",
+          "effectiveWeight": "281",
+          "expectedCount": 7826.208049018242,
+          "observedCount": 7735,
+          "expectedProbability": 0.007826208049018242,
+          "observedProbability": 0.007735,
+          "confidenceInterval99": {
+            "lower": 0.007541828782273929,
+            "upper": 0.008110587315762554,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-4",
+          "balanceMicroUnits": "4000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "563",
+          "boost": "0",
+          "effectiveWeight": "563",
+          "expectedCount": 15680.267372232282,
+          "observedCount": 15662,
+          "expectedProbability": 0.01568026737223228,
+          "observedProbability": 0.015662,
+          "confidenceInterval99": {
+            "lower": 0.015279333094431755,
+            "upper": 0.01608120165003281,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-8",
+          "balanceMicroUnits": "8000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "1126",
+          "boost": "0",
+          "effectiveWeight": "1126",
+          "expectedCount": 31360.534744464563,
+          "observedCount": 31628,
+          "expectedProbability": 0.03136053474446456,
+          "observedProbability": 0.031628,
+          "confidenceInterval99": {
+            "lower": 0.030798062405677288,
+            "upper": 0.03192300708325184,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-16",
+          "balanceMicroUnits": "16000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "2253",
+          "boost": "0",
+          "effectiveWeight": "2253",
+          "expectedCount": 62748.92076312491,
+          "observedCount": 62892,
+          "expectedProbability": 0.06274892076312491,
+          "observedProbability": 0.062892,
+          "confidenceInterval99": {
+            "lower": 0.061966285404351555,
+            "upper": 0.06353155612189827,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-32",
+          "balanceMicroUnits": "32000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "4506",
+          "boost": "0",
+          "effectiveWeight": "4506",
+          "expectedCount": 125497.84152624982,
+          "observedCount": 125317,
+          "expectedProbability": 0.12549784152624982,
+          "observedProbability": 0.125317,
+          "confidenceInterval99": {
+            "lower": 0.12442872035148249,
+            "upper": 0.12656696270101714,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-64",
+          "balanceMicroUnits": "64000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "9012",
+          "boost": "0",
+          "effectiveWeight": "9012",
+          "expectedCount": 250995.68305249963,
+          "observedCount": 251041,
+          "expectedProbability": 0.25099568305249964,
+          "observedProbability": 0.251041,
+          "confidenceInterval99": {
+            "lower": 0.2495964062108429,
+            "upper": 0.2523949598941564,
+            "inside": true
+          }
+        },
+        {
+          "id": "balance-128",
+          "balanceMicroUnits": "128000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "18024",
+          "boost": "0",
+          "effectiveWeight": "18024",
+          "expectedCount": 501991.36610499927,
+          "observedCount": 501789,
+          "expectedProbability": 0.5019913661049993,
+          "observedProbability": 0.501789,
+          "confidenceInterval99": {
+            "lower": 0.5003777696911169,
+            "upper": 0.5036049625188816,
+            "inside": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "base-varied-exposure",
+      "proposition": "P-F1",
+      "status": "PASS",
+      "draws": 1000000,
+      "seed": "0x4c4f4b5046310002",
+      "totalWeight": "13735",
+      "chiSquare": 6.071677959848622,
+      "degreesOfFreedom": 6,
+      "pValue": 0.41520879826538515,
+      "confidenceZ99": 3.1888152561902836,
+      "moduloBias": {
+        "remainder": "3501",
+        "maxRelativeDeviationNumerator": "10234",
+        "denominator": "18446744073709551616",
+        "frozenBoundNumerator": "13735",
+        "withinFrozenBound": true
+      },
+      "participants": [
+        {
+          "id": "zero-theta",
+          "balanceMicroUnits": "64000000",
+          "theta": 0,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "0",
+          "boost": "0",
+          "effectiveWeight": "0",
+          "expectedCount": 0,
+          "observedCount": 0,
+          "expectedProbability": 0,
+          "observedProbability": 0,
+          "confidenceInterval99": {
+            "lower": 0,
+            "upper": 0,
+            "inside": true
+          }
+        },
+        {
+          "id": "steady",
+          "balanceMicroUnits": "8000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "1126",
+          "boost": "0",
+          "effectiveWeight": "1126",
+          "expectedCount": 81980.34219148161,
+          "observedCount": 82077,
+          "expectedProbability": 0.08198034219148162,
+          "observedProbability": 0.082077,
+          "confidenceInterval99": {
+            "lower": 0.08110553929360904,
+            "upper": 0.0828551450893542,
+            "inside": true
+          }
+        },
+        {
+          "id": "low-risk",
+          "balanceMicroUnits": "16000000",
+          "theta": 1,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "563",
+          "boost": "0",
+          "effectiveWeight": "563",
+          "expectedCount": 40990.17109574081,
+          "observedCount": 40535,
+          "expectedProbability": 0.04099017109574081,
+          "observedProbability": 0.040535,
+          "confidenceInterval99": {
+            "lower": 0.04035793286465513,
+            "upper": 0.04162240932682649,
+            "inside": true
+          }
+        },
+        {
+          "id": "mid-risk",
+          "balanceMicroUnits": "12000000",
+          "theta": 2,
+          "activeSeconds": 453600,
+          "fortune": 0,
+          "baseWeight": "633",
+          "boost": "0",
+          "effectiveWeight": "633",
+          "expectedCount": 46086.639970877324,
+          "observedCount": 46147,
+          "expectedProbability": 0.04608663997087732,
+          "observedProbability": 0.046147,
+          "confidenceInterval99": {
+            "lower": 0.045418032310713834,
+            "upper": 0.04675524763104081,
+            "inside": true
+          }
+        },
+        {
+          "id": "late-join",
+          "balanceMicroUnits": "32000000",
+          "theta": 4,
+          "activeSeconds": 151200,
+          "fortune": 0,
+          "baseWeight": "1126",
+          "boost": "0",
+          "effectiveWeight": "1126",
+          "expectedCount": 81980.34219148161,
+          "observedCount": 81906,
+          "expectedProbability": 0.08198034219148162,
+          "observedProbability": 0.081906,
+          "confidenceInterval99": {
+            "lower": 0.08110553929360904,
+            "upper": 0.0828551450893542,
+            "inside": true
+          }
+        },
+        {
+          "id": "half-window",
+          "balanceMicroUnits": "24000000",
+          "theta": 3,
+          "activeSeconds": 302400,
+          "fortune": 0,
+          "baseWeight": "1267",
+          "boost": "0",
+          "effectiveWeight": "1267",
+          "expectedCount": 92246.08663997088,
+          "observedCount": 92438,
+          "expectedProbability": 0.09224608663997087,
+          "observedProbability": 0.092438,
+          "confidenceInterval99": {
+            "lower": 0.09132332953115471,
+            "upper": 0.09316884374878703,
+            "inside": true
+          }
+        },
+        {
+          "id": "small-positive",
+          "balanceMicroUnits": "1000000",
+          "theta": 1,
+          "activeSeconds": 151200,
+          "fortune": 0,
+          "baseWeight": "8",
+          "boost": "0",
+          "effectiveWeight": "8",
+          "expectedCount": 582.4535857298871,
+          "observedCount": 596,
+          "expectedProbability": 0.0005824535857298871,
+          "observedProbability": 0.000596,
+          "confidenceInterval99": {
+            "lower": 0.0005055168943585113,
+            "upper": 0.000659390277101263,
+            "inside": true
+          }
+        },
+        {
+          "id": "high-exposure",
+          "balanceMicroUnits": "64000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "9012",
+          "boost": "0",
+          "effectiveWeight": "9012",
+          "expectedCount": 656133.9643247179,
+          "observedCount": 656301,
+          "expectedProbability": 0.6561339643247178,
+          "observedProbability": 0.656301,
+          "confidenceInterval99": {
+            "lower": 0.6546192865264016,
+            "upper": 0.6576486421230341,
+            "inside": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "fortune-varied-histories",
+      "proposition": "P-F1'",
+      "status": "PASS",
+      "draws": 1000000,
+      "seed": "0x4c4f4b5046310003",
+      "totalWeight": "33860",
+      "chiSquare": 12.704952681758375,
+      "degreesOfFreedom": 7,
+      "pValue": 0.07963190753630776,
+      "confidenceZ99": 3.2272184231870726,
+      "moduloBias": {
+        "remainder": "27296",
+        "maxRelativeDeviationNumerator": "27296",
+        "denominator": "18446744073709551616",
+        "frozenBoundNumerator": "33860",
+        "withinFrozenBound": true
+      },
+      "participants": [
+        {
+          "id": "fortune-0",
+          "balanceMicroUnits": "8000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "1126",
+          "boost": "0",
+          "effectiveWeight": "1126",
+          "expectedCount": 33254.57767277023,
+          "observedCount": 33248,
+          "expectedProbability": 0.03325457767277023,
+          "observedProbability": 0.033248,
+          "confidenceInterval99": {
+            "lower": 0.03267593542297878,
+            "upper": 0.03383321992256168,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-1",
+          "balanceMicroUnits": "12000000",
+          "theta": 3,
+          "activeSeconds": 453600,
+          "fortune": 1,
+          "baseWeight": "950",
+          "boost": "9",
+          "effectiveWeight": "959",
+          "expectedCount": 28322.50443000591,
+          "observedCount": 28071,
+          "expectedProbability": 0.028322504430005908,
+          "observedProbability": 0.028071,
+          "confidenceInterval99": {
+            "lower": 0.027787132916657062,
+            "upper": 0.028857875943354754,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-5",
+          "balanceMicroUnits": "16000000",
+          "theta": 2,
+          "activeSeconds": 302400,
+          "fortune": 5,
+          "baseWeight": "563",
+          "boost": "27",
+          "effectiveWeight": "590",
+          "expectedCount": 17424.689899586534,
+          "observedCount": 17326,
+          "expectedProbability": 0.017424689899586534,
+          "observedProbability": 0.017326,
+          "confidenceInterval99": {
+            "lower": 0.017002416414449738,
+            "upper": 0.01784696338472333,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-13",
+          "balanceMicroUnits": "24000000",
+          "theta": 4,
+          "activeSeconds": 151200,
+          "fortune": 13,
+          "baseWeight": "844",
+          "boost": "105",
+          "effectiveWeight": "949",
+          "expectedCount": 28027.170702894273,
+          "observedCount": 28467,
+          "expectedProbability": 0.02802717070289427,
+          "observedProbability": 0.028467,
+          "confidenceInterval99": {
+            "lower": 0.027494516875708003,
+            "upper": 0.02855982453008054,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-26",
+          "balanceMicroUnits": "32000000",
+          "theta": 1,
+          "activeSeconds": 604800,
+          "fortune": 26,
+          "baseWeight": "1126",
+          "boost": "281",
+          "effectiveWeight": "1407",
+          "expectedCount": 41553.45540460721,
+          "observedCount": 41747,
+          "expectedProbability": 0.041553455404607205,
+          "observedProbability": 0.041747,
+          "confidenceInterval99": {
+            "lower": 0.04090941089844335,
+            "upper": 0.04219749991077106,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-39",
+          "balanceMicroUnits": "48000000",
+          "theta": 3,
+          "activeSeconds": 302400,
+          "fortune": 39,
+          "baseWeight": "2534",
+          "boost": "950",
+          "effectiveWeight": "3484",
+          "expectedCount": 102894.27052569404,
+          "observedCount": 103238,
+          "expectedProbability": 0.10289427052569404,
+          "observedProbability": 0.103238,
+          "confidenceInterval99": {
+            "lower": 0.10191377464915462,
+            "upper": 0.10387476640223346,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-52",
+          "balanceMicroUnits": "64000000",
+          "theta": 2,
+          "activeSeconds": 453600,
+          "fortune": 52,
+          "baseWeight": "3379",
+          "boost": "1689",
+          "effectiveWeight": "5068",
+          "expectedCount": 149675.1329001772,
+          "observedCount": 149782,
+          "expectedProbability": 0.1496751329001772,
+          "observedProbability": 0.149782,
+          "confidenceInterval99": {
+            "lower": 0.14852381402084536,
+            "upper": 0.15082645177950904,
+            "inside": true
+          }
+        },
+        {
+          "id": "fortune-80-capped",
+          "balanceMicroUnits": "96000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 80,
+          "baseWeight": "13518",
+          "boost": "6759",
+          "effectiveWeight": "20277",
+          "expectedCount": 598848.1984642646,
+          "observedCount": 598121,
+          "expectedProbability": 0.5988481984642646,
+          "observedProbability": 0.598121,
+          "confidenceInterval99": {
+            "lower": 0.5972664365758078,
+            "upper": 0.6004299603527214,
+            "inside": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "fortune-split-principal",
+      "proposition": "P-F1'",
+      "status": "PASS",
+      "draws": 1000000,
+      "seed": "0x4c4f4b5046310004",
+      "totalWeight": "58012",
+      "chiSquare": 5.993151298914694,
+      "degreesOfFreedom": 7,
+      "pValue": 0.5405492682674855,
+      "confidenceZ99": 3.2272184231870726,
+      "moduloBias": {
+        "remainder": "45240",
+        "maxRelativeDeviationNumerator": "45240",
+        "denominator": "18446744073709551616",
+        "frozenBoundNumerator": "58012",
+        "withinFrozenBound": true
+      },
+      "participants": [
+        {
+          "id": "split-1",
+          "balanceMicroUnits": "16000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 52,
+          "baseWeight": "2253",
+          "boost": "1126",
+          "effectiveWeight": "3379",
+          "expectedCount": 58246.5696752396,
+          "observedCount": 58400,
+          "expectedProbability": 0.058246569675239605,
+          "observedProbability": 0.0584,
+          "confidenceInterval99": {
+            "lower": 0.05749072572339882,
+            "upper": 0.05900241362708039,
+            "inside": true
+          }
+        },
+        {
+          "id": "split-2",
+          "balanceMicroUnits": "16000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 52,
+          "baseWeight": "2253",
+          "boost": "1126",
+          "effectiveWeight": "3379",
+          "expectedCount": 58246.5696752396,
+          "observedCount": 58592,
+          "expectedProbability": 0.058246569675239605,
+          "observedProbability": 0.058592,
+          "confidenceInterval99": {
+            "lower": 0.05749072572339882,
+            "upper": 0.05900241362708039,
+            "inside": true
+          }
+        },
+        {
+          "id": "split-3",
+          "balanceMicroUnits": "16000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 52,
+          "baseWeight": "2253",
+          "boost": "1126",
+          "effectiveWeight": "3379",
+          "expectedCount": 58246.5696752396,
+          "observedCount": 58177,
+          "expectedProbability": 0.058246569675239605,
+          "observedProbability": 0.058177,
+          "confidenceInterval99": {
+            "lower": 0.05749072572339882,
+            "upper": 0.05900241362708039,
+            "inside": true
+          }
+        },
+        {
+          "id": "split-4",
+          "balanceMicroUnits": "16000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 52,
+          "baseWeight": "2253",
+          "boost": "1126",
+          "effectiveWeight": "3379",
+          "expectedCount": 58246.5696752396,
+          "observedCount": 58398,
+          "expectedProbability": 0.058246569675239605,
+          "observedProbability": 0.058398,
+          "confidenceInterval99": {
+            "lower": 0.05749072572339882,
+            "upper": 0.05900241362708039,
+            "inside": true
+          }
+        },
+        {
+          "id": "control-8",
+          "balanceMicroUnits": "8000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 0,
+          "baseWeight": "1126",
+          "boost": "0",
+          "effectiveWeight": "1126",
+          "expectedCount": 19409.777287457768,
+          "observedCount": 19403,
+          "expectedProbability": 0.01940977728745777,
+          "observedProbability": 0.019403,
+          "confidenceInterval99": {
+            "lower": 0.018964549342157275,
+            "upper": 0.019855005232758263,
+            "inside": true
+          }
+        },
+        {
+          "id": "control-32",
+          "balanceMicroUnits": "32000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 13,
+          "baseWeight": "4506",
+          "boost": "563",
+          "effectiveWeight": "5069",
+          "expectedCount": 87378.47341929255,
+          "observedCount": 87110,
+          "expectedProbability": 0.08737847341929256,
+          "observedProbability": 0.08711,
+          "confidenceInterval99": {
+            "lower": 0.0864671428446554,
+            "upper": 0.08828980399392972,
+            "inside": true
+          }
+        },
+        {
+          "id": "control-64",
+          "balanceMicroUnits": "64000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 26,
+          "baseWeight": "9012",
+          "boost": "2253",
+          "effectiveWeight": "11265",
+          "expectedCount": 194183.9619389092,
+          "observedCount": 194630,
+          "expectedProbability": 0.1941839619389092,
+          "observedProbability": 0.19463,
+          "confidenceInterval99": {
+            "lower": 0.19290736737005965,
+            "upper": 0.19546055650775873,
+            "inside": true
+          }
+        },
+        {
+          "id": "control-128",
+          "balanceMicroUnits": "128000000",
+          "theta": 4,
+          "activeSeconds": 604800,
+          "fortune": 52,
+          "baseWeight": "18024",
+          "boost": "9012",
+          "effectiveWeight": "27036",
+          "expectedCount": 466041.5086533821,
+          "observedCount": 465290,
+          "expectedProbability": 0.46604150865338206,
+          "observedProbability": 0.46529,
+          "confidenceInterval99": {
+            "lower": 0.46443162530428983,
+            "upper": 0.4676513920024743,
+            "inside": true
+          }
+        }
+      ]
+    }
+  ]
+}

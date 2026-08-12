@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "proposition": "P-P5",
+  "comparison": {
+    "status": "PASS",
+    "winnerGas": "722888",
+    "loserGas": "722888",
+    "gasDelta": "0",
+    "gasDeltaBps": 0,
+    "winnerGlobalHcu": 4025320,
+    "loserGlobalHcu": 4025320,
+    "globalHcuDelta": 0,
+    "winnerMaxHcuDepth": 3032096,
+    "loserMaxHcuDepth": 3032096,
+    "maxHcuDepthDelta": 0,
+    "gasThresholdBps": 100
+  },
+  "sample": [
+    {
+      "index": 0,
+      "outcome": "loser",
+      "gasUsed": "735682"
+    },
+    {
+      "index": 1,
+      "outcome": "loser",
+      "gasUsed": "722888"
+    },
+    {
+      "index": 2,
+      "outcome": "loser",
+      "gasUsed": "722888"
+    },
+    {
+      "index": 3,
+      "outcome": "winner",
+      "gasUsed": "722888"
+    },
+    {
+      "index": 4,
+      "outcome": "loser",
+      "gasUsed": "722888"
+    },
+    {
+      "index": 5,
+      "outcome": "loser",
+      "gasUsed": "722888"
+    }
+  ],
+  "positionalControl": "winner and loser are both non-first and non-final crankB(1) transactions",
+  "firstCrankGasVarianceIsPublicPositionDependent": true
+}

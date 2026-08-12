@@ -1,0 +1,23 @@
+{
+  "abi": [],
+  "status": "PASS",
+  "syncProductionVectors": 8,
+  "drawProductionVectors": 4,
+  "firstDivergence": null,
+  "mockTestsPassing": 96,
+  "sepoliaOnlyPending": 1,
+  "coverage": {
+    "linePercent": 98.62,
+    "branchPercent": 81.5,
+    "linesHit": 573,
+    "linesFound": 581,
+    "branchesHit": 282,
+    "branchesFound": 346
+  },
+  "generatedAtUtc": "2026-08-10T15:13:36.5488952Z",
+  "gitCommit": "unavailable-not-a-git-repository",
+  "independentReview": "NOT_PERFORMED_OWNER_EXCEPTION",
+  "ownerClosure": "APPROVED_SAME_CONTEXT_2026-08-10",
+  "separationException": "Owner explicitly closed Task 11 in the same implementation context on 2026-08-10; two-context independent verification was waived, not performed.",
+  "sepoliaExecution": "PENDING_TASKS_14_15"
+}

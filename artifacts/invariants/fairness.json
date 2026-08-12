@@ -1,0 +1,278 @@
+{
+    "abi":  [
+
+            ],
+    "campaign":  "fairness",
+    "contract":  "LokFairnessInvariantTest",
+    "status":  "PASS",
+    "targetSequences":  10000000,
+    "sequences":  10000004,
+    "depth":  32,
+    "calls":  320000128,
+    "reverts":  0,
+    "shards":  28,
+    "runsPerShard":  357143,
+    "shardResults":  [
+                         {
+                             "shard":  0,
+                             "seed":  "0xd0cf00a4cb3ba0c9387766150ed722a269762eee35e02533ee6834912b18d164",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3174.12
+                         },
+                         {
+                             "shard":  1,
+                             "seed":  "0xe3b2b1f070032e1feec156d163c6a7c472907a90d3dfc89d4e52ba47118aaa72",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3174.124
+                         },
+                         {
+                             "shard":  2,
+                             "seed":  "0xaffdc7dff8731eedc2bb47c76b4a9109d10623a64c10eaaaa9c313d63e2dd09f",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3174.101
+                         },
+                         {
+                             "shard":  3,
+                             "seed":  "0xce7c0fd1be069db78ef105bbec217a72576c2eb05758e3c9101688885e51bba1",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3174.048
+                         },
+                         {
+                             "shard":  4,
+                             "seed":  "0xd72edd20ad39e476890e14d2ec3520d19e063c90fd9ecffaafe530f5e9656f54",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3174.001
+                         },
+                         {
+                             "shard":  5,
+                             "seed":  "0xc89b402e3e47ed7252a8242927ddff418670884cf955e90e9a87d3deeb379ccb",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.97
+                         },
+                         {
+                             "shard":  6,
+                             "seed":  "0xd5e4ec9813678b7ec8f95d8f335ea02e47803da61f83d89959d3df4c34aa1902",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.889
+                         },
+                         {
+                             "shard":  7,
+                             "seed":  "0xaa9fb477db900123d978cae57c0ad26881bcc73ead6bb02d6a8df9cb13b2e30a",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.854
+                         },
+                         {
+                             "shard":  8,
+                             "seed":  "0x15a826be6c6b42fc3077903f17e71bf1b637c9f1ee6ee62f4ef9a0f72791e246",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.81
+                         },
+                         {
+                             "shard":  9,
+                             "seed":  "0x85c2af5d33dbc534cfd165f054afd6de381d14b33aa79f77bd89aeeca55eb43a",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.779
+                         },
+                         {
+                             "shard":  10,
+                             "seed":  "0x1ce9113a362aa59b2d7c765dc37d6718d187daafbcc9f4f1efd1eabcca42b784",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.681
+                         },
+                         {
+                             "shard":  11,
+                             "seed":  "0x4412261a679036662216a207de2ac611306d978c13e1e7429201dcdbe3ecc50b",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.572
+                         },
+                         {
+                             "shard":  12,
+                             "seed":  "0xbc8394bc598a0bf6fdc7c971287222c53cccac4a1552e16a457c5b3ef6fbf09c",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.485
+                         },
+                         {
+                             "shard":  13,
+                             "seed":  "0x1c2bd6e258b6e568317b41e3c98c7c2df19d1d83d8f87c6be0a99e0f0645aecf",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.421
+                         },
+                         {
+                             "shard":  14,
+                             "seed":  "0xeef0fd9fb82cd7fe97cc9de3d812727c67f60250e93a56af293868ed5e3a8580",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3173.117
+                         },
+                         {
+                             "shard":  15,
+                             "seed":  "0x4914ec7531bdfe299c52aceecfdc80562d403915f9d4653fff4601e60dc800fc",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3172.832
+                         },
+                         {
+                             "shard":  16,
+                             "seed":  "0xa88b2bdfb0f48bc75eef8fefc535703052699959222fff0cc9834bbb0235b097",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3172.414
+                         },
+                         {
+                             "shard":  17,
+                             "seed":  "0xcebd2fbe9feb9dbe681f0bdd8456346a0e3422502075637f8e3e6f36ca0ca42a",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3172.252
+                         },
+                         {
+                             "shard":  18,
+                             "seed":  "0xb448d1987eb3a4a2e68584c299c6fb2b7cb7b9c9c71442ce0952d36272bb3704",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3171.546
+                         },
+                         {
+                             "shard":  19,
+                             "seed":  "0x171aa5caa9afcc17d1c76b04f77c53c4d22150f5809b592c2fad384068a48be9",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3171.384
+                         },
+                         {
+                             "shard":  20,
+                             "seed":  "0x7890c63ea19209bbcaab877498bce2254dba839bbf0851d891528d2cba684dbc",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3170.725
+                         },
+                         {
+                             "shard":  21,
+                             "seed":  "0x20402537ac3f6c5b83266d514d108d8cdf50c5a37b0f06da0704e22ae66537c0",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3170.274
+                         },
+                         {
+                             "shard":  22,
+                             "seed":  "0xcc5ec6b44ffa94c6324d26de13304af9244d2f762a291e356ae38421d0de851a",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3170.163
+                         },
+                         {
+                             "shard":  23,
+                             "seed":  "0xb0d0504199f5abefc1eba8fd1bc8eaa725d1b8ee9cdbb5f9eaecbcfa2836fe3a",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3170.023
+                         },
+                         {
+                             "shard":  24,
+                             "seed":  "0xaed78121c8f5d3a26ea1da33011e9f1df847f432b744a5fcbf32635475040f61",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3169.766
+                         },
+                         {
+                             "shard":  25,
+                             "seed":  "0x48e41e7862b770add4f3783faa9dc13611c2be44b1139cdaf83d6307dc3ae3cd",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3169.616
+                         },
+                         {
+                             "shard":  26,
+                             "seed":  "0xbda92badd4ee171df24b5945c0d2147c0a18137a1427c8264994e016f8e83d39",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3169.37
+                         },
+                         {
+                             "shard":  27,
+                             "seed":  "0xb08de31d9c7d61581fc282be45baed86c1bfbda9b06dbfd85739f6255f0f2729",
+                             "sequences":  357143,
+                             "calls":  11428576,
+                             "reverts":  0,
+                             "exitCode":  0,
+                             "durationSeconds":  3169.185
+                         }
+                     ],
+    "durationSeconds":  3174.286,
+    "forgeVersion":  "forge Version: 1.7.1",
+    "gitCommit":  "unavailable-not-a-git-repository",
+    "generatedAtUtc":  "2026-08-12T14:37:16.0895500Z",
+    "proofWorker":  "codex-current-context-by-owner-exception",
+    "independentReview":  "PENDING_HUMAN_SIGNOFF",
+    "separationException":  "Owner authorized the implementation context to execute Task 10 on 2026-08-10; this is not an independent-context review.",
+    "exitCode":  0,
+    "log":  "artifacts/invariants/fairness.log"
+}

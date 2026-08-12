@@ -1,0 +1,16 @@
+{
+    "abi":  [
+
+            ],
+    "status":  "PASS",
+    "linePercent":  98.62,
+    "branchPercent":  81.5,
+    "linesHit":  573,
+    "linesFound":  581,
+    "branchesHit":  282,
+    "branchesFound":  346,
+    "generatedAtUtc":  "2026-08-10T15:09:19.3506213Z",
+    "independentReview":  "NOT_PERFORMED_OWNER_EXCEPTION",
+    "ownerClosure":  "APPROVED_SAME_CONTEXT_2026-08-10",
+    "separationException":  "Owner explicitly closed Task 11 in the same implementation context on 2026-08-10; two-context independent verification was waived, not performed."
+}
