@@ -41,9 +41,7 @@
     "confidentialToken": {
       "name": "YieldInjectingERC7984",
       "address": "0x00eB52CF8f64eA64588BB0d427EE93A907Dbe107",
-      "constructorArgs": [
-        "0x68e13782C114A885f754109EF99Cea269eb401b2"
-      ],
+      "constructorArgs": ["0x68e13782C114A885f754109EF99Cea269eb401b2"],
       "deployTransactionHash": "0x668e8e749f931521409a7af448c239ac2c95464ea6ec66e8383e631a306a4946",
       "deployBlockNumber": 11473841,
       "runtimeBytecodeHash": "0x35bb31ebeada04c434195e5839849b6ae7b9b30a376147e831d7f4c7253c8bc8",
@@ -53,10 +51,7 @@
     "yieldAdapter": {
       "name": "MockYieldAdapter",
       "address": "0xB0FDA68126fC09DED8A7114ad436f2B638D89dfA",
-      "constructorArgs": [
-        "0x00eB52CF8f64eA64588BB0d427EE93A907Dbe107",
-        "0x8e7939E23a012143e5182d7173DAD42B2006c2b8"
-      ],
+      "constructorArgs": ["0x00eB52CF8f64eA64588BB0d427EE93A907Dbe107", "0x8e7939E23a012143e5182d7173DAD42B2006c2b8"],
       "deployTransactionHash": "0xe3da35bc3ff28ab80f9c8f336f3ddde5547706d93a018e38a62e696ab9be3cad",
       "deployBlockNumber": 11473842,
       "runtimeBytecodeHash": "0x9082a52eff1730a18b1b274d227249535e0e613a58e572e3e4bb3d7bd43f6dba",
@@ -104,10 +99,7 @@
   "rolePolicy": {
     "guardian": "omitted",
     "guardianReason": "No threshold configuration with two independent signers was supplied.",
-    "ownerPowers": [
-      "pause future draws",
-      "timelocked adapter configuration"
-    ],
+    "ownerPowers": ["pause future draws", "timelocked adapter configuration"],
     "demoFundPower": "none"
   }
 }
