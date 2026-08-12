@@ -16,6 +16,7 @@ The near-instant Sepolia migration and Task 9 production publication are complet
 - Frontend source address export: updated to the canonical stack
 - Vercel project: `lok-protocol-app`, canonical alias live and smoke-tested
 - GitHub source: `duclucky/lok-protocol`, private pending submission publication
+- Git production: `dpl_9pjjjVU6E8AyYNnWEYztHQHL7xQs` from commit `c7ad99b0b4b713f4cbe19e3219e1192f696c8cbb`
 
 The seven-day deployment remains historical evidence at `deployments/history/sepolia-seven-day-2026-08-11.json`. Do not
 restore it as the canonical manifest.
@@ -108,6 +109,9 @@ p50/p95 is `2744/3148 ms`. Raw evidence is in `artifacts/hcu-benchmark.json`.
 - Canonical URL: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
 - Vercel project: `lok-protocol-app`; Git root directory: `frontend/`; runtime: Node.js `22.x`.
 - GitHub repository: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol), private.
+- Git production deployment: `dpl_9pjjjVU6E8AyYNnWEYztHQHL7xQs`.
+- Immutable URL:
+  [https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app](https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app)
 - Browser smoke: `/` and `/draw` show canonical addresses, 30 participants, and settled draw #1 with no console warnings
   or errors.
 - HTTP smoke: `/`, `/draw`, and the TFHE WASM return `200`; COOP/COEP headers and `application/wasm` MIME pass.

@@ -89,6 +89,10 @@ Fresh Gate 3 evidence from 2026-08-12 is in `artifacts/hcu-benchmark.json` and `
 - Vercel project: `lok-protocol-app`; Git root directory: `frontend/`; runtime: Node.js `22.x`.
 - GitHub source: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol), private pending submission
   publication.
+- Git production deployment: `dpl_9pjjjVU6E8AyYNnWEYztHQHL7xQs`, built from `main` commit
+  `c7ad99b0b4b713f4cbe19e3219e1192f696c8cbb`.
+- Immutable deployment URL:
+  [https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app](https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app)
 - `frontend/.env.production` and `frontend/src/contracts/addresses.ts` contain the canonical addresses above.
 - Local Node 22 evidence: 58/58 frontend tests and a successful TypeScript/Vite production build.
 - Private reads remain permit-gated and user-triggered; the winner and loser use the same result-check flow.
@@ -102,6 +106,9 @@ Post-publish smoke on 2026-08-12 passed:
 - HTTP `/`, `/draw`, and `/fhevm/tfhe_bg.v1.6.2.wasm`: all return `200` with `Cross-Origin-Opener-Policy: same-origin`
   and `Cross-Origin-Embedder-Policy: require-corp`.
 - The TFHE asset is served as `application/wasm`.
+
+The Git-connected deployment was smoke-tested again on 2026-08-13 with the same results. Vercel metadata binds it to the
+private GitHub repository, `main` branch, and exact commit above.
 
 ## Operational Notes
 
