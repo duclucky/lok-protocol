@@ -2,17 +2,28 @@ import { ArrowRight, Coins, Info, ShieldCheck, TestTube2 } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
+import { ActionStatus } from "../components/ActionStatus";
 import { DemoControl } from "../features/demo/DemoControl";
 import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
 
 type DepositPath = "private" | "public";
 
-type DepositPageProps = { actions?: Pick<LokTransactionActions, "deposit" | "mintTestTokens" | "pending" | "shield"> };
+type DepositPageProps = {
+  actions?: Pick<LokTransactionActions, "deposit" | "mintTestTokens" | "pending" | "shield">;
+  revealActionStatus?: () => Promise<boolean>;
+};
 
-export function DepositPage({ actions }: DepositPageProps = {}) {
+export function DepositPage({ actions, revealActionStatus }: DepositPageProps = {}) {
   const [path, setPath] = useState<DepositPath>("private");
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState<string | undefined>();
+  const [depositConfirmed, setDepositConfirmed] = useState(false);
+
+  function selectPath(nextPath: DepositPath) {
+    setPath(nextPath);
+    setMessage(undefined);
+    setDepositConfirmed(false);
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -21,13 +32,15 @@ export function DepositPage({ actions }: DepositPageProps = {}) {
       return;
     }
     setMessage(path === "private" ? "Encrypting the deposit for LokVault." : "Submitting the public shield transaction.");
+    setDepositConfirmed(false);
     try {
       const hash = path === "private" ? await actions.deposit(amount) : await actions.shield(amount);
-      setMessage(
-        path === "private"
-          ? `Private deposit confirmed (${hash.slice(0, 10)}...).`
-          : `Shield confirmed (${hash.slice(0, 10)}...). Wait before making the separate private deposit.`,
-      );
+      if (path === "private") {
+        setMessage(`Transaction confirmed. Reveal the encrypted result (${hash.slice(0, 10)}...).`);
+        setDepositConfirmed(true);
+      } else {
+        setMessage(`Shield confirmed (${hash.slice(0, 10)}...). Wait before making the separate private deposit.`);
+      }
     } catch (error) {
       setMessage(transactionMessage(error));
     }
@@ -62,7 +75,7 @@ export function DepositPage({ actions }: DepositPageProps = {}) {
               name="deposit-path"
               value="private"
               checked={path === "private"}
-              onChange={() => setPath("private")}
+              onChange={() => selectPath("private")}
             />
             <span className="path-option__icon">
               <ShieldCheck aria-hidden="true" size={22} />
@@ -79,7 +92,7 @@ export function DepositPage({ actions }: DepositPageProps = {}) {
               name="deposit-path"
               value="public"
               checked={path === "public"}
-              onChange={() => setPath("public")}
+              onChange={() => selectPath("public")}
             />
             <span className="path-option__icon">
               <Coins aria-hidden="true" size={22} />
@@ -139,6 +152,9 @@ export function DepositPage({ actions }: DepositPageProps = {}) {
             <p className="form-message" role="status">
               {message}
             </p>
+          )}
+          {depositConfirmed && revealActionStatus !== undefined && (
+            <ActionStatus action="DEPOSIT" reveal={revealActionStatus} />
           )}
         </section>
       </form>

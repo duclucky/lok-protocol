@@ -1,4 +1,4 @@
-import { useDecryptValues, useGrantPermit, useHasPermit } from "@zama-fhe/react-sdk";
+import { useDecryptValues, useGrantPermit, useHasPermit, useZamaSDK } from "@zama-fhe/react-sdk";
 import { useCallback, useMemo } from "react";
 import { type Hex, zeroAddress } from "viem";
 import { useAccount, useReadContract } from "wagmi";
@@ -27,6 +27,7 @@ export function useLokPrivateValues(drawId?: bigint): {
   revealActionStatus(): Promise<boolean>;
   revealCredit(): Promise<bigint>;
 } {
+  const sdk = useZamaSDK();
   const { address } = useAccount();
   const account = address ?? zeroAddress;
   const balanceRead = useReadContract({
@@ -75,7 +76,6 @@ export function useLokPrivateValues(drawId?: bigint): {
   const creditHandle = creditRead.data;
   const walletCusdcHandle = walletCusdcRead.data;
   const thetaHandle = thetaRead.data;
-  const actionStatusHandle = actionStatusRead.data;
   const balanceInputs = useMemo(() => encryptedInput(balanceHandle, vault), [balanceHandle]);
   const creditInputs = useMemo(() => encryptedInput(creditHandle, drawManager), [creditHandle]);
   const walletCusdcInputs = useMemo(
@@ -83,12 +83,10 @@ export function useLokPrivateValues(drawId?: bigint): {
     [walletCusdcHandle],
   );
   const thetaInputs = useMemo(() => encryptedInput(thetaHandle, vault), [thetaHandle]);
-  const actionStatusInputs = useMemo(() => encryptedInput(actionStatusHandle, vault), [actionStatusHandle]);
   const balanceDecrypt = useDecryptValues(balanceInputs, { enabled: false, retry: false });
   const creditDecrypt = useDecryptValues(creditInputs, { enabled: false, retry: false });
   const walletCusdcDecrypt = useDecryptValues(walletCusdcInputs, { enabled: false, retry: false });
   const thetaDecrypt = useDecryptValues(thetaInputs, { enabled: false, retry: false });
-  const actionStatusDecrypt = useDecryptValues(actionStatusInputs, { enabled: false, retry: false });
 
   const ensureVaultPermit = useCallback(async () => {
     if (address === undefined) throw new Error("Connect a wallet before revealing a private value.");
@@ -150,14 +148,18 @@ export function useLokPrivateValues(drawId?: bigint): {
 
   const revealActionStatus = useCallback(async () => {
     if (actionStatusRead.error !== null) throw actionStatusRead.error;
-    if (actionStatusHandle === undefined || actionStatusHandle === ZERO_BYTES32) {
+    const refreshed = await actionStatusRead.refetch();
+    if (refreshed.error !== null) throw refreshed.error;
+    const currentHandle = refreshed.data;
+    if (currentHandle === undefined || currentHandle === ZERO_BYTES32) {
       throw new Error("No encrypted action result is available for this wallet.");
     }
     await ensureVaultPermit();
-    const result = await actionStatusDecrypt.refetch();
-    if (result.error !== null) throw result.error;
-    return clearBoolean(decryptedValue(result.data, actionStatusHandle));
-  }, [actionStatusDecrypt, actionStatusHandle, actionStatusRead.error, ensureVaultPermit]);
+    const result = await sdk.decryption.decryptValues([
+      { encryptedValue: currentHandle, contractAddress: vault },
+    ]);
+    return clearBoolean(decryptedValue(result, currentHandle));
+  }, [actionStatusRead, ensureVaultPermit, sdk.decryption]);
 
   const revealCredit = useCallback(async () => {
     if (creditRead.error !== null) throw creditRead.error;

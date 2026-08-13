@@ -65,15 +65,24 @@ describe("VaultPage", () => {
   it("submits a confidential withdrawal through the wallet action", async () => {
     const user = userEvent.setup();
     const withdraw = vi.fn().mockResolvedValue("0xwithdraw");
-    render(<VaultPage publicData={publicData} withdrawAction={{ withdraw, pending: false }} />, {
+    render(
+      <VaultPage
+        publicData={publicData}
+        withdrawAction={{ withdraw, pending: false }}
+        revealActionStatus={vi.fn().mockResolvedValue(true)}
+      />,
+      {
       wrapper: MemoryRouter,
-    });
+      },
+    );
 
     await user.click(screen.getByRole("button", { name: "Withdraw" }));
     await user.type(screen.getByRole("spinbutton", { name: "Withdrawal amount" }), "1.25");
     await user.click(screen.getByRole("button", { name: "Submit withdrawal" }));
 
     expect(withdraw).toHaveBeenCalledWith("1.25");
+    expect(await screen.findByText(/transaction confirmed\. reveal the encrypted result/i)).toBeVisible();
+    expect(screen.queryByText("Withdrew.")).not.toBeInTheDocument();
   });
 });
 

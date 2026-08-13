@@ -39,7 +39,13 @@ describe("DepositPage", () => {
     const mintTestTokens = vi.fn().mockResolvedValue("0xmint");
     const shield = vi.fn().mockResolvedValue("0xshield");
     const deposit = vi.fn().mockResolvedValue("0xdeposit");
-    render(<DepositPage actions={{ mintTestTokens, shield, deposit, pending: false }} />, { wrapper: MemoryRouter });
+    render(
+      <DepositPage
+        actions={{ mintTestTokens, shield, deposit, pending: false }}
+        revealActionStatus={vi.fn().mockResolvedValue(true)}
+      />,
+      { wrapper: MemoryRouter },
+    );
 
     await user.click(screen.getByRole("button", { name: /get test tokens/i }));
     expect(mintTestTokens).toHaveBeenCalledOnce();
@@ -52,5 +58,7 @@ describe("DepositPage", () => {
     await user.click(screen.getByRole("radio", { name: /private cusdc/i }));
     await user.click(screen.getByRole("button", { name: /deposit privately/i }));
     expect(deposit).toHaveBeenCalledWith("10");
+    expect(await screen.findByText(/transaction confirmed\. reveal the encrypted result/i)).toBeVisible();
+    expect(screen.queryByText("Deposited.")).not.toBeInTheDocument();
   });
 });

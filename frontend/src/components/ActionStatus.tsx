@@ -3,15 +3,18 @@ import { SealedValue } from "./SealedValue";
 
 type ActionStatusProps = {
   action: VaultAction;
-  succeeded: boolean;
+  reveal: () => Promise<boolean>;
 };
 
-export function ActionStatus({ action, succeeded }: ActionStatusProps) {
-  const result = decodeVaultActionStatus(action, succeeded);
+export function ActionStatus({ action, reveal }: ActionStatusProps) {
   return (
     <div className="action-status">
       <span>Encrypted action result</span>
-      <SealedValue label="transaction status" reveal={() => Promise.resolve(result.message)} autoHideMs={60_000} />
+      <SealedValue
+        label="transaction status"
+        reveal={async () => decodeVaultActionStatus(action, await reveal()).message}
+        autoHideMs={60_000}
+      />
     </div>
   );
 }

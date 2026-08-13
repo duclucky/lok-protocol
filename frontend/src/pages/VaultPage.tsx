@@ -3,6 +3,7 @@ import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PageHeader } from "../components/PageHeader";
+import { ActionStatus } from "../components/ActionStatus";
 import { SealedValue } from "../components/SealedValue";
 import { SolvencyStatus } from "../components/SolvencyStatus";
 import { currentPrizeLabel, formatCountdown, formatUtc, type LokPublicData } from "../features/public-data/model";
@@ -13,6 +14,7 @@ type VaultPageProps = {
   nowMs?: number;
   revealBalance?: () => Promise<string>;
   withdrawAction?: Pick<LokTransactionActions, "pending" | "withdraw">;
+  revealActionStatus?: () => Promise<boolean>;
 };
 
 export function VaultPage({
@@ -20,10 +22,12 @@ export function VaultPage({
   nowMs,
   revealBalance = () => Promise.reject(new Error("Wallet decryption is not ready")),
   withdrawAction,
+  revealActionStatus,
 }: VaultPageProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawMessage, setWithdrawMessage] = useState<string | undefined>();
+  const [withdrawConfirmed, setWithdrawConfirmed] = useState(false);
 
   async function submitWithdrawal(event: FormEvent) {
     event.preventDefault();
@@ -32,9 +36,11 @@ export function VaultPage({
       return;
     }
     setWithdrawMessage("Encrypting the withdrawal request for LokVault.");
+    setWithdrawConfirmed(false);
     try {
       const hash = await withdrawAction.withdraw(withdrawAmount);
-      setWithdrawMessage(`Private withdrawal confirmed (${hash.slice(0, 10)}...).`);
+      setWithdrawMessage(`Transaction confirmed. Reveal the encrypted result (${hash.slice(0, 10)}...).`);
+      setWithdrawConfirmed(true);
       setWithdrawAmount("");
     } catch (error) {
       setWithdrawMessage(transactionMessage(error));
@@ -123,6 +129,9 @@ export function VaultPage({
             <p className="form-message" role="status">
               {withdrawMessage}
             </p>
+          )}
+          {withdrawConfirmed && revealActionStatus !== undefined && (
+            <ActionStatus action="WITHDRAW" reveal={revealActionStatus} />
           )}
         </form>
       )}

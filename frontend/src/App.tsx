@@ -27,11 +27,17 @@ export function App() {
               <VaultPage
                 publicData={publicData}
                 revealBalance={privateValues.revealBalance}
+                revealActionStatus={privateValues.revealActionStatus}
                 withdrawAction={transactions}
               />
             }
           />
-          <Route path="deposit" element={<DepositPage actions={transactions} />} />
+          <Route
+            path="deposit"
+            element={
+              <DepositPage actions={transactions} revealActionStatus={privateValues.revealActionStatus} />
+            }
+          />
           <Route path="risk" element={<RiskPage action={transactions} />} />
           <Route path="draw" element={<DrawPage publicData={publicData} />} />
           <Route
