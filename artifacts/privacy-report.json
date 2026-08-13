@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-12T16:04:30.776Z",
+  "generatedAtUtc": "2026-08-12T23:01:15.954Z",
   "status": "PASS",
   "buildInfo": [
-    "hardhat-artifacts/build-info/fa8a9ab466ac6065e897e72f7847f60f.json"
+    "hardhat-artifacts/build-info/3a14f11ef7fc2edc31d4ef75dd8da05a.json"
   ],
   "publicDecryption": {
     "calls": [
@@ -1347,14 +1347,29 @@
         "status": "PASS",
         "proposition": "P-P2",
         "participants": 5,
-        "grantCounts": [
-          1,
+        "grantMultisetExact": true,
+        "expectedPairs": [
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbe1fda92fa4cc24684549f86a81bf1dc44ffe5f572ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x37fd9cafdcb997e7929a137894ac261e9e9f0f0b52ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0xbcf25c3e880b3fa480d29036acb9ec4836117c9962ff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa4d4fd42403dddb47939ad5a6af230bc795f31bf63ff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xc56ae4856192614ebc75c5be233355b4bbddbe58d3ff0000000000007a690500"
+        ],
+        "actualPairs": [
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbe1fda92fa4cc24684549f86a81bf1dc44ffe5f572ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x37fd9cafdcb997e7929a137894ac261e9e9f0f0b52ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0xbcf25c3e880b3fa480d29036acb9ec4836117c9962ff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa4d4fd42403dddb47939ad5a6af230bc795f31bf63ff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xc56ae4856192614ebc75c5be233355b4bbddbe58d3ff0000000000007a690500"
+        ],
+        "winnerIndex": 4,
+        "winnerGrantCount": 1,
+        "loserGrantCounts": [
           1,
           1,
           1,
           1
-        ],
-        "winnerIndependent": true
+        ]
       },
       "log-indistinguishability": {
         "status": "PASS",
@@ -1364,10 +1379,17 @@
           "P-P9-ABI"
         ],
         "participants": 7,
-        "winnerIndex": 4,
-        "comparedLoserIndex": 1,
-        "creditedEventShapeEqual": true,
-        "opaqueLogShapeEqual": true,
+        "winnerIndex": 1,
+        "comparedLoserIndex": 2,
+        "comparedLoserIndices": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "comparedRawAndParsedPrizeCreditedFields": true,
         "applicationCallBoundaryShapeEqual": true,
         "note": "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal."
       },
@@ -1406,7 +1428,7 @@
           },
           {
             "index": 3,
-            "outcome": "loser",
+            "outcome": "winner",
             "gasUsed": "722888"
           },
           {
@@ -1416,7 +1438,7 @@
           },
           {
             "index": 5,
-            "outcome": "winner",
+            "outcome": "loser",
             "gasUsed": "722888"
           }
         ],
@@ -1428,11 +1450,11 @@
   "propositions": {
     "P-P1": {
       "status": "PASS",
-      "evidence": "log-diff plus application call-boundary comparison"
+      "evidence": "complete raw and parsed participant log-field diff plus call-boundary comparison"
     },
     "P-P2": {
       "status": "PASS",
-      "evidence": "exactly one prize-handle grant per participant"
+      "evidence": "complete participant-facing prize-handle ACL grant multiset"
     },
     "P-P4": {
       "status": "PASS",

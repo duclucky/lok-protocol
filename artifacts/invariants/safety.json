@@ -12,6 +12,31 @@
     "reverts":  0,
     "shards":  28,
     "runsPerShard":  357143,
+    "selectorSet":  [
+                        "deposit",
+                        "withdraw",
+                        "emergencyWithdraw",
+                        "exit",
+                        "setTheta",
+                        "fundYield",
+                        "directCredit",
+                        "openCheckpoint",
+                        "submitCheckpoint",
+                        "submitForgedCheckpoint",
+                        "moveCustody",
+                        "proposeAdapter",
+                        "advanceTime",
+                        "activateAdapter",
+                        "drainRetiringAdapter",
+                        "removeRetiringAdapter",
+                        "pause",
+                        "openDraw",
+                        "abortDraw",
+                        "attemptReentrantMutation",
+                        "submitForgedTotals",
+                        "settleDraw"
+                    ],
+    "settlementSelectorIncluded":  true,
     "shardResults":  [
                          {
                              "shard":  0,
@@ -19,7 +44,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4831.1
                          },
                          {
                              "shard":  1,
@@ -27,7 +53,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4831.108
                          },
                          {
                              "shard":  2,
@@ -35,7 +62,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4831.084
                          },
                          {
                              "shard":  3,
@@ -43,7 +71,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4831.062
                          },
                          {
                              "shard":  4,
@@ -51,7 +80,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4831.007
                          },
                          {
                              "shard":  5,
@@ -59,7 +89,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.957
                          },
                          {
                              "shard":  6,
@@ -67,7 +98,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.93
                          },
                          {
                              "shard":  7,
@@ -75,7 +107,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.851
                          },
                          {
                              "shard":  8,
@@ -83,7 +116,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.812
                          },
                          {
                              "shard":  9,
@@ -91,7 +125,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.772
                          },
                          {
                              "shard":  10,
@@ -99,7 +134,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.73
                          },
                          {
                              "shard":  11,
@@ -107,7 +143,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.644
                          },
                          {
                              "shard":  12,
@@ -115,7 +152,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.572
                          },
                          {
                              "shard":  13,
@@ -123,7 +161,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.519
                          },
                          {
                              "shard":  14,
@@ -131,7 +170,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.417
                          },
                          {
                              "shard":  15,
@@ -139,7 +179,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4830.047
                          },
                          {
                              "shard":  16,
@@ -147,7 +188,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4829.77
                          },
                          {
                              "shard":  17,
@@ -155,7 +197,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4829.39
                          },
                          {
                              "shard":  18,
@@ -163,7 +206,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4828.851
                          },
                          {
                              "shard":  19,
@@ -171,7 +215,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4828.342
                          },
                          {
                              "shard":  20,
@@ -179,7 +224,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4827.997
                          },
                          {
                              "shard":  21,
@@ -187,7 +233,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4827.751
                          },
                          {
                              "shard":  22,
@@ -195,7 +242,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4827.372
                          },
                          {
                              "shard":  23,
@@ -203,7 +251,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4827.093
                          },
                          {
                              "shard":  24,
@@ -211,7 +260,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4826.981
                          },
                          {
                              "shard":  25,
@@ -219,7 +269,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4826.295
                          },
                          {
                              "shard":  26,
@@ -227,7 +278,8 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4826.026
                          },
                          {
                              "shard":  27,
@@ -235,13 +287,14 @@
                              "sequences":  357143,
                              "calls":  11428576,
                              "reverts":  0,
-                             "exitCode":  0
+                             "exitCode":  0,
+                             "durationSeconds":  4825.727
                          }
                      ],
-    "durationSeconds":  6476.316,
+    "durationSeconds":  4831.253,
     "forgeVersion":  "forge Version: 1.7.1",
-    "gitCommit":  "unavailable-not-a-git-repository",
-    "generatedAtUtc":  "2026-08-10T14:12:38.4062562Z",
+    "gitCommit":  "55775afbad5cf328c28023ff1d3a09a9933be7d8",
+    "generatedAtUtc":  "2026-08-13T00:21:57.3519595Z",
     "proofWorker":  "codex-current-context-by-owner-exception",
     "independentReview":  "PENDING_HUMAN_SIGNOFF",
     "separationException":  "Owner authorized the implementation context to execute Task 10 on 2026-08-10; this is not an independent-context review.",
