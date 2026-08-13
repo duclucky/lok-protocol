@@ -2,15 +2,17 @@
 
 - **Prepared by:** Codex AI proof remediation worker (owner-delegated, same-context, non-human, non-independent)
 - **Prepared:** 2026-08-13
-- **Hand-proof status:** `READY_FOR_INDEPENDENT_RE-REVIEW`
+- **Hand-proof status:** `APPROVED`
 - **Full P-S2 status:** `BLOCKED`
 - **Code/test commit:** `65ff43262778a1c073d1d2f413a11d9c57cb98a5`
 - **Invariant evidence commit:** `03726508f417ccd270afb321ea570d73274318f6`
 - **Manifest commit reviewed by this package:** `8531d57db3ad4e62ff26bd53ac818a38040f74fb`
 - **Sepolia state-changing evidence:** not executed; Groups A and B require separate owner authorization
 
-This package is input to a new independent review. The remediation author cannot sign that review. Frozen section 3 is
-unchanged, and this package does not change the verdict for full P-S2.
+This package was independently re-reviewed against commit `024a385a44353dc6203971d1ab8164827dff705f`. The remediation
+author did not sign that review. The hand proof was approved on 2026-08-13; the review record is
+`docs/proofs/P-S2-independent-re-review-record-2026-08-13.md`. Frozen section 3 is unchanged, and the full P-S2 verdict
+remains blocked pending separately authorized Sepolia Groups A and B.
 
 ## Frozen Obligation
 
@@ -250,12 +252,13 @@ The independent reviewer must confirm:
 - Treat adapter full return as an external supported-adapter postcondition, not vault enforcement.
 - Do not review Sepolia receipts until separately authorized state-changing evidence exists.
 
-## Status For Handoff
+## Independent Re-review Outcome
 
 ```text
-P-S2 hand proof: READY_FOR_INDEPENDENT_RE-REVIEW
+P-S2 hand proof: APPROVED
 Full P-S2: BLOCKED
 P-P1: WEAKER-THAN-CLAIMED
-Independent reviewer identity: not assigned in this package
-Independent verdict: not supplied by this package
+Independent reviewer: Codex independent audit context (not the remediation author)
+Independent verdict: APPROVED
+Review record: docs/proofs/P-S2-independent-re-review-record-2026-08-13.md
 ```

@@ -4,9 +4,9 @@
 
 **Proof tier:** A
 
-**Hand-proof status:** READY_FOR_INDEPENDENT_RE-REVIEW
+**Hand-proof status:** APPROVED BY INDEPENDENT RE-REVIEW (2026-08-13)
 
-**Full P-S2 status:** BLOCKED pending authorized Sepolia Groups A and B and independent re-review
+**Full P-S2 status:** BLOCKED pending authorized Sepolia Groups A and B
 
 **Separation:** This remediation was prepared by the implementation/proof context. It is not an independent review or
 sign-off.
@@ -479,15 +479,16 @@ state-machine/local evidence and planned pending-oracle D12-D13 sequence remain 
 
 ## Residual Obligations And Status
 
-- An independent reviewer must re-derive this proof and check implementation correspondence.
+- Independent hand-proof re-review is complete and approved; see
+  `docs/proofs/P-S2-independent-re-review-record-2026-08-13.md`.
 - Sepolia Group A and Group B state-changing evidence remains BLOCKED and unauthorized.
 - The supported yield venue's lossless full-return behavior remains the explicit frozen external trust boundary.
 - P-P1 remains WEAKER-THAN-CLAIMED and is not affected by this remediation.
 - Frozen section 3 is unchanged.
 
 ```text
-P-S2 hand proof: READY_FOR_INDEPENDENT_RE-REVIEW
+P-S2 hand proof: APPROVED
 Full P-S2: BLOCKED
-Independent reviewer: PENDING
-Independent verdict: PENDING
+Independent reviewer: Codex independent audit context (not the remediation author)
+Independent verdict: APPROVED
 ```
