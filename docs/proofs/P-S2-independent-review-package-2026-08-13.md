@@ -34,8 +34,8 @@ A  = vault cUSDC + active-adapter cUSDC + retiring-adapter cUSDC
 L  = encryptedTotalLiability = sum_u balance[u]
 P  = encryptedTotalPrincipal = sum_u principalBalance[u]
 V  = accountingVersion
-E  = riskEpoch
-ES = lastSolventRiskEpoch
+R  = riskEpoch
+RS = lastSolventRiskEpoch
 C  = pending checkpoint handle, epoch, accounting version, nonce, and pending flag
 D  = draw id, exact tEnd, snapshot, pre-sync cursor, PASS-A cursor, and PASS-B cursor
 ```
@@ -62,22 +62,22 @@ submission of its valid true proof.
 
 ## Transition Correspondence Map
 
-| Transition                  | Preservation obligation                                                                                                                                                           | Production path                                                                                | Evidence and limitation                                                                                                                       |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Deposit                     | Actual `moved=m` adds the same `m` to custody, user balance/principal, `L`, and `P`; routing only reclassifies custody.                                                           | `LokVault.deposit`, lines 181-207                                                              | Moved/ACL Hardhat tests and accounting reference. Sepolia repeated-use path is Group A and not run.                                           |
-| Withdraw / all / emergency  | Full collection preserves `A` under supported-adapter postcondition. Outgoing actual `moved=m` subtracts `m` from `A/L/balance` and `min(m,p[u])` from `P/p[u]`.                  | `LokVault`, lines 212-226 and 439-481                                                          | Withdrawal/moved/oracle-down Hardhat tests and reference selectors.                                                                           |
-| Exit / finalize             | Wrapper `unwrapAmount` supplies actual encrypted moved for the same debit equations; finalization and participant removal are accounting-neutral.                                 | `LokVault`, lines 228-265                                                                      | Wrapper API verification and local exit tests; Sepolia S51-S52/D36-D37 not run.                                                               |
-| Funded yield enters custody | Increases `A`, not `L/P`; adapter accounting prevents double harvest after full return.                                                                                           | `YieldInjectingERC7984.injectYield`; `MockYieldAdapter.notifyYield/withdrawAllToVault/harvest` | Yield and adapter unit tests. Supported-adapter behavior is not generalized to arbitrary interface implementations.                           |
-| Normalized PASS A           | Exact-`tEnd` deltas satisfy `ticketDelta_i <= 4*yieldDelta_i`; therefore `baseRisk_i <= yieldWeight_i`, `directWeight_i >= 0`, `D=W-B`, and `0<=B<=W`.                            | `LokVault._syncUser`; `LokDrawManager._processPassA`                                           | Self-contained lemma in `P-S2-solvency.md`; tEnd boundary and differential tests. Foundry does not model these production shifts.             |
-| `W=0` draw                  | Void before harvest/division; issue zero credits and preserve `A/L/P`.                                                                                                            | `LokDrawManager.submitTotals`, lines 301-312                                                   | Draw zero/dust tests plus explicit hand-proof case.                                                                                           |
-| `W>0` funded allocation     | `prize + sum(direct_i) <= Y`; rounding residue stays in custody; `P` unchanged.                                                                                                   | `submitTotals`, `_processPassB`, `LokVault.creditDraw`                                         | Fixed-point proof, boundary fuzz, draw differential, and reference funding abstraction. Sepolia settlement not run.                           |
-| PASS-A/PASS-B cursors       | Fixed snapshot and monotone half-open intervals cover each index once; PASS-B abort is forbidden after first credit.                                                              | `openDraw`, `preSyncA`, `crankA`, `submitTotals`, `crankB`, `abortDraw`                        | Explicit cursor proof, state/sweep tests, TLA+, and Foundry batch composition abstraction.                                                    |
-| No-accounting draw actions  | Open, pause, commit/reveal, randomness, and pre-credit abort do not mutate `A/L/P`; metadata only.                                                                                | Draw state-machine functions                                                                   | Draw state/outcome tests and TLA+.                                                                                                            |
-| Checkpoint open/submit      | Open binds aggregate ebool handle, epoch, version, and nonce. Submit checks pending, exact epoch/nonce, and KMS signature before applying the decoded boolean.                    | `LokVault`, lines 278-325                                                                      | Local FHE positive/negative tests and limited probes. Foundry forged selector is not cryptographic evidence. Fresh Sepolia negatives not run. |
-| Same-epoch safe evolution   | Deposit, recovery, exit, funded custody, bounded credits, lossless custody movement, and metadata transitions preserve a true checkpoint fact even when `V` changes.              | All listed accounting paths                                                                    | Complete version-closure argument in `P-S2-solvency.md`; D21-D22 and Group A post-tEnd path not run.                                          |
-| Adapter proposal/activation | Proposal is IDLE/current-epoch-authorized/timelocked. Activation reclassifies old active as retiring, selects future routing, and increments `E`, invalidating old authorization. | `proposeAdapter`, `activateAdapter`                                                            | TLA+, reference state machine, authorization tests; disposable D20-D26 not run.                                                               |
-| Adapter drain/removal       | Preservation depends on supported adapter returning its full balance. Production trusts successful external return and a drained flag; current-epoch authorization gates removal. | `drainRetiringAdapter`, `removeRetiringAdapter`                                                | Mock adapter source/local integration and explicit external postcondition; disposable D28-D33 not run.                                        |
-| Reentrant/unauthorized call | Rejected before protected accounting/custody changes, giving the identity transition.                                                                                             | `nonReentrant`, `onlyDrawManager`, `onlyOwner`, adapter `onlyVault`                            | Reentrancy and authorization suites.                                                                                                          |
+| Transition                  | Preservation obligation                                                                                                                                                                   | Production path                                                                                | Evidence and limitation                                                                                                                              |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deposit                     | Actual `moved=m` adds the same `m` to custody, user balance/principal, `L`, and `P`; routing only reclassifies custody.                                                                   | `LokVault.deposit`, lines 181-207                                                              | Moved/ACL Hardhat tests and accounting reference. Sepolia repeated-use path is Group A and not run.                                                  |
+| Withdraw / all / emergency  | Full collection preserves `A` under supported-adapter postcondition. Outgoing actual `moved=m` subtracts `m` from `A/L/balance` and `min(m,p[u])` from `P/p[u]`.                          | `LokVault`, lines 212-226 and 439-481                                                          | Withdrawal/moved/oracle-down Hardhat tests and reference selectors.                                                                                  |
+| Exit / finalize             | Wrapper `unwrapAmount` supplies actual encrypted moved for the same debit equations; finalization and participant removal are accounting-neutral.                                         | `LokVault`, lines 228-265                                                                      | Wrapper API verification and local exit tests; Sepolia S51-S52/D36-D37 not run.                                                                      |
+| Funded yield enters custody | Increases `A`, not `L/P`; adapter accounting prevents double harvest after full return.                                                                                                   | `YieldInjectingERC7984.injectYield`; `MockYieldAdapter.notifyYield/withdrawAllToVault/harvest` | Yield and adapter unit tests. Supported-adapter behavior is not generalized to arbitrary interface implementations.                                  |
+| Normalized PASS A           | Exact-`tEnd` deltas satisfy `ticketDelta_i <= 4*yieldDelta_i`; therefore `baseRisk_i <= yieldWeight_i`, `directWeight_i >= 0`, `D=W-B`, and `0<=B<=W`.                                    | `LokVault._syncUser`; `LokDrawManager._processPassA`                                           | Self-contained lemma in `P-S2-solvency.md`; tEnd boundary and differential tests. Foundry does not model these production shifts.                    |
+| `W=0` draw                  | Void before harvest/division; issue zero credits and preserve `A/L/P`.                                                                                                                    | `LokDrawManager.submitTotals`, lines 301-312                                                   | Draw zero/dust tests plus explicit hand-proof case.                                                                                                  |
+| `W>0` funded allocation     | `prize + sum(direct_i) <= Y`; P-F7 plus the effective-prefix no-wrap proof makes the single prize term equal total issued prize credit; rounding residue stays in custody; `P` unchanged. | `submitTotals`, `_processPassB`, `LokVault.creditDraw`                                         | Fixed-point/no-wrap hand proof, P-F7/P-S3 evidence, boundary fuzz, draw differential, and reference funding abstraction. Sepolia settlement not run. |
+| PASS-A/PASS-B cursors       | Fixed snapshot and monotone half-open intervals cover each index once; PASS-B abort is forbidden after first credit.                                                                      | `openDraw`, `preSyncA`, `crankA`, `submitTotals`, `crankB`, `abortDraw`                        | Explicit cursor proof, state/sweep tests, TLA+, and Foundry batch composition abstraction.                                                           |
+| No-accounting draw actions  | Open, pause, commit/reveal, randomness, and pre-credit abort do not mutate `A/L/P`; metadata only.                                                                                        | Draw state-machine functions                                                                   | Draw state/outcome tests and TLA+.                                                                                                                   |
+| Checkpoint open/submit      | Open binds aggregate ebool handle, epoch, version, and nonce. Submit checks pending, exact epoch/nonce, and KMS signature before applying the decoded boolean.                            | `LokVault`, lines 278-325                                                                      | Local FHE positive/negative tests and limited probes. Foundry forged selector is not cryptographic evidence. Fresh Sepolia negatives not run.        |
+| Same-epoch safe evolution   | Deposit, recovery, exit, funded custody, bounded credits, lossless custody movement, and metadata transitions preserve a true checkpoint fact even when `V` changes.                      | All listed accounting paths                                                                    | Complete version-closure argument in `P-S2-solvency.md`; D21-D22 and Group A post-tEnd path not run.                                                 |
+| Adapter proposal/activation | Proposal is IDLE/current-epoch-authorized/timelocked. Activation reclassifies old active as retiring, selects future routing, and increments `R`, invalidating old authorization.         | `proposeAdapter`, `activateAdapter`                                                            | TLA+, reference state machine, authorization tests; disposable D20-D26 not run.                                                                      |
+| Adapter drain/removal       | Preservation depends on supported adapter returning its full balance. Production trusts successful external return and a drained flag; current-epoch authorization gates removal.         | `drainRetiringAdapter`, `removeRetiringAdapter`                                                | Mock adapter source/local integration and explicit external postcondition; disposable D28-D33 not run.                                               |
+| Reentrant/unauthorized call | Rejected before protected accounting/custody changes, giving the identity transition.                                                                                                     | `nonReentrant`, `onlyDrawManager`, `onlyOwner`, adapter `onlyVault`                            | Reentrancy and authorization suites.                                                                                                                 |
 
 ## Normalized `tEnd` And Allocation Lemmas
 
@@ -87,11 +87,13 @@ accepting a citation to architecture:
 1. With `Q=2^26`, clamped theta and rate saturation imply `ticketDelta_i <= 4*yieldDelta_i`.
 2. Monotone flooring gives `baseRisk_i=floor(ticketDelta_i/(4Q)) <= floor(yieldDelta_i/Q)=yieldWeight_i`.
 3. Consequently `directWeight_i` cannot underflow, `D=W-B`, and `0<=B<=W`.
-4. `W=0` is handled before harvest or division.
-5. For `W>0`, floor monotonicity proves `rate<=YQ/W`, `direct_i<=d_iY/W`, and `prize+sum(direct_i)<=Y(B+D)/W=Y`,
+4. At every instant the inductive invariant gives `sum_i balance_i<=L<=A<=totalSupply<2^64`; integrating over
+   `DRAW_PERIOD<=2^20` and normalizing by `Q=2^26` proves `W<2^58`, without any aggregate `2^50` balance assumption.
+5. `W=0` is handled before harvest or division.
+6. For `W>0`, floor monotonicity proves `rate<=YQ/W`, `direct_i<=d_iY/W`, and `prize+sum(direct_i)<=Y(B+D)/W=Y`,
    including `B=0`, `Y=0`, `D=0`, and rounding residue.
-6. Supply and production bounds prove prize/direct intermediate values fit their plaintext/encrypted widths without
-   relying on FHE arithmetic to revert.
+7. Supply and production bounds prove prize/direct and Fortune-prefix intermediate values fit their plaintext/encrypted
+   widths without relying on FHE arithmetic to revert.
 
 ## Exactly-Once And Cross-Harvest Closure
 
@@ -197,10 +199,15 @@ Reference invariant, local FHE integration, and Sepolia integration must remain 
 The independent reviewer must confirm:
 
 - ERC-7984 safe update gives `totalSupply<=2^64-1`, and `A<=totalSupply`, `L<=A`, `P<=L`;
-- supported `W<2^52`, `B<=W`, `d_i<=W`, and `Y<=2^64-1`;
-- `Y*B<2^116` fits `uint256`;
+- `DRAW_PERIOD<=2^20` and the inductive instantaneous bound `sum_i balance_i<=L<=A<=totalSupply<2^64` imply
+  `sum_i yieldDelta_i<2^84`, hence `W<2^58`, `B<=W`, and `d_i<=W`;
+- `Y<=2^64-1` and `Y*B<2^122`, so the prize numerator fits `uint256`;
 - `Y*Q<2^90`, so `directRate` fits `uint128`;
 - `d_i*directRate<=YQ<2^90<2^128`, so `directWide` cannot wrap;
+- `baseRisk_i*fortune_i<13*2^60<2^64`, so the Fortune multiplication cannot wrap;
+- `E=sum_i effective_i<=1.5*B<2^59<2^64`, so `cumRunning` cannot wrap;
+- the no-wrap PASS-A ranges partition `[0,E)`, and P-F7 gives exactly one non-empty winning interval for `E>0`, so the
+  aggregate prize term is credited exactly once in the non-void winning case;
 - each participant total credit is no greater than total allocation `<=Y`, fitting `euint64`;
 - cumulative liability credit remains at most funded custody surplus, so aggregate liability cannot wrap.
 
@@ -231,7 +238,11 @@ The independent reviewer must confirm:
 
 - Re-derive both base cases and confirm no initial authorization is assumed.
 - Check every algebraic step in the normalized and fixed-point lemmas, including all zero cases.
-- Verify all stated integer-width bounds against production types and supported limits.
+- Re-derive `W<2^58` from instantaneous aggregate token supply and `DRAW_PERIOD`, without an aggregate position cap.
+- Verify all stated integer-width bounds against production types and supported limits, including `Y*B<2^122` and
+  `E<2^59`.
+- Confirm the Fortune and prefix no-wrap derivation makes P-F7's exactly-one winner result applicable to the solvency
+  allocation.
 - Map every `A/L/P`, custody, epoch, checkpoint, and cursor mutation to one transition row.
 - Confirm participant churn cannot shift `[0,N)` during either pass.
 - Inspect all 22 safety selectors and independently recompute committed campaign totals and hashes.

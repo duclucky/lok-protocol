@@ -257,7 +257,10 @@ Boundary cases are included:
 - Integer-rounding residue `Y - prize - sum_i direct_i` remains unallocated in vault custody, increasing rather than
   decreasing `A - L`.
 
-All credits are non-negative. Exactly one participant can receive `prize`, so each participant's
+The inequality above contains one aggregate `prize` term. Lifting it to sequential per-user credits requires the
+exactly-one-winner premise from P-F7. That premise is valid here only after the Fortune multiplication and effective
+prefix accumulator are shown not to wrap. The no-wrap bridge is derived below. It establishes that the sum of all
+`prizeCredit_i` is `prize` in a non-void winning draw and zero otherwise. Consequently every participant's
 `totalCredit_i = prizeCredit_i + direct_i` is no greater than the aggregate allocation, which is at most `Y`. Crediting
 the allocation raises `L` by at most the funded surplus and never raises `P`; therefore `A >= L >= P` is preserved.
 
@@ -272,20 +275,42 @@ L <= A
 P <= L
 ```
 
-For the supported production draw bounds:
+Production enforces:
 
 ```text
-W < 2^52
-0 <= B <= W
-0 <= d_i <= W
-Y <= 2^64 - 1
-Q = 2^26
+DRAW_PERIOD <= 2^20
+totalSupply <= 2^64 - 1 < 2^64
 ```
 
-The plaintext prize numerator is evaluated in `uint256`:
+At every instant, the draw participants are a subset of all user ledgers. Under the inductive pre-state invariant,
+`sum_i balance_i <= L <= A <= totalSupply`; accounting is constant between completed transitions. Integrating that
+aggregate over one draw gives:
 
 ```text
-Y * B < 2^64 * 2^52 = 2^116 < 2^256
+sum_i yieldDelta_i
+< 2^64 * 2^20
+= 2^84
+```
+
+With `Q = 2^26`, the floor-sum inequality gives:
+
+```text
+W = sum_i floor(yieldDelta_i / Q)
+  <= floor(sum_i yieldDelta_i / Q)
+  < 2^58
+
+0 <= B <= W < 2^58
+0 <= d_i <= W
+Y <= 2^64 - 1
+```
+
+This is an aggregate total-supply bound. It does not assume aggregate deposits, aggregate participant balance, or any
+individual position is capped at `2^50`.
+
+The plaintext prize numerator is evaluated in `uint256` and cannot overflow:
+
+```text
+Y * B < 2^64 * 2^58 = 2^122 < 2^256
 ```
 
 The direct-rate numerator satisfies:
@@ -294,20 +319,53 @@ The direct-rate numerator satisfies:
 Y * Q < 2^64 * 2^26 = 2^90
 ```
 
-Thus `directRate = floor(YQ/W) < 2^90`, which fits `uint128`. Because `d_i <= W`:
+Thus `directRate = floor(YQ/W) < 2^90 < 2^128`, which fits `uint128`. Because `d_i <= W`:
 
 ```text
-d_i * directRate
+directWide_i = d_i * directRate
 <= d_i * YQ/W
 <= YQ
 < 2^90
 < 2^128
 ```
 
-Therefore the encrypted `directWide` multiplication cannot wrap. The funded-allocation proof gives
-`totalCredit_i <= Y <= 2^64 - 1`, so per-user `prizeCredit + directCredit` fits `euint64`. Across sequential credits,
-the cumulative liability increase never exceeds funded custody surplus, hence `L' <= A <= totalSupply`; the aggregate
-liability update cannot wrap. These are numeric derivations, not an appeal to the encrypted type reverting on overflow.
+Therefore the encrypted `directWide` multiplication cannot wrap `euint128`.
+
+For the Fortune-adjusted winner prefix, `baseRisk_i <= B < 2^58` and `fortune_i <= 52`, so the multiplication performed
+before the plaintext division is bounded by:
+
+```text
+baseRisk_i * fortune_i
+< 2^58 * 52
+= 13 * 2^60
+< 2^64
+```
+
+Production caps `boost_i <= floor(baseRisk_i / 2)`. Therefore:
+
+```text
+effective_i = baseRisk_i + boost_i
+effective_i <= 1.5 * baseRisk_i
+
+E = sum_i effective_i
+  <= 1.5 * B
+  < 1.5 * 2^58
+  < 2^59
+  < 2^64
+```
+
+Thus `baseRisk_i * fortune_i` cannot wrap `euint64`, and the PASS-A `cumRunning = E` prefix cannot wrap `euint64`. The
+half-open ranges therefore form an ordinary integer partition of `[0,E)`, rather than a partition corrupted by modular
+wraparound. Under frozen P-F7, when `E > 0`, every `r in [0,E)` matches exactly one non-empty interval; a zero-weight
+interval is empty and cannot win. When `E = 0`, `B = 0`, so `prize = 0` and no prize credit is issued. Accordingly,
+`prizeAmount` is credited exactly once in the non-void winning case and at most once in every case. This no-wrap bridge
+is the required premise for using the single `prize` term in `prize + sum_i direct_i <= Y` as the total prize liability
+created by PASS B.
+
+The funded-allocation proof then gives `totalCredit_i <= Y <= 2^64 - 1`, so per-user `prizeCredit + directCredit` fits
+`euint64`. Across sequential credits, the cumulative liability increase never exceeds funded custody surplus, hence
+`L' <= A <= totalSupply`; the aggregate liability update cannot wrap. These are numeric derivations, not an appeal to
+the encrypted type reverting on overflow.
 
 ## Exactly-Once Cursor Proof
 
