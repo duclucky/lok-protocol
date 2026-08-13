@@ -24,6 +24,18 @@ export function WhyEncryptedPage() {
   return (
     <div className="page page--why">
       <PageHeader title="Why encrypted?" description="Public integrity without publishing private savings behavior." />
+      <section className="fhe-boundary" aria-labelledby="fhe-boundary-title">
+        <div>
+          <p className="section-label">FHEVM boundary</p>
+          <h2 id="fhe-boundary-title">Encrypted computation, not an invisible blockchain</h2>
+        </div>
+        <div className="fhe-boundary__facts">
+          <p>Encrypted values are computed on without revealing their clear values to the public.</p>
+          <p>Participant addresses and membership are public; individual balances, risk settings, and credits are not.</p>
+          <p>A shield transaction amount is public. A later Lok deposit uses encrypted cUSDC input.</p>
+          <p>The external verifier is separate from this interface; this app does not simulate a verifier response.</p>
+        </div>
+      </section>
       <section className="privacy-ledger" aria-labelledby="privacy-ledger-title">
         <div className="privacy-ledger__title">
           <ShieldCheck aria-hidden="true" size={26} />
@@ -42,8 +54,12 @@ export function WhyEncryptedPage() {
             <span role="cell">Your balance</span>
           </div>
           <div role="row">
-            <span role="cell">Participant count</span>
+            <span role="cell">Participant membership and addresses</span>
             <span role="cell">Your risk setting</span>
+          </div>
+          <div role="row">
+            <span role="cell">Shield transaction amount and timing</span>
+            <span role="cell">Later private deposit amount</span>
           </div>
           <div role="row">
             <span role="cell">Aggregate ticket space</span>

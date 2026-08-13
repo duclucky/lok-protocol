@@ -1654,6 +1654,86 @@ select {
   border-color: var(--ink);
   box-shadow: inset 4px 0 0 var(--ink);
 }
+.draw-console {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.draw-console h2,
+.draw-console__state > strong {
+  color: var(--ink);
+}
+.draw-console .section-label,
+.draw-console__state > p:last-child,
+.progress-heading {
+  color: var(--muted);
+}
+.draw-progress progress::-webkit-progress-bar {
+  background: #ececea;
+}
+.draw-progress progress::-webkit-progress-value,
+.state-rail li.is-complete span {
+  background: var(--patina);
+}
+.state-rail li.is-complete {
+  color: var(--ink);
+}
+.state-rail li.is-complete span {
+  border-color: #73aa9b;
+}
+.proof-seal--winner {
+  color: white;
+  background: var(--patina);
+  border-color: #a9cfc4;
+}
+.publish-panel {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px dashed #bdbdb8;
+}
+.publish-panel h2 {
+  color: var(--ink);
+}
+.publish-panel p:not(.section-label),
+.publish-panel .section-label {
+  color: var(--muted);
+}
+.privacy-table span + span {
+  background-color: var(--surface-quiet);
+  background-image: repeating-linear-gradient(45deg, transparent 0 8px, rgb(41 41 41 / 0.05) 9px 10px);
+}
+.guarantee-list article > svg {
+  color: var(--patina);
+}
+.fhe-boundary {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  gap: 36px;
+  margin-bottom: 18px;
+  padding: 26px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.fhe-boundary h2 {
+  margin-top: 5px;
+}
+.fhe-boundary__facts {
+  display: grid;
+  gap: 10px;
+}
+.fhe-boundary__facts p {
+  padding-bottom: 10px;
+  color: var(--muted);
+  border-bottom: 1px solid #ececea;
+  font-size: 0.88rem;
+}
+.fhe-boundary__facts p:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
 
 @media (max-width: 1023px) {
   .sidebar {
@@ -1758,6 +1838,11 @@ select {
     flex-direction: column;
     gap: 16px;
     margin-bottom: 24px;
+  }
+  .fhe-boundary {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 21px;
   }
   .vault-balance {
     min-height: 300px;

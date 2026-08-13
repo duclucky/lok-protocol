@@ -30,6 +30,7 @@ describe("ProofPage", () => {
 
     expect(await screen.findByText(/public proof publication is not available in this build/i)).toBeVisible();
     expect(screen.queryByRole("button", { name: /publish proof/i })).not.toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent(/must publish|proof published|root hash|verifier address/i);
   });
 
   it("formats a six-decimal cUSDC prize", async () => {

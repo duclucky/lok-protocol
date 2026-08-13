@@ -62,9 +62,12 @@ describe("DrawPage", () => {
   });
 
   it("routes settled-draw verification to the external verifier without simulating success", () => {
-    render(<DrawPage publicData={publicData("SETTLED")} />);
+    const { container } = render(<DrawPage publicData={publicData("SETTLED")} />);
 
     expect(screen.getByText(/use the external verifier/i)).toBeVisible();
     expect(screen.queryByRole("button", { name: /verify this draw/i })).not.toBeInTheDocument();
+    expect(container).not.toHaveTextContent(
+      /ZK|VRF|enclave|eligible volume|capacity utilization|root hash|verifier address|execution log/i,
+    );
   });
 });
