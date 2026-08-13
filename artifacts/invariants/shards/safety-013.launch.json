@@ -1,0 +1,16 @@
+{
+    "schemaVersion":  2,
+    "campaign":  "safety",
+    "contract":  "LokSafetyInvariantTest",
+    "shard":  13,
+    "shardCount":  28,
+    "seed":  "0x8a2f4f1c3a44987ce62e6637d4043e0d350c801f0891aacfd16ee57a1e9284ef",
+    "launchAttempt":  1,
+    "gitCommit":  "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+    "sourceStatusBeforeRun":  "",
+    "exactCommand":  "FOUNDRY_INVARIANT_RUNS=357143 FOUNDRY_INVARIANT_DEPTH=32 FOUNDRY_FUZZ_RUNS=256 \"C:\\Users\\TBC\\.foundry\\bin\\forge.exe\" test --match-contract ^LokSafetyInvariantTest$ --match-test ^invariant_ --fuzz-seed 0x8a2f4f1c3a44987ce62e6637d4043e0d350c801f0891aacfd16ee57a1e9284ef --threads 1 -vv",
+    "forgeVersion":  "forge Version: 1.7.1",
+    "solcVersion":  "0.8.27",
+    "nodeVersion":  "v24.11.1",
+    "startedAtUtc":  "2026-08-13T07:29:12.2171763Z"
+}

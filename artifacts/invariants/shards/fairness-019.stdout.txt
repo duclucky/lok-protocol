@@ -1,0 +1,22 @@
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286170 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286866 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284152 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285304 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286084 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9157.26s (9157.25s CPU time)
+
+Ran 1 test suite in 9157.29s (9157.26s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)

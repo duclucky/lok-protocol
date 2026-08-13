@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-12T23:01:15.954Z",
-  "status": "PASS",
+  "generatedAtUtc": "2026-08-13T10:18:27.243Z",
+  "status": "FAIL",
   "buildInfo": [
-    "hardhat-artifacts/build-info/3a14f11ef7fc2edc31d4ef75dd8da05a.json"
+    "hardhat-artifacts/build-info/d85b5392a845a23408ca28cb85dfe2ab.json"
   ],
   "publicDecryption": {
     "calls": [
@@ -1344,25 +1344,36 @@
     "status": "PASS",
     "fragments": {
       "acl-uniformity": {
+        "schemaVersion": 2,
+        "generatedAtUtc": "2026-08-13T10:17:46.799Z",
+        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "sourceStatusBeforeRun": "",
+        "command": "npx hardhat test test/privacy/acl-uniformity.t.ts --grep \"grants each participant exactly one ACL entry\"",
+        "nodeVersion": "v24.11.1",
+        "hardhatVersion": "2.28.6",
+        "fhevmHardhatPluginVersion": "0.4.2",
         "status": "PASS",
         "proposition": "P-P2",
+        "sourceTestIdentifiers": [
+          "test/privacy/acl-uniformity.t.ts:grants each participant exactly one ACL entry on their own prize-credit handle"
+        ],
         "participants": 5,
         "grantMultisetExact": true,
         "expectedPairs": [
-          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbe1fda92fa4cc24684549f86a81bf1dc44ffe5f572ff0000000000007a690500",
-          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x37fd9cafdcb997e7929a137894ac261e9e9f0f0b52ff0000000000007a690500",
-          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0xbcf25c3e880b3fa480d29036acb9ec4836117c9962ff0000000000007a690500",
-          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa4d4fd42403dddb47939ad5a6af230bc795f31bf63ff0000000000007a690500",
-          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xc56ae4856192614ebc75c5be233355b4bbddbe58d3ff0000000000007a690500"
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0x1ff8cc3942a28a97c144e0e6887d214da393168749ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x4d39bd54b8368962ed70b4face4de15c07a590d949ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x35710b2adbe55501fe2f3474c456cc32f92a59f45bff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0x149b79ad5ade260c1799b437a4447a36e636a4e72bff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xf937729555dcf8ff28e219f568057e93df19503c10ff0000000000007a690500"
         ],
         "actualPairs": [
-          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbe1fda92fa4cc24684549f86a81bf1dc44ffe5f572ff0000000000007a690500",
-          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x37fd9cafdcb997e7929a137894ac261e9e9f0f0b52ff0000000000007a690500",
-          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0xbcf25c3e880b3fa480d29036acb9ec4836117c9962ff0000000000007a690500",
-          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa4d4fd42403dddb47939ad5a6af230bc795f31bf63ff0000000000007a690500",
-          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xc56ae4856192614ebc75c5be233355b4bbddbe58d3ff0000000000007a690500"
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0x1ff8cc3942a28a97c144e0e6887d214da393168749ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x4d39bd54b8368962ed70b4face4de15c07a590d949ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x35710b2adbe55501fe2f3474c456cc32f92a59f45bff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0x149b79ad5ade260c1799b437a4447a36e636a4e72bff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xf937729555dcf8ff28e219f568057e93df19503c10ff0000000000007a690500"
         ],
-        "winnerIndex": 4,
+        "winnerIndex": 1,
         "winnerGrantCount": 1,
         "loserGrantCounts": [
           1,
@@ -1372,84 +1383,228 @@
         ]
       },
       "log-indistinguishability": {
+        "schemaVersion": 2,
+        "generatedAtUtc": "2026-08-13T10:18:03.064Z",
+        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "sourceStatusBeforeRun": "",
+        "command": "npx hardhat test test/privacy/log-indistinguishability.t.ts --grep \"compares complete lifecycle\"",
+        "nodeVersion": "v24.11.1",
+        "hardhatVersion": "2.28.6",
+        "fhevmHardhatPluginVersion": "0.4.2",
         "status": "PASS",
         "propositions": [
           "P-P1",
           "P-P7",
           "P-P9-ABI"
         ],
-        "participants": 7,
-        "winnerIndex": 1,
-        "comparedLoserIndex": 2,
-        "comparedLoserIndices": [
+        "sourceTestIdentifiers": [
+          "test/privacy/log-indistinguishability.t.ts:compares complete lifecycle transcripts for every forced winner without payload normalization"
+        ],
+        "participants": 5,
+        "counterfactualWinnerIndices": [
           0,
+          1,
           2,
           3,
-          4,
-          5,
-          6
+          4
         ],
-        "comparedRawAndParsedPrizeCreditedFields": true,
-        "applicationCallBoundaryShapeEqual": true,
-        "note": "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal."
-      },
-      "gas-indistinguishability": {
-        "status": "PASS",
-        "proposition": "P-P5",
-        "comparison": {
-          "status": "PASS",
-          "winnerGas": "722888",
-          "loserGas": "722888",
-          "gasDelta": "0",
-          "gasDeltaBps": 0,
-          "winnerGlobalHcu": 4025320,
-          "loserGlobalHcu": 4025320,
-          "globalHcuDelta": 0,
-          "winnerMaxHcuDepth": 3032096,
-          "loserMaxHcuDepth": 3032096,
-          "maxHcuDepthDelta": 0,
-          "gasThresholdBps": 100
-        },
-        "sample": [
+        "comparedEveryWinnerAgainstEveryOther": true,
+        "pairwiseComparisons": [
           {
-            "index": 0,
-            "outcome": "loser",
-            "gasUsed": "735682"
+            "winnerIndex": 0,
+            "comparedWinnerIndex": 1
           },
           {
-            "index": 1,
-            "outcome": "loser",
-            "gasUsed": "722888"
+            "winnerIndex": 0,
+            "comparedWinnerIndex": 2
           },
           {
-            "index": 2,
-            "outcome": "loser",
-            "gasUsed": "722888"
+            "winnerIndex": 0,
+            "comparedWinnerIndex": 3
           },
           {
-            "index": 3,
-            "outcome": "winner",
-            "gasUsed": "722888"
+            "winnerIndex": 0,
+            "comparedWinnerIndex": 4
           },
           {
-            "index": 4,
-            "outcome": "loser",
-            "gasUsed": "722888"
+            "winnerIndex": 1,
+            "comparedWinnerIndex": 0
           },
           {
-            "index": 5,
-            "outcome": "loser",
-            "gasUsed": "722888"
+            "winnerIndex": 1,
+            "comparedWinnerIndex": 2
+          },
+          {
+            "winnerIndex": 1,
+            "comparedWinnerIndex": 3
+          },
+          {
+            "winnerIndex": 1,
+            "comparedWinnerIndex": 4
+          },
+          {
+            "winnerIndex": 2,
+            "comparedWinnerIndex": 0
+          },
+          {
+            "winnerIndex": 2,
+            "comparedWinnerIndex": 1
+          },
+          {
+            "winnerIndex": 2,
+            "comparedWinnerIndex": 3
+          },
+          {
+            "winnerIndex": 2,
+            "comparedWinnerIndex": 4
+          },
+          {
+            "winnerIndex": 3,
+            "comparedWinnerIndex": 0
+          },
+          {
+            "winnerIndex": 3,
+            "comparedWinnerIndex": 1
+          },
+          {
+            "winnerIndex": 3,
+            "comparedWinnerIndex": 2
+          },
+          {
+            "winnerIndex": 3,
+            "comparedWinnerIndex": 4
+          },
+          {
+            "winnerIndex": 4,
+            "comparedWinnerIndex": 0
+          },
+          {
+            "winnerIndex": 4,
+            "comparedWinnerIndex": 1
+          },
+          {
+            "winnerIndex": 4,
+            "comparedWinnerIndex": 2
+          },
+          {
+            "winnerIndex": 4,
+            "comparedWinnerIndex": 3
           }
         ],
-        "positionalControl": "winner and loser are both non-first and non-final crankB(1) transactions",
-        "firstCrankGasVarianceIsPublicPositionDependent": true
+        "comparedFullLifecycleRawAndParsedFields": true,
+        "normalizationAllowlist": [],
+        "eventTransactionsIncluded": [
+          "openDraw",
+          "preSyncA",
+          "crankA",
+          "submitTotals",
+          "openRandom",
+          "crankB"
+        ],
+        "transcriptEntries": 11,
+        "protocolInfrastructureLogsCompared": true,
+        "protocolDifferences": [
+          {
+            "winnerIndex": 1,
+            "firstDifference": 301
+          },
+          {
+            "winnerIndex": 2,
+            "firstDifference": 301
+          },
+          {
+            "winnerIndex": 3,
+            "firstDifference": 301
+          },
+          {
+            "winnerIndex": 4,
+            "firstDifference": 301
+          }
+        ],
+        "residual": "FHEVM executor/ACL raw log bytes differ across forced winners even though every application log is byte-identical; frozen P-P1 full-log criterion is not met."
+      },
+      "gas-indistinguishability": {
+        "schemaVersion": 2,
+        "generatedAtUtc": "2026-08-13T10:18:16.011Z",
+        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "sourceStatusBeforeRun": "",
+        "command": "npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep \"keeps first\"",
+        "nodeVersion": "v24.11.1",
+        "hardhatVersion": "2.28.6",
+        "fhevmHardhatPluginVersion": "0.4.2",
+        "status": "PASS",
+        "proposition": "P-P5",
+        "sourceTestIdentifiers": [
+          "test/privacy/gas-indistinguishability.t.ts:keeps first, interior, and final winner/loser work within the frozen thresholds"
+        ],
+        "fixedGasThresholdBps": 100,
+        "positions": [
+          {
+            "position": "first",
+            "index": 0,
+            "comparison": {
+              "status": "PASS",
+              "winnerGas": "733682",
+              "loserGas": "735682",
+              "gasDelta": "2000",
+              "gasDeltaBps": 27,
+              "winnerGlobalHcu": 4025320,
+              "loserGlobalHcu": 4025320,
+              "globalHcuDelta": 0,
+              "winnerMaxHcuDepth": 3032096,
+              "loserMaxHcuDepth": 3032096,
+              "maxHcuDepthDelta": 0,
+              "gasThresholdBps": 100
+            },
+            "opcodeShapeEqual": true
+          },
+          {
+            "position": "interior",
+            "index": 3,
+            "comparison": {
+              "status": "PASS",
+              "winnerGas": "722888",
+              "loserGas": "722888",
+              "gasDelta": "0",
+              "gasDeltaBps": 0,
+              "winnerGlobalHcu": 4025320,
+              "loserGlobalHcu": 4025320,
+              "globalHcuDelta": 0,
+              "winnerMaxHcuDepth": 3032096,
+              "loserMaxHcuDepth": 3032096,
+              "maxHcuDepthDelta": 0,
+              "gasThresholdBps": 100
+            },
+            "opcodeShapeEqual": true
+          },
+          {
+            "position": "final",
+            "index": 6,
+            "comparison": {
+              "status": "PASS",
+              "winnerGas": "806609",
+              "loserGas": "806303",
+              "gasDelta": "306",
+              "gasDeltaBps": 3,
+              "winnerGlobalHcu": 4025320,
+              "loserGlobalHcu": 4025320,
+              "globalHcuDelta": 0,
+              "winnerMaxHcuDepth": 3032096,
+              "loserMaxHcuDepth": 3032096,
+              "maxHcuDepthDelta": 0,
+              "gasThresholdBps": 100
+            },
+            "opcodeShapeEqual": true
+          }
+        ],
+        "allPositionsMeasured": true,
+        "sweepAndFinalizationOutcomeIndependent": true
       }
     }
   },
   "propositions": {
     "P-P1": {
-      "status": "PASS",
+      "status": "FAIL",
       "evidence": "complete raw and parsed participant log-field diff plus call-boundary comparison"
     },
     "P-P2": {
@@ -1462,7 +1617,7 @@
     },
     "P-P5": {
       "status": "PASS",
-      "evidence": "matched-position gas/HCU regression"
+      "evidence": "first/interior/final gas/HCU and operation-mix regression"
     },
     "P-P6": {
       "status": "PASS",

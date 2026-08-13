@@ -1,22 +1,141 @@
 {
+  "schemaVersion": 2,
+  "generatedAtUtc": "2026-08-13T10:18:03.064Z",
+  "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+  "sourceStatusBeforeRun": "",
+  "command": "npx hardhat test test/privacy/log-indistinguishability.t.ts --grep \"compares complete lifecycle\"",
+  "nodeVersion": "v24.11.1",
+  "hardhatVersion": "2.28.6",
+  "fhevmHardhatPluginVersion": "0.4.2",
   "status": "PASS",
   "propositions": [
     "P-P1",
     "P-P7",
     "P-P9-ABI"
   ],
-  "participants": 7,
-  "winnerIndex": 1,
-  "comparedLoserIndex": 2,
-  "comparedLoserIndices": [
+  "sourceTestIdentifiers": [
+    "test/privacy/log-indistinguishability.t.ts:compares complete lifecycle transcripts for every forced winner without payload normalization"
+  ],
+  "participants": 5,
+  "counterfactualWinnerIndices": [
     0,
+    1,
     2,
     3,
-    4,
-    5,
-    6
+    4
   ],
-  "comparedRawAndParsedPrizeCreditedFields": true,
-  "applicationCallBoundaryShapeEqual": true,
-  "note": "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal."
+  "comparedEveryWinnerAgainstEveryOther": true,
+  "pairwiseComparisons": [
+    {
+      "winnerIndex": 0,
+      "comparedWinnerIndex": 1
+    },
+    {
+      "winnerIndex": 0,
+      "comparedWinnerIndex": 2
+    },
+    {
+      "winnerIndex": 0,
+      "comparedWinnerIndex": 3
+    },
+    {
+      "winnerIndex": 0,
+      "comparedWinnerIndex": 4
+    },
+    {
+      "winnerIndex": 1,
+      "comparedWinnerIndex": 0
+    },
+    {
+      "winnerIndex": 1,
+      "comparedWinnerIndex": 2
+    },
+    {
+      "winnerIndex": 1,
+      "comparedWinnerIndex": 3
+    },
+    {
+      "winnerIndex": 1,
+      "comparedWinnerIndex": 4
+    },
+    {
+      "winnerIndex": 2,
+      "comparedWinnerIndex": 0
+    },
+    {
+      "winnerIndex": 2,
+      "comparedWinnerIndex": 1
+    },
+    {
+      "winnerIndex": 2,
+      "comparedWinnerIndex": 3
+    },
+    {
+      "winnerIndex": 2,
+      "comparedWinnerIndex": 4
+    },
+    {
+      "winnerIndex": 3,
+      "comparedWinnerIndex": 0
+    },
+    {
+      "winnerIndex": 3,
+      "comparedWinnerIndex": 1
+    },
+    {
+      "winnerIndex": 3,
+      "comparedWinnerIndex": 2
+    },
+    {
+      "winnerIndex": 3,
+      "comparedWinnerIndex": 4
+    },
+    {
+      "winnerIndex": 4,
+      "comparedWinnerIndex": 0
+    },
+    {
+      "winnerIndex": 4,
+      "comparedWinnerIndex": 1
+    },
+    {
+      "winnerIndex": 4,
+      "comparedWinnerIndex": 2
+    },
+    {
+      "winnerIndex": 4,
+      "comparedWinnerIndex": 3
+    }
+  ],
+  "comparedFullLifecycleRawAndParsedFields": true,
+  "normalizationAllowlist": [],
+  "eventTransactionsIncluded": [
+    "openDraw",
+    "preSyncA",
+    "crankA",
+    "submitTotals",
+    "openRandom",
+    "crankB"
+  ],
+  "transcriptEntries": 11,
+  "protocolInfrastructureLogsCompared": true,
+  "protocolDifferences": [
+    {
+      "winnerIndex": 1,
+      "firstDifference": 301
+    },
+    {
+      "winnerIndex": 2,
+      "firstDifference": 301
+    },
+    {
+      "winnerIndex": 3,
+      "firstDifference": 301
+    },
+    {
+      "winnerIndex": 4,
+      "firstDifference": 301
+    }
+  ],
+  "residual": "FHEVM executor/ACL raw log bytes differ across forced winners even though every application log is byte-identical; frozen P-P1 full-log criterion is not met."
 }

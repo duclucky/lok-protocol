@@ -1,0 +1,672 @@
+===== shard 0 seed 0xd0cf00a4cb3ba0c9387766150ed722a269762eee35e02533ee6834912b18d164 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284258 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2287355 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2286299 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285990 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284674 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9488.01s (9488.00s CPU time)
+
+Ran 1 test suite in 9488.03s (9488.01s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 1 seed 0xe3b2b1f070032e1feec156d163c6a7c472907a90d3dfc89d4e52ba47118aaa72 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285714 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285266 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2287588 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285467 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284541 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9347.17s (9347.16s CPU time)
+
+Ran 1 test suite in 9347.37s (9347.17s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 2 seed 0xaffdc7dff8731eedc2bb47c76b4a9109d10623a64c10eaaaa9c313d63e2dd09f =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2283785 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286851 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2286330 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286622 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284988 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9872.07s (9872.07s CPU time)
+
+Ran 1 test suite in 9872.09s (9872.07s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 3 seed 0xce7c0fd1be069db78ef105bbec217a72576c2eb05758e3c9101688885e51bba1 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285728 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2284495 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285177 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285610 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2287566 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9490.31s (9490.31s CPU time)
+
+Ran 1 test suite in 9490.32s (9490.31s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 4 seed 0xd72edd20ad39e476890e14d2ec3520d19e063c90fd9ecffaafe530f5e9656f54 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284524 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286718 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284750 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286025 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286559 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9449.47s (9449.46s CPU time)
+
+Ran 1 test suite in 9449.48s (9449.47s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 5 seed 0xc89b402e3e47ed7252a8242927ddff418670884cf955e90e9a87d3deeb379ccb =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286730 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286909 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284016 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2287779 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2283142 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9378.14s (9378.14s CPU time)
+
+Ran 1 test suite in 9378.15s (9378.14s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 6 seed 0xd5e4ec9813678b7ec8f95d8f335ea02e47803da61f83d89959d3df4c34aa1902 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284493 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286759 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285505 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2287033 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284786 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 8987.46s (8987.45s CPU time)
+
+Ran 1 test suite in 8987.46s (8987.46s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 7 seed 0xaa9fb477db900123d978cae57c0ad26881bcc73ead6bb02d6a8df9cb13b2e30a =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2283206 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286266 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2287987 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285637 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285480 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9682.53s (9682.53s CPU time)
+
+Ran 1 test suite in 9682.56s (9682.53s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 8 seed 0x15a826be6c6b42fc3077903f17e71bf1b637c9f1ee6ee62f4ef9a0f72791e246 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286665 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285111 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285835 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285184 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285781 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9314.01s (9314.00s CPU time)
+
+Ran 1 test suite in 9314.07s (9314.01s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 9 seed 0x85c2af5d33dbc534cfd165f054afd6de381d14b33aa79f77bd89aeeca55eb43a =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285067 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286923 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285675 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2284763 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286148 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9673.21s (9673.20s CPU time)
+
+Ran 1 test suite in 9673.23s (9673.21s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 10 seed 0x1ce9113a362aa59b2d7c765dc37d6718d187daafbcc9f4f1efd1eabcca42b784 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284889 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2287308 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285490 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286615 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284274 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9658.11s (9658.11s CPU time)
+
+Ran 1 test suite in 9658.12s (9658.11s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 11 seed 0x4412261a679036662216a207de2ac611306d978c13e1e7429201dcdbe3ecc50b =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2282191 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286522 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2287033 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2284774 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2288056 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9264.07s (9264.07s CPU time)
+
+Ran 1 test suite in 9264.08s (9264.07s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 12 seed 0xbc8394bc598a0bf6fdc7c971287222c53cccac4a1552e16a457c5b3ef6fbf09c =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285886 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285722 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284382 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2287095 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285491 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9784.98s (9784.97s CPU time)
+
+Ran 1 test suite in 9784.98s (9784.98s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 13 seed 0x1c2bd6e258b6e568317b41e3c98c7c2df19d1d83d8f87c6be0a99e0f0645aecf =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2283191 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285554 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2286710 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286010 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2287111 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9038.17s (9038.17s CPU time)
+
+Ran 1 test suite in 9038.19s (9038.17s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 14 seed 0xeef0fd9fb82cd7fe97cc9de3d812727c67f60250e93a56af293868ed5e3a8580 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2288588 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286013 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284485 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2283670 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285820 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9456.30s (9456.29s CPU time)
+
+Ran 1 test suite in 9456.30s (9456.30s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 15 seed 0x4914ec7531bdfe299c52aceecfdc80562d403915f9d4653fff4601e60dc800fc =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286420 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2284536 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2287031 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2284978 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285611 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9511.75s (9511.75s CPU time)
+
+Ran 1 test suite in 9511.75s (9511.75s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 16 seed 0xa88b2bdfb0f48bc75eef8fefc535703052699959222fff0cc9834bbb0235b097 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2287331 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2284941 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285147 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2284146 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2287011 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9858.26s (9858.26s CPU time)
+
+Ran 1 test suite in 9858.27s (9858.26s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 17 seed 0xcebd2fbe9feb9dbe681f0bdd8456346a0e3422502075637f8e3e6f36ca0ca42a =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285399 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286901 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285991 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2283361 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286924 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9268.15s (9268.15s CPU time)
+
+Ran 1 test suite in 9268.18s (9268.15s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 18 seed 0xb448d1987eb3a4a2e68584c299c6fb2b7cb7b9c9c71442ce0952d36272bb3704 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284804 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2287797 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2288648 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2284460 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2282867 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9446.33s (9446.33s CPU time)
+
+Ran 1 test suite in 9446.35s (9446.33s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 19 seed 0x171aa5caa9afcc17d1c76b04f77c53c4d22150f5809b592c2fad384068a48be9 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286170 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286866 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284152 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285304 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286084 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9157.26s (9157.25s CPU time)
+
+Ran 1 test suite in 9157.29s (9157.26s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 20 seed 0x7890c63ea19209bbcaab877498bce2254dba839bbf0851d891528d2cba684dbc =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284828 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2288260 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284149 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286014 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285325 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9543.85s (9543.85s CPU time)
+
+Ran 1 test suite in 9543.91s (9543.85s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 21 seed 0x20402537ac3f6c5b83266d514d108d8cdf50c5a37b0f06da0704e22ae66537c0 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2284845 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2283621 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285851 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2289973 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284286 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 10047.12s (10047.11s CPU time)
+
+Ran 1 test suite in 10047.19s (10047.12s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 22 seed 0xcc5ec6b44ffa94c6324d26de13304af9244d2f762a291e356ae38421d0de851a =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2283913 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286723 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2287659 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285360 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284921 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9974.12s (9974.12s CPU time)
+
+Ran 1 test suite in 9974.16s (9974.12s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 23 seed 0xb0d0504199f5abefc1eba8fd1bc8eaa725d1b8ee9cdbb5f9eaecbcfa2836fe3a =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285102 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2286397 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284385 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285365 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2287327 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9778.58s (9778.58s CPU time)
+
+Ran 1 test suite in 9778.62s (9778.58s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 24 seed 0xaed78121c8f5d3a26ea1da33011e9f1df847f432b744a5fcbf32635475040f61 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2287778 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285278 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2284288 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285142 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2286090 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9359.71s (9359.71s CPU time)
+
+Ran 1 test suite in 9359.75s (9359.71s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 25 seed 0x48e41e7862b770add4f3783faa9dc13611c2be44b1139cdaf83d6307dc3ae3cd =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2285838 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285743 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285861 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285402 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2285732 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9457.80s (9457.80s CPU time)
+
+Ran 1 test suite in 9457.86s (9457.80s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 26 seed 0xbda92badd4ee171df24b5945c0d2147c0a18137a1427c8264994e016f8e83d39 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2286061 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2288134 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2283381 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2286134 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2284866 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9877.43s (9877.43s CPU time)
+
+Ran 1 test suite in 9877.48s (9877.43s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+
+===== shard 27 seed 0xb08de31d9c7d61581fc282be45baed86c1bfbda9b06dbfd85739f6255f0f2729 =====
+No files changed, compilation skipped
+
+Ran 1 test for test-foundry/invariants/LokFairnessInvariant.t.sol:LokFairnessInvariantTest
+[PASS] invariant_TierAFairnessObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+╭------------+------------+---------+---------+----------╮
+| Contract   | Selector   | Calls   | Reverts | Discards |
++========================================================+
+| LokHandler | deposit    | 2287162 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | fundYield  | 2285684 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | setTheta   | 2285877 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | settleDraw | 2285882 | 0       | 0        |
+|------------+------------+---------+---------+----------|
+| LokHandler | withdraw   | 2283971 | 0       | 0        |
+╰------------+------------+---------+---------+----------╯
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 9485.33s (9485.33s CPU time)
+
+Ran 1 test suite in 9485.37s (9485.33s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
+

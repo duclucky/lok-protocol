@@ -1,52 +1,77 @@
 {
+  "schemaVersion": 2,
+  "generatedAtUtc": "2026-08-13T10:18:16.011Z",
+  "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+  "sourceStatusBeforeRun": "",
+  "command": "npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep \"keeps first\"",
+  "nodeVersion": "v24.11.1",
+  "hardhatVersion": "2.28.6",
+  "fhevmHardhatPluginVersion": "0.4.2",
   "status": "PASS",
   "proposition": "P-P5",
-  "comparison": {
-    "status": "PASS",
-    "winnerGas": "722888",
-    "loserGas": "722888",
-    "gasDelta": "0",
-    "gasDeltaBps": 0,
-    "winnerGlobalHcu": 4025320,
-    "loserGlobalHcu": 4025320,
-    "globalHcuDelta": 0,
-    "winnerMaxHcuDepth": 3032096,
-    "loserMaxHcuDepth": 3032096,
-    "maxHcuDepthDelta": 0,
-    "gasThresholdBps": 100
-  },
-  "sample": [
+  "sourceTestIdentifiers": [
+    "test/privacy/gas-indistinguishability.t.ts:keeps first, interior, and final winner/loser work within the frozen thresholds"
+  ],
+  "fixedGasThresholdBps": 100,
+  "positions": [
     {
+      "position": "first",
       "index": 0,
-      "outcome": "loser",
-      "gasUsed": "735682"
+      "comparison": {
+        "status": "PASS",
+        "winnerGas": "733682",
+        "loserGas": "735682",
+        "gasDelta": "2000",
+        "gasDeltaBps": 27,
+        "winnerGlobalHcu": 4025320,
+        "loserGlobalHcu": 4025320,
+        "globalHcuDelta": 0,
+        "winnerMaxHcuDepth": 3032096,
+        "loserMaxHcuDepth": 3032096,
+        "maxHcuDepthDelta": 0,
+        "gasThresholdBps": 100
+      },
+      "opcodeShapeEqual": true
     },
     {
-      "index": 1,
-      "outcome": "loser",
-      "gasUsed": "722888"
-    },
-    {
-      "index": 2,
-      "outcome": "loser",
-      "gasUsed": "722888"
-    },
-    {
+      "position": "interior",
       "index": 3,
-      "outcome": "winner",
-      "gasUsed": "722888"
+      "comparison": {
+        "status": "PASS",
+        "winnerGas": "722888",
+        "loserGas": "722888",
+        "gasDelta": "0",
+        "gasDeltaBps": 0,
+        "winnerGlobalHcu": 4025320,
+        "loserGlobalHcu": 4025320,
+        "globalHcuDelta": 0,
+        "winnerMaxHcuDepth": 3032096,
+        "loserMaxHcuDepth": 3032096,
+        "maxHcuDepthDelta": 0,
+        "gasThresholdBps": 100
+      },
+      "opcodeShapeEqual": true
     },
     {
-      "index": 4,
-      "outcome": "loser",
-      "gasUsed": "722888"
-    },
-    {
-      "index": 5,
-      "outcome": "loser",
-      "gasUsed": "722888"
+      "position": "final",
+      "index": 6,
+      "comparison": {
+        "status": "PASS",
+        "winnerGas": "806609",
+        "loserGas": "806303",
+        "gasDelta": "306",
+        "gasDeltaBps": 3,
+        "winnerGlobalHcu": 4025320,
+        "loserGlobalHcu": 4025320,
+        "globalHcuDelta": 0,
+        "winnerMaxHcuDepth": 3032096,
+        "loserMaxHcuDepth": 3032096,
+        "maxHcuDepthDelta": 0,
+        "gasThresholdBps": 100
+      },
+      "opcodeShapeEqual": true
     }
   ],
-  "positionalControl": "winner and loser are both non-first and non-final crankB(1) transactions",
-  "firstCrankGasVarianceIsPublicPositionDependent": true
+  "allPositionsMeasured": true,
+  "sweepAndFinalizationOutcomeIndependent": true
 }

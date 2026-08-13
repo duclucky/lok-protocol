@@ -1,0 +1,16 @@
+{
+    "schemaVersion":  2,
+    "campaign":  "fairness",
+    "contract":  "LokFairnessInvariantTest",
+    "shard":  0,
+    "shardCount":  28,
+    "seed":  "0xd0cf00a4cb3ba0c9387766150ed722a269762eee35e02533ee6834912b18d164",
+    "launchAttempt":  1,
+    "gitCommit":  "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+    "sourceStatusBeforeRun":  "",
+    "exactCommand":  "FOUNDRY_INVARIANT_RUNS=357143 FOUNDRY_INVARIANT_DEPTH=32 FOUNDRY_FUZZ_RUNS=256 \"C:\\Users\\TBC\\.foundry\\bin\\forge.exe\" test --match-contract ^LokFairnessInvariantTest$ --match-test ^invariant_ --fuzz-seed 0xd0cf00a4cb3ba0c9387766150ed722a269762eee35e02533ee6834912b18d164 --threads 1 -vv",
+    "forgeVersion":  "forge Version: 1.7.1",
+    "solcVersion":  "0.8.27",
+    "nodeVersion":  "v24.11.1",
+    "startedAtUtc":  "2026-08-13T07:29:15.6191748Z"
+}
