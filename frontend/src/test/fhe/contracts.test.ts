@@ -36,7 +36,14 @@ describe("Sepolia contract surface", () => {
     const drawNames = lokDrawManagerAbi.map((entry) => ("name" in entry ? entry.name : undefined));
 
     expect(vaultNames).toEqual(
-      expect.arrayContaining(["deposit", "withdraw", "setTheta", "lastActionStatus", "principalBalanceOf"]),
+      expect.arrayContaining([
+        "deposit",
+        "withdraw",
+        "setTheta",
+        "thetaOf",
+        "lastActionStatus",
+        "principalBalanceOf",
+      ]),
     );
     expect(drawNames).toEqual(
       expect.arrayContaining(["state", "drawInfo", "prizeCredit", "commitEntropy", "revealEntropy"]),
