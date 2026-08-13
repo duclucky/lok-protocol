@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-08-13T10:43:34.950Z",
+  "gitCommit": "65ff43262778a1c073d1d2f413a11d9c57cb98a5",
+  "sourceStatusBeforeRun": "",
+  "proposition": "P-P1",
+  "frozenCriterion": "No event field differs between winner and any loser.",
+  "reproductionCommand": "$env:LOK_P_P1_FORENSIC=\"1\"; npx hardhat test test/privacy/log-indistinguishability.t.ts --grep \"forensically separates entry 301\"",
+  "verifiedLocalProtocolAddresses": {
+    "FHEVMExecutor": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+    "ACL": "0x50157cffd6bbfa2dece204a89ec419c23ef5755d",
+    "source": "installed @fhevm/solidity@0.11.1 config/ZamaConfig.sol"
+  },
+  "entry301": [
+    {
+      "winnerIndex": 0,
+      "globalTranscriptIndex": 301,
+      "localExecutionIdentifier": "winner-0:tx-7",
+      "transactionHash": "0x7efd4a0561c60465ee0c68da95325f0b8dc84e8ac6f2c2c1b233d375a4ba5467",
+      "blockNumber": 42,
+      "timestamp": 1786617959,
+      "emittingContract": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+      "contractClassification": "FHEVMExecutor",
+      "eventSignature": "FheLe(address,bytes32,bytes32,bytes1,bytes32)",
+      "topic0": "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+      "rawTopics": [
+        "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+        "0x0000000000000000000000005fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      ],
+      "rawData": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500f1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a6905000000000000000000000000000000000000000000000000000000000000000000c909cdfc5427ccf721a5541420cefb223a839d9615ff0000000000007a690000",
+      "decodedArgs": {
+        "caller": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+        "lhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "rhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "scalarByte": "0x00",
+        "result": "0xc909cdfc5427ccf721a5541420cefb223a839d9615ff0000000000007a690000"
+      },
+      "applicationCallPath": "LokDrawManager.crankB -> _processPassB -> FHE.le(rangeStart[user], draw.r)",
+      "participantCursorPosition": 0,
+      "participant": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+    },
+    {
+      "winnerIndex": 1,
+      "globalTranscriptIndex": 301,
+      "localExecutionIdentifier": "winner-1:tx-7",
+      "transactionHash": "0x3be6d966fc0e5d2ca9055da21307a4b15a96ab82558ba0e7ab77b7f2ad3bb106",
+      "blockNumber": 49,
+      "timestamp": 1786617966,
+      "emittingContract": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+      "contractClassification": "FHEVMExecutor",
+      "eventSignature": "FheLe(address,bytes32,bytes32,bytes1,bytes32)",
+      "topic0": "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+      "rawTopics": [
+        "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+        "0x0000000000000000000000005fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      ],
+      "rawData": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500fd6b47d4e011989fdb03312f3b6377567e86caea2fff0000000000007a6905000000000000000000000000000000000000000000000000000000000000000000c3833aafbea5c06478d1855c7fbfe4bc6b483784adff0000000000007a690000",
+      "decodedArgs": {
+        "caller": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+        "lhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "rhs": "0xfd6b47d4e011989fdb03312f3b6377567e86caea2fff0000000000007a690500",
+        "scalarByte": "0x00",
+        "result": "0xc3833aafbea5c06478d1855c7fbfe4bc6b483784adff0000000000007a690000"
+      },
+      "applicationCallPath": "LokDrawManager.crankB -> _processPassB -> FHE.le(rangeStart[user], draw.r)",
+      "participantCursorPosition": 0,
+      "participant": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+    },
+    {
+      "winnerIndex": 2,
+      "globalTranscriptIndex": 301,
+      "localExecutionIdentifier": "winner-2:tx-7",
+      "transactionHash": "0x3f84c818fd33f5e7df3ce92d909e3ba1e4f5d73126406bbae5857efe6beb19bc",
+      "blockNumber": 56,
+      "timestamp": 1786617973,
+      "emittingContract": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+      "contractClassification": "FHEVMExecutor",
+      "eventSignature": "FheLe(address,bytes32,bytes32,bytes1,bytes32)",
+      "topic0": "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+      "rawTopics": [
+        "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+        "0x0000000000000000000000005fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      ],
+      "rawData": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500c05aaca028efbe18f75ea7dc1f1dbd881f34cb081eff0000000000007a6905000000000000000000000000000000000000000000000000000000000000000000c2f97e4a32d2f32c56d62b8a2a04ff81c5664afa1fff0000000000007a690000",
+      "decodedArgs": {
+        "caller": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+        "lhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "rhs": "0xc05aaca028efbe18f75ea7dc1f1dbd881f34cb081eff0000000000007a690500",
+        "scalarByte": "0x00",
+        "result": "0xc2f97e4a32d2f32c56d62b8a2a04ff81c5664afa1fff0000000000007a690000"
+      },
+      "applicationCallPath": "LokDrawManager.crankB -> _processPassB -> FHE.le(rangeStart[user], draw.r)",
+      "participantCursorPosition": 0,
+      "participant": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+    },
+    {
+      "winnerIndex": 3,
+      "globalTranscriptIndex": 301,
+      "localExecutionIdentifier": "winner-3:tx-7",
+      "transactionHash": "0x68c2d62d988a7e9eaf572cb5b6a11c852c41777014fc8d8ddd41270f29f781ca",
+      "blockNumber": 63,
+      "timestamp": 1786617980,
+      "emittingContract": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+      "contractClassification": "FHEVMExecutor",
+      "eventSignature": "FheLe(address,bytes32,bytes32,bytes1,bytes32)",
+      "topic0": "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+      "rawTopics": [
+        "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+        "0x0000000000000000000000005fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      ],
+      "rawData": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a6905008c90f08e6af93556879dd72efc99b402b9e15f5c94ff0000000000007a69050000000000000000000000000000000000000000000000000000000000000000006a8a7c59dc6a11331b335dc2ac21576a865ff40a16ff0000000000007a690000",
+      "decodedArgs": {
+        "caller": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+        "lhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "rhs": "0x8c90f08e6af93556879dd72efc99b402b9e15f5c94ff0000000000007a690500",
+        "scalarByte": "0x00",
+        "result": "0x6a8a7c59dc6a11331b335dc2ac21576a865ff40a16ff0000000000007a690000"
+      },
+      "applicationCallPath": "LokDrawManager.crankB -> _processPassB -> FHE.le(rangeStart[user], draw.r)",
+      "participantCursorPosition": 0,
+      "participant": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+    },
+    {
+      "winnerIndex": 4,
+      "globalTranscriptIndex": 301,
+      "localExecutionIdentifier": "winner-4:tx-7",
+      "transactionHash": "0xd8d022a2cf2fd76ea288c3e82be9b21b15005823692f9f6e6b00383058babe18",
+      "blockNumber": 70,
+      "timestamp": 1786617987,
+      "emittingContract": "0xe3a9105a3a932253a70f126eb1e3b589c643dd24",
+      "contractClassification": "FHEVMExecutor",
+      "eventSignature": "FheLe(address,bytes32,bytes32,bytes1,bytes32)",
+      "topic0": "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+      "rawTopics": [
+        "0xdef2e704a077284a07f3d0b436db88f5d981b69f58ab7c1ae623252718a6de01",
+        "0x0000000000000000000000005fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      ],
+      "rawData": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500e8290b4130d84fe389ffc51f16a69cfdf538366f9eff0000000000007a6905000000000000000000000000000000000000000000000000000000000000000000083f56bfcd9d102df0865b3de4da5489e7a9918cbaff0000000000007a690000",
+      "decodedArgs": {
+        "caller": "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707",
+        "lhs": "0xf1a829fc1ef14cec26872d6671ed40e6e46b923a94ff0000000000007a690500",
+        "rhs": "0xe8290b4130d84fe389ffc51f16a69cfdf538366f9eff0000000000007a690500",
+        "scalarByte": "0x00",
+        "result": "0x083f56bfcd9d102df0865b3de4da5489e7a9918cbaff0000000000007a690000"
+      },
+      "applicationCallPath": "LokDrawManager.crankB -> _processPassB -> FHE.le(rangeStart[user], draw.r)",
+      "participantCursorPosition": 0,
+      "participant": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+    }
+  ],
+  "pairwiseDiffs": [
+    {
+      "leftWinnerIndex": 0,
+      "rightWinnerIndex": 1,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 0,
+      "rightWinnerIndex": 2,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 0,
+      "rightWinnerIndex": 3,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          51
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 0,
+      "rightWinnerIndex": 4,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 1,
+      "rightWinnerIndex": 2,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 1,
+      "rightWinnerIndex": 3,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 1,
+      "rightWinnerIndex": 4,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 2,
+      "rightWinnerIndex": 3,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 2,
+      "rightWinnerIndex": 4,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    },
+    {
+      "leftWinnerIndex": 3,
+      "rightWinnerIndex": 4,
+      "firstRawDifference": 301,
+      "entry301DataDifferenceRanges": [
+        [
+          32,
+          52
+        ],
+        [
+          96,
+          116
+        ]
+      ]
+    }
+  ],
+  "controls": {
+    "sameForcedWinnerAcrossBlocks": [
+      {
+        "winnerIndex": 0,
+        "repetitions": 10,
+        "distinctRhsHandles": 1,
+        "distinctResultHandles": 1,
+        "blockNumbers": [
+          42,
+          77,
+          112,
+          147,
+          182,
+          217,
+          252,
+          287,
+          322,
+          357
+        ]
+      },
+      {
+        "winnerIndex": 1,
+        "repetitions": 10,
+        "distinctRhsHandles": 1,
+        "distinctResultHandles": 1,
+        "blockNumbers": [
+          49,
+          84,
+          119,
+          154,
+          189,
+          224,
+          259,
+          294,
+          329,
+          364
+        ]
+      },
+      {
+        "winnerIndex": 2,
+        "repetitions": 10,
+        "distinctRhsHandles": 1,
+        "distinctResultHandles": 1,
+        "blockNumbers": [
+          56,
+          91,
+          126,
+          161,
+          196,
+          231,
+          266,
+          301,
+          336,
+          371
+        ]
+      },
+      {
+        "winnerIndex": 3,
+        "repetitions": 10,
+        "distinctRhsHandles": 1,
+        "distinctResultHandles": 1,
+        "blockNumbers": [
+          63,
+          98,
+          133,
+          168,
+          203,
+          238,
+          273,
+          308,
+          343,
+          378
+        ]
+      },
+      {
+        "winnerIndex": 4,
+        "repetitions": 10,
+        "distinctRhsHandles": 1,
+        "distinctResultHandles": 1,
+        "blockNumbers": [
+          70,
+          105,
+          140,
+          175,
+          210,
+          245,
+          280,
+          315,
+          350,
+          385
+        ]
+      }
+    ],
+    "differentForcedWinnerPositions": [
+      "first:0",
+      "interior:2",
+      "final:4"
+    ],
+    "snapshotRevertWithMonotoneBlockMining": true,
+    "changedNonWinnerParticipant": {
+      "baselineIndices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "variantIndices": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "forcedWinnerIndex": 0,
+      "structuralTranscriptEqual": true
+    }
+  },
+  "classifier": {
+    "featurePolicy": "Public emitter class, topic0, topic count, data length, transaction/log position, parsed event name and argument names only; ciphertext payload bytes and private harness state excluded.",
+    "trainingExecutions": 25,
+    "heldOutExecutions": 25,
+    "baselineRandomAccuracy": 0.2,
+    "measuredAccuracy": 0.2,
+    "wilson95": [
+      0.08860584686802572,
+      0.3913095036954033
+    ],
+    "confusionMatrix": [
+      [
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        5,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "causalExplanation": "Entry 301 is the first PASS-B FheLe. Its rhs is draw.r, deliberately replaced by the forced-winner harness; its result is the corresponding opaque FHE comparison handle. Repeated same-winner controls keep both handles stable in the installed local mock across mined blocks, while changing the forced winner changes rhs and result. The event/address/topic/length/call shape is invariant. Equivalent production draws naturally use distinct opaque random handles, so those raw protocol fields need not be byte-identical even when they reveal no winner. The frozen byte-field criterion therefore fails although the structure-only public observer does not beat baseline.",
+  "classification": "CASE 2 - BENIGN NONDETERMINISM, FROZEN CRITERION STILL FAILS",
+  "verdict": "WEAKER-THAN-CLAIMED",
+  "ownerDecisionRequired": [
+    "Keep the frozen byte-field criterion and accept that P-P1 cannot close on FHEVM protocol events.",
+    "Explicitly re-review and re-freeze P-P1 around non-derivability/statistical indistinguishability."
+  ]
+}
