@@ -1,178 +1,435 @@
 # P-S2 Confidential Solvency Hand Proof
 
-**Proposition:** P-S2  
-**Proof tier:** A  
-**Execution status:** Local reference invariant PASS  
-**Independent review:** PENDING HUMAN SIGN-OFF  
-**Owner-delegated AI review:** APPROVED_WITH_RESIDUAL_OBLIGATIONS (same-context, non-human, non-independent;
-2026-08-10)  
-**Separation note:** The owner authorized the implementation context to execute Task 10 on 2026-08-10. This document is
-therefore proof-worker output by explicit exception, not an independent-context review.
+**Proposition:** P-S2
 
-## Claim
+**Proof tier:** A
 
-For every supported transition, aggregate confidential custody assets `A` cover aggregate claimable liabilities `L`, and
-liabilities cover aggregate remaining principal `P`:
+**Hand-proof status:** READY_FOR_INDEPENDENT_RE-REVIEW
+
+**Full P-S2 status:** BLOCKED pending authorized Sepolia Groups A and B and independent re-review
+
+**Separation:** This remediation was prepared by the implementation/proof context. It is not an independent review or
+sign-off.
+
+## Claim And Mathematical State
+
+For users `u` and the supported custody set:
+
+```text
+A = vault cUSDC + active-adapter cUSDC + retiring-adapter cUSDC
+L = encryptedTotalLiability
+P = encryptedTotalPrincipal
+b[u] = claimable balance[u]
+p[u] = principalBalance[u]
+```
+
+The invariant is:
 
 ```text
 A >= L >= P
-L = sum(userBalance[u])
-P = sum(principalBalance[u])
+L = sum_u b[u]
+P = sum_u p[u]
+b[u] >= p[u] for every u
 ```
 
-Numeric `A`, `L`, `P`, user balances and principal balances remain encrypted in production. The plaintext symbols in
-this proof are mathematical witnesses in the Foundry reference model, not production disclosure paths.
+Numeric `A`, `L`, `P`, `b[u]`, and `p[u]` are mathematical witnesses. Production keeps them encrypted and exposes only
+the checkpoint-specific aggregate boolean `A >= L`.
 
-## Assumptions
+## Assumptions And Enforcement Boundary
 
-1. ERC-7984 returns the exact confidential amount `moved` and changes token custody by that same amount.
-2. The ERC-7984 total supply is at most `2^64 - 1`; failed/clamped transfers return encrypted zero.
-3. Active and retiring adapters are bound to the vault and their supported custody operations are lossless. Yield-source
-   failure is outside the guarantee, as stated in the frozen trust boundary.
-4. `harvest()` reports only yield already funded in cUSDC custody and transfers any adapter-held harvested amount to the
-   vault before credits are written.
-5. Public-decryption signatures bind the exact checkpoint handle, cleartext, `riskEpoch` and nonce as verified by the
-   FHE integration tests. Real Sepolia confirmation remains a Task 14-15 obligation.
-6. The encrypted arithmetic bounds in `docs/proofs/overflow-derivations.md` hold.
+1. OpenZeppelin ERC-7984 returns the exact encrypted amount moved and changes token custody by that same amount. Its
+   safe total-supply update bounds confidential total supply by `2^64 - 1`; a failed or clamped update moves encrypted
+   zero.
+2. For every supported and verified adapter, custody operations are lossless. In particular, the external postcondition
+   required of `withdrawAllToVault()` is:
 
-## Base Case
+   ```text
+   retiring balance after the call = 0
+   vault custody increase = retiring custody removed
+   aggregate A after the call = aggregate A before the call
+   ```
 
-Immediately after deployment, no user claim or principal exists and supported adapters hold no vault principal:
+   This is the frozen yield-source trust boundary. `MockYieldAdapter` source and local integration tests exercise it,
+   but `LokVault` does not enforce it for an arbitrary `IYieldAdapter` implementation.
+
+3. `harvest()` reports only cUSDC already funded into the supported custody set and transfers adapter-held harvested
+   cUSDC to the vault before corresponding credits are written.
+4. KMS signatures bind the exact ordered handle set and cleartext. This is platform behavior exercised by local FHE
+   integration and limited existing Sepolia probes; the fresh state-changing Sepolia negative campaign remains blocked.
+5. The supported production bounds stated below hold. An unsupported yield venue or token behavior is not silently
+   included in the guarantee.
+
+No ciphertext handle is treated as a plaintext value or compared for numeric meaning in this proof.
+
+## Base Cases
+
+### Mathematical base case
+
+Immediately after deployment, the vault and supported adapters hold no Lok principal and no user claim or principal has
+been created:
 
 ```text
 A = L = P = 0
-sum(userBalance) = sum(principalBalance) = 0
+sum_u b[u] = sum_u p[u] = 0
 ```
 
-The invariant therefore holds initially.
+Therefore the mathematical solvency invariant holds at deployment.
 
-## Transition Preservation
+### Authorization base case
 
-### Deposit
+Authorization is intentionally different from mathematical solvency:
 
-Let ERC-7984 return `moved = m`. Token custody increases by `m`. The vault adds the same handle to user balance, user
-principal, `L` and `P`:
+```text
+riskEpoch = 1
+lastSolventRiskEpoch = 0
+```
+
+Epoch 1 is not initially authorized. Deposit, withdrawal, exit, and emergency recovery remain callable, but deposits
+remain in the vault and draw/adapter risk transitions are locked. Epoch 1 becomes authorized only after this exact
+sequence:
+
+```text
+openSolvencyCheckpoint
+-> public decryption of the exact checkpoint ebool
+-> submitSolvencyCheckpoint with a valid true proof
+```
+
+That sequence changes authorization state; it is not needed to make the zero mathematical base case true.
+
+## User And Custody Transitions
+
+### Deposit using actual moved
+
+Let ERC-7984 return `moved = m`. Token custody increases by exactly `m`. Production adds the same encrypted value to the
+user's balance, the user's principal, `L`, and `P`:
 
 ```text
 A' = A + m
+b'[u] = b[u] + m
+p'[u] = p[u] + m
 L' = L + m
 P' = P + m
 ```
 
-Routing `m` from vault custody to the active adapter changes only the custody partition, not `A`. When a requested
-transfer is clamped or fails, `m = 0`, so no claim is minted.
+The two sum equalities and both inequalities are preserved. A zero/clamped transfer has `m = 0`, so it cannot mint a
+claim. If the current risk epoch is authorized, routing `m` from vault custody to the active adapter changes only the
+custody partition; otherwise the cUSDC remains in the vault.
 
-### Withdraw, Withdraw-All and Emergency Withdraw
+### Withdraw, withdraw-all, and emergency withdrawal
 
-Liquidity collection moves custody between the active/retiring adapters and the vault without changing `A`. Let the
-outgoing ERC-7984 transfer return `m`, and let the user's principal before the transition be `p`:
+First, `_collectLiquidity` invokes the supported adapters' lossless full-return operation. Under the explicit adapter
+postcondition, that changes only custody partitions and preserves `A`.
+
+Let the outgoing ERC-7984 transfer return `m`, and let `p = p[u]` before debit:
 
 ```text
 principalDebit = min(m, p)
 A' = A - m
+b'[u] = b[u] - m
+p'[u] = p[u] - principalDebit
 L' = L - m
 P' = P - principalDebit
 ```
 
-If `m <= p`, both the user's claim and principal fall by `m`, preserving their difference. If `m > p`, the user's
-principal becomes zero while their remaining claim is non-negative. Thus each user keeps `balance >= principal`, so
-`L' >= P'`. Since `A - L` is unchanged, `A' >= L'`.
+`m <= b[u]` because production requests at most the encrypted available balance and accounts from the returned amount.
+If `m <= p`, claim and principal both fall by `m`. If `m > p`, the user's principal becomes zero while the remaining
+claim is non-negative. Thus `b'[u] >= p'[u]`, the sum equalities are preserved, `L' >= P'`, and `A' - L' = A - L`. The
+three entrypoints differ in requested amount or intent, not in these debit equations. None depends on a checkpoint or
+oracle response.
 
-### Exit and Finalize Exit
+### Exit and finalization
 
-`unwrap` burns exactly the returned encrypted wrapper amount and creates the asynchronous public unwrap request. The
-vault applies the same debit equations as withdrawal. `finalizeUnwrap` transfers underlying ERC-20 against the already
-burned amount and does not change encrypted Lok accounting. Participant removal changes no claim, principal or custody.
+`exit()` collects liquidity, asks the wrapper to burn up to the full encrypted claim, reads the wrapper's encrypted
+`unwrapAmount(requestId)` as actual `moved`, and applies the same principal-first debit equations. The asynchronous
+`finalizeUnwrap` transfers underlying against that already-burned request and does not mutate Lok's `A`, `L`, `P`,
+`b[u]`, or `p[u]`. Participant removal is accounting-neutral.
 
-### Funded Prize and Direct-Yield Credit
+### Funded yield entering custody
 
-Let `Y` be realised funded yield and `W` total yield weight. Let `B` be total base-risk weight and
-`D = sum(d_i) = W - B` be total direct weight. With `Q = 2^26`, production computes:
+Funding cUSDC into the vault or supported adapter increases `A` and the draw-scoped available funded yield by `Y_f`,
+without changing `L` or `P`. It therefore increases the solvency surplus. A full adapter return can reclassify pending
+funded yield as vault-resident, but cannot count it twice; `harvest()` consumes the draw-scoped funded counters once.
 
-```text
-prizeAmount = floor(Y * B / W)
-directRate = floor(Y * Q / W)
-directCredit_i = floor(d_i * directRate / Q)
-```
+## Normalized `tEnd` Lemmas
 
-For every participant:
-
-```text
-directCredit_i <= d_i * Y / W
-```
-
-Therefore:
+Let `Q = 2^26`. For participant `i`, production derives exact-`tEnd` deltas and normalizes them as:
 
 ```text
-prizeAmount + sum(directCredit_i)
-<= Y * B / W + Y * D / W
-= Y
+yieldWeight_i  = floor(yieldDelta_i / Q)
+baseRisk_i     = floor(ticketDelta_i / (4Q))
+directWeight_i = yieldWeight_i - baseRisk_i
 ```
 
-The left side is integral, so rounding cannot increase it above `Y`. Harvested cUSDC supplies an asset surplus of at
-least `Y`; crediting at most `Y` increases `L` without increasing `P`, preserving `A >= L >= P`. The fuzz boundary test
-`testFuzz_P_S2_FundedAllocationNeverExceedsYield` checks integer rounding combinations.
+At every accrual segment, `theta_i <= 4`. The unsaturated ticket rate is `balance_i * theta_i`, and `RATE_CAP` can only
+reduce that rate. The yield rate is `balance_i`. Summing the same non-negative time segments through exactly `tEnd`
+therefore gives:
 
-### Draw State, Checkpoint and User-Weight Transitions
+```text
+ticketDelta_i <= 4 * yieldDelta_i
+```
 
-Opening, pausing, pre-syncing, cranking PASS A, committing/revealing entropy, opening randomness, aborting and closing a
-draw do not move custody or alter claims/principal. `setTheta`, accumulator sync, checkpoint roll and ACL grants
-likewise do not change `A`, `L` or `P`.
+Division by the positive plaintext `4Q` is monotone, so:
 
-`openSolvencyCheckpoint` computes only the encrypted predicate `A >= L`. A valid `true` proof authorizes the current
-`riskEpoch`; a false, forged, wrong-handle, duplicate or risk-stale proof cannot authorize a risk transition. Safe user
-and funded-credit transitions advance `accountingVersion` but preserve the proved relation inductively, so they do not
-invalidate the same-epoch mathematical fact. Oracle failure blocks new risk transitions, not recovery.
+```text
+floor(ticketDelta_i / (4Q))
+<= floor((4 * yieldDelta_i) / (4Q))
+=  floor(yieldDelta_i / Q)
+```
 
-### Adapter Lifecycle
+Hence:
 
-- Proposal and timelock progression move no asset.
-- Activation is IDLE-only and requires a verified current-epoch checkpoint. The old active adapter becomes retiring; the
-  new adapter becomes active. Existing custody is only reclassified, so `A` does not decrease.
-- Activation increments `riskEpoch`; deposits remain in the vault and draws/risk transitions stay disabled until a new
-  checkpoint authorizes that epoch.
-- Permissionless drain moves the full retiring balance to the vault without changing `A`.
-- Removal is permitted only after the retiring encrypted balance is fully returned and the current epoch is authorized;
-  deleting the empty pointer cannot reduce `A`.
+```text
+baseRisk_i <= yieldWeight_i
+directWeight_i >= 0
+```
 
-### Reentrancy and Unauthorized Calls
+The encrypted subtraction that creates `directWeight_i` therefore cannot underflow. Define:
 
-Vault value legs/checkpoint submission and every state-changing draw-manager entrypoint are guarded. Malicious callback
-attempts revert or no-op before protected state changes. Owner, keeper, omitted guardian and adapter-admin calls outside
-their interfaces cannot change user claims/principal or move custody. These rejected transitions preserve the invariant
-by identity.
+```text
+B = sum_i baseRisk_i
+W = sum_i yieldWeight_i
+D = sum_i directWeight_i
+```
+
+Termwise subtraction and finite summation give:
+
+```text
+D = sum_i (yieldWeight_i - baseRisk_i)
+  = W - B
+0 <= B <= W
+```
+
+The exact-`tEnd` premise comes from `_syncUser`: each participant is split at `currentDrawEnd`; later touches return
+without adding settlement/IDLE time to the closed draw. The boundary and differential tests cover touches at `tEnd-1`,
+`tEnd`, and `tEnd+1`. The Foundry settlement abstraction does not itself establish this production correspondence; its
+scope is stated separately below.
+
+## Funded Allocation Proof
+
+### Case `W = 0`
+
+Production handles this before harvest and before either division:
+
+```text
+realisedYield = 0 for this draw transition
+prizeAmount = 0
+direct credits = 0
+prize credits = 0
+```
+
+The draw voids, no zero denominator is evaluated, and `A`, `L`, and `P` are unchanged. Previously funded cUSDC remains
+custody surplus rather than becoming an unfunded liability.
+
+### Case `W > 0`
+
+Let `Y` be the realised funded yield for this draw and let `d_i = directWeight_i`. Production computes:
+
+```text
+prize   = floor(Y * B / W)
+rate    = floor(Y * Q / W)
+direct_i = floor(d_i * rate / Q)
+```
+
+Because floor never increases a non-negative value:
+
+```text
+rate <= YQ / W
+direct_i <= d_i * rate / Q <= d_iY / W
+sum_i direct_i <= DY / W
+prize <= YB / W
+```
+
+Using the normalized lemma `B + D = W`:
+
+```text
+prize + sum_i direct_i
+<= YB/W + YD/W
+=  Y(B + D)/W
+=  Y
+```
+
+Boundary cases are included:
+
+- `B = 0`: `prize = 0`; direct credits alone are at most `YD/W = Y`.
+- `Y = 0`: `prize = rate = direct_i = 0`.
+- `D = 0`: direct credits are zero and `prize <= Y`. With unsaturated default theta `4`, this is the expected case; if
+  `RATE_CAP` binds, the general `D >= 0` proof applies instead.
+- Integer-rounding residue `Y - prize - sum_i direct_i` remains unallocated in vault custody, increasing rather than
+  decreasing `A - L`.
+
+All credits are non-negative. Exactly one participant can receive `prize`, so each participant's
+`totalCredit_i = prizeCredit_i + direct_i` is no greater than the aggregate allocation, which is at most `Y`. Crediting
+the allocation raises `L` by at most the funded surplus and never raises `P`; therefore `A >= L >= P` is preserved.
 
 ## Overflow Closure
 
-Custody, liability and principal are bounded by ERC-7984 supply (`2^64 - 1`). User/accounting additions consume actual
-`moved` custody or already funded yield; subtraction is bounded by balances. The eTWAB and PASS A bounds establish
-`W < 2^52`, `B <= W`, and effective prefix `< 2^53`, so draw normalization does not wrap before credits are computed.
+OpenZeppelin ERC-7984 uses a safe encrypted total-supply update, so:
 
-## Machine Evidence
+```text
+totalSupply <= 2^64 - 1
+A <= totalSupply
+L <= A
+P <= L
+```
 
-- Safety campaign: `10,000,004` sequences, depth `32`, `320,000,128` calls, `0` reverts.
-- Fairness/funding campaign: `10,000,004` sequences, depth `32`, `320,000,128` calls, `0` reverts.
-- Forge: `1.7.1`; 28 deterministic shards per campaign.
-- Reports: `artifacts/invariants/safety.json`, `artifacts/invariants/fairness.json`, and
-  `artifacts/invariants/summary.json`.
-- FHE mock integration: full Hardhat suite passed before this proof campaign. Fresh broad regression is required after
-  the proof files are finalized.
+For the supported production draw bounds:
 
-## Residual Obligations
+```text
+W < 2^52
+0 <= B <= W
+0 <= d_i <= W
+Y <= 2^64 - 1
+Q = 2^26
+```
 
-- Human or genuinely independent proof reviewer sign-off: **pending**.
-- Sepolia ERC-7984/FHE ACL, returned-amount, checkpoint proof-binding and HCU integration: **pending Task 14-15**.
-- The yield venue's lossless-operation assumption cannot be proven by Lok.
+The plaintext prize numerator is evaluated in `uint256`:
 
-## Sign-Off
+```text
+Y * B < 2^64 * 2^52 = 2^116 < 2^256
+```
 
-AI reviewer: Codex AI proof reviewer (owner-delegated, same-context, non-human, non-independent)  
-AI review date: 2026-08-10  
-AI verdict: **APPROVED_WITH_RESIDUAL_OBLIGATIONS**  
-Review record: `docs/proofs/P-S2-P-S3-ai-review-2026-08-10.md`
+The direct-rate numerator satisfies:
 
-Human or independent reviewer: **PENDING**
+```text
+Y * Q < 2^64 * 2^26 = 2^90
+```
 
-Reviewer: **\*\*\*\***\_\_\_\_**\*\*\*\***  
-Date: **\*\*\*\***\_\_\_\_**\*\*\*\***  
-Verdict: PENDING
+Thus `directRate = floor(YQ/W) < 2^90`, which fits `uint128`. Because `d_i <= W`:
+
+```text
+d_i * directRate
+<= d_i * YQ/W
+<= YQ
+< 2^90
+< 2^128
+```
+
+Therefore the encrypted `directWide` multiplication cannot wrap. The funded-allocation proof gives
+`totalCredit_i <= Y <= 2^64 - 1`, so per-user `prizeCredit + directCredit` fits `euint64`. Across sequential credits,
+the cumulative liability increase never exceeds funded custody surplus, hence `L' <= A <= totalSupply`; the aggregate
+liability update cannot wrap. These are numeric derivations, not an appeal to the encrypted type reverting on overflow.
+
+## Exactly-Once Cursor Proof
+
+Let `N = participantSnapshot`, fixed by `openDraw`.
+
+1. A deposit after draw open may append a new participant only after index `N - 1`, so it is outside the current draw.
+2. Finalized exit removal is deferred while the draw is active. A later deposit or uniform draw credit cancels pending
+   removal. Consequently the addresses at snapshot indices `[0, N)` do not shift during either pass.
+3. A valid crank requires `batch > 0` and `batch <= cap`. It processes exactly the half-open interval:
+
+   ```text
+   [cursor, min(cursor + batch, N))
+   ```
+
+4. The contract then assigns `cursor = end`. No caller supplies a start index. Cursor increases strictly for every
+   successful non-empty crank and no transition decreases it within a pass.
+5. Starting from zero, consecutive half-open intervals share only endpoints. They neither overlap nor leave a gap. PASS
+   A completes exactly when `cursor = N`.
+6. `submitTotals` accepts the proof-bound PASS-A aggregates and resets cursor to zero before PASS B. PASS B uses the
+   same `N` and the same interval rule, so each snapshot participant is credited exactly once.
+7. Before any PASS-B credit (`cursor = 0`), timeout abort creates zero credits. Once the first successful PASS-B batch
+   sets `cursor > 0`, abort is forbidden; permissionless cranking must complete the remaining suffix before settlement.
+8. Ranges, direct weights, prize credits, funded `Y`, and `directRate` are draw-scoped or keyed by `drawId`. There is no
+   cumulative cross-harvest rate/index. Each draw consumes its own normalized weights and one harvested funded amount.
+
+Ethereum transaction serialization and `nonReentrant` make two concurrent cranks observe a single ordered cursor state;
+a stale call cannot replay an already consumed interval.
+
+## Checkpoint And Accounting-Version Closure
+
+`openSolvencyCheckpoint` computes the encrypted predicate over the vault, active adapter, optional retiring adapter, and
+`L`. It records `pendingSolvencyHandle`, `pendingSolvencyRiskEpoch`, `pendingSolvencyAccountingVersion`, and a new
+nonce. The accounting version identifies the snapshot, but submission intentionally does not require equality with the
+current `accountingVersion`.
+
+That omission is safe only because every same-`riskEpoch` transition that may occur after checkpoint open preserves a
+true `A >= L` result:
+
+- deposit adds the same actual `moved` to `A` and `L`;
+- withdraw, withdraw-all, and emergency withdrawal subtract the same actual `moved` from `A` and `L`;
+- exit applies the same actual-moved debit, while finalization is accounting-neutral;
+- funded yield entering custody increases `A` without increasing `L`;
+- bounded direct/prize credits increase `L` by no more than funded custody surplus;
+- lossless vault/active/retiring custody movements preserve aggregate `A` under the supported-adapter postcondition;
+- draw, theta, Fortune, accumulator, checkpoint, pause, ACL, and participant metadata changes do not change `A`, `L`, or
+  `P` except for the already-covered deterministic funded credits;
+- post-`tEnd` deposit or withdrawal changes future accounting only after `_syncUser` has closed the current draw at the
+  exact `tEnd`; it cannot change the committed closed-draw weights or stall cursor progress.
+
+Some safe events, such as externally funded yield entering custody, may not increment the vault's version, but they only
+strengthen `A >= L`. Every version advance that can affect accounting or custody is covered above. Therefore a true
+same-epoch checkpoint remains true inductively even when `accountingVersion` advances.
+
+Adapter activation and retiring-adapter removal change the custody/risk assumption and increment `riskEpoch`. Existing
+authorization then fails `lastSolventRiskEpoch == riskEpoch`, making the old authorization unusable. New deposits stay
+in the vault and new draw/config risk transitions remain locked until a fresh current-epoch true checkpoint is
+submitted.
+
+## Adapter Lifecycle Postcondition
+
+The reference model and production enforce different facts:
+
+- Reference removal succeeds only when `retiringAdapterAssets == 0`.
+- Production `drainRetiringAdapter()` calls external `withdrawAllToVault()` and, after successful return, sets
+  `retiringAdapterDrained = true`.
+- Production does not compare returned `moved` with the encrypted pre-drain balance. Removal relies on the flag and
+  current-epoch authorization.
+
+Accordingly, preservation across production drain/removal is conditional on the frozen supported-adapter postcondition
+stated in the assumptions. It is externally trusted supported-adapter behavior, source/local-integration tested for
+`MockYieldAdapter`, and not vault-enforced for arbitrary `IYieldAdapter`. The disposable Sepolia lifecycle D28-D33 must
+still confirm the exact deployed adapter path. This is a disclosed trust-boundary dependency, not a claim that the vault
+independently verifies arbitrary adapters.
+
+## Evidence Separation And Reference Abstraction
+
+### Foundry reference invariant
+
+`LokHandler.settleDraw` snapshots plaintext `LokAccountingModel.balanceOf` and handler `theta` values.
+`LokDrawReference.processProductionPassA` derives weights from that balance/theta snapshot. It does not directly model
+production `_syncUser`, piecewise eTWAB accumulators, exact `tEnd` checkpoints, or the `>> 26` / `>> 28` normalization
+shifts.
+
+The committed campaign consists of `10,000,004` sequences at depth `32`, `320,000,128` calls, `14,550,605` `settleDraw`
+calls, `28` shards, and `0` reported reverts. It supports generic accounting preservation, batch/cursor composition,
+post-snapshot action isolation in its abstraction, and the funded-allocation bound. It is not described as an exact
+production settlement model.
+
+Production normalized-`tEnd` correspondence instead depends jointly on the normalized lemmas in this proof, Hardhat
+`tEnd` boundary tests, draw/sync differential tests, and the still-unexecuted Sepolia Group A lifecycle. The campaign is
+not rerun because no production, reference, handler, selector, or assertion logic changed in this remediation.
+
+### Forged-checkpoint evidence
+
+Foundry `submitForgedCheckpoint` does not submit a cryptographic proof. It sets an abstract rejection flag and asserts
+that abstract authorization metadata did not mutate. It is evidence only for identity/no-mutation behavior in the
+reference state machine; it is not evidence that `FHE.checkSignatures` rejects a forged proof.
+
+Semantic cryptographic evidence is separated as follows:
+
+- local Hardhat FHE tests submit forged/tampered, replaced-handle, wrong-epoch, wrong-nonce, and duplicate cases;
+- existing Sepolia probes provide limited prior integration evidence;
+- planned Group A/B state-changing negative submissions remain BLOCKED pending owner authorization.
+
+### Oracle-down recovery
+
+No withdrawal, withdraw-all, emergency withdrawal, exit request, or liquidity collection path calls public decryption or
+requires checkpoint completion. Oracle nondelivery can leave a checkpoint pending and keep risk transitions locked, but
+it cannot block principal recovery. The live permanent-outage condition cannot be deliberately induced; the executable
+state-machine/local evidence and planned pending-oracle D12-D13 sequence remain distinct evidence classes.
+
+## Residual Obligations And Status
+
+- An independent reviewer must re-derive this proof and check implementation correspondence.
+- Sepolia Group A and Group B state-changing evidence remains BLOCKED and unauthorized.
+- The supported yield venue's lossless full-return behavior remains the explicit frozen external trust boundary.
+- P-P1 remains WEAKER-THAN-CLAIMED and is not affected by this remediation.
+- Frozen section 3 is unchanged.
+
+```text
+P-S2 hand proof: READY_FOR_INDEPENDENT_RE-REVIEW
+Full P-S2: BLOCKED
+Independent reviewer: PENDING
+Independent verdict: PENDING
+```
