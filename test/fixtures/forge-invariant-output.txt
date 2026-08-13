@@ -1,0 +1,6 @@
+[PASS] invariant_TierASafetyObligations() (runs: 357143, calls: 11428576, reverts: 0)
+
+| Contract   | Selector   | Calls | Reverts | Discards |
+| LokHandler | deposit    | 519004 | 0       | 0        |
+| LokHandler | settleDraw | 518931 | 0       | 0        |
+| LokHandler | withdraw   | 519112 | 0       | 0        |

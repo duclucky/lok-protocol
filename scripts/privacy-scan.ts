@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 
 type AstNode = {
@@ -168,7 +169,31 @@ export function writePrivacyEvidence(
   directory = PRIVACY_EVIDENCE_DIR,
 ): void {
   mkdirSync(directory, { recursive: true });
-  writeFileSync(path.join(directory, `${name}.json`), `${JSON.stringify(fragment, null, 2)}\n`);
+  const gitCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  const sourceStatusBeforeRun = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=all"], {
+    cwd: ROOT,
+    encoding: "utf8",
+  })
+    .split(/\r?\n/)
+    .filter((line) => line.trim() !== "" && !line.slice(3).replaceAll("\\", "/").startsWith("artifacts/"))
+    .join("\n")
+    .trim();
+  const hardhatPackage = readJson<{ version: string }>(path.join(ROOT, "node_modules/hardhat/package.json"));
+  const fhevmPluginPackage = readJson<{ version: string }>(
+    path.join(ROOT, "node_modules/@fhevm/hardhat-plugin/package.json"),
+  );
+  const enriched = {
+    schemaVersion: 2,
+    generatedAtUtc: new Date().toISOString(),
+    gitCommit,
+    sourceStatusBeforeRun,
+    command: `npx hardhat test ${String((fragment.sourceTestIdentifiers as string[] | undefined)?.[0] ?? name)}`,
+    nodeVersion: process.version,
+    hardhatVersion: hardhatPackage.version,
+    fhevmHardhatPluginVersion: fhevmPluginPackage.version,
+    ...fragment,
+  };
+  writeFileSync(path.join(directory, `${name}.json`), `${JSON.stringify(enriched, null, 2)}\n`);
 }
 
 export function collectPrivacyEvidence(directory = PRIVACY_EVIDENCE_DIR): {
@@ -182,6 +207,17 @@ export function collectPrivacyEvidence(directory = PRIVACY_EVIDENCE_DIR): {
     const fragment = readJson<Record<string, unknown> & { status?: unknown }>(file);
     if (fragment.status !== "PASS" && fragment.status !== "FAIL") {
       throw new Error(`Invalid privacy evidence status: ${name}`);
+    }
+    for (const field of [
+      "gitCommit",
+      "sourceStatusBeforeRun",
+      "command",
+      "nodeVersion",
+      "hardhatVersion",
+      "fhevmHardhatPluginVersion",
+      "sourceTestIdentifiers",
+    ]) {
+      if (!(field in fragment)) throw new Error(`Missing privacy evidence provenance ${name}.${field}`);
     }
     fragments[name] = fragment as Record<string, unknown> & { status: "PASS" | "FAIL" };
   }
@@ -491,29 +527,54 @@ export function buildPrivacyReport(
   const logEvidence = dynamicEvidence.fragments["log-indistinguishability"];
   const aclEvidence = dynamicEvidence.fragments["acl-uniformity"];
   const logEvidenceComplete =
-    logEvidence.comparedRawAndParsedPrizeCreditedFields === true &&
-    Array.isArray(logEvidence.comparedLoserIndices) &&
-    logEvidence.comparedLoserIndices.length > 0;
+    logEvidence.comparedFullLifecycleRawAndParsedFields === true &&
+    logEvidence.comparedEveryWinnerAgainstEveryOther === true &&
+    Array.isArray(logEvidence.counterfactualWinnerIndices) &&
+    logEvidence.counterfactualWinnerIndices.length >= 5 &&
+    logEvidence.protocolInfrastructureLogsCompared === true &&
+    logEvidence.residual === null;
   const aclEvidenceComplete =
     aclEvidence.grantMultisetExact === true &&
     typeof aclEvidence.winnerGrantCount === "number" &&
     Array.isArray(aclEvidence.loserGrantCounts) &&
     aclEvidence.loserGrantCounts.every((count) => count === aclEvidence.winnerGrantCount);
+  const gasEvidence = dynamicEvidence.fragments["gas-indistinguishability"];
+  const currentCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  const hasCleanProvenance = (fragment: Record<string, unknown>) => {
+    if (typeof fragment.gitCommit !== "string" || fragment.sourceStatusBeforeRun !== "") return false;
+    try {
+      execFileSync("git", ["merge-base", "--is-ancestor", fragment.gitCommit, currentCommit], {
+        cwd: ROOT,
+        stdio: "ignore",
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const gasEvidenceComplete =
+    gasEvidence.allPositionsMeasured === true &&
+    gasEvidence.sweepAndFinalizationOutcomeIndependent === true &&
+    Array.isArray(gasEvidence.positions) &&
+    gasEvidence.positions.length === 3;
   const propositions = {
     "P-P1": pass(
-      logPass && logEvidenceComplete,
+      logPass && logEvidenceComplete && hasCleanProvenance(logEvidence),
       "complete raw and parsed participant log-field diff plus call-boundary comparison",
     ),
     "P-P2": pass(
-      aclPass && aclEvidenceComplete && staticReport.acl.violations.length === 0,
+      aclPass && aclEvidenceComplete && hasCleanProvenance(aclEvidence) && staticReport.acl.violations.length === 0,
       "complete participant-facing prize-handle ACL grant multiset",
     ),
     "P-P4": pass(staticReport.events.violations.length === 0, "ABI event-field scan"),
-    "P-P5": pass(gasPass, "matched-position gas/HCU regression"),
+    "P-P5": pass(
+      gasPass && gasEvidenceComplete && hasCleanProvenance(gasEvidence),
+      "first/interior/final gas/HCU and operation-mix regression",
+    ),
     "P-P6": pass(staticReport.redTeam.anonymityFloor.status === "PASS", "MIN_PARTICIPANTS and aggregate masking scan"),
     "P-P7": pass(
       logPass &&
-        logEvidenceComplete &&
+        hasCleanProvenance(logEvidence) &&
         staticReport.redTeam.fortuneResetUsesFheSelect &&
         staticReport.redTeam.aggregateFortuneDisclosureOnly,
       "Fortune ACL/public-decryption/log-shape scan",

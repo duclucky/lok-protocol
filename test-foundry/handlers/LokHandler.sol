@@ -17,6 +17,7 @@ contract LokHandler {
     uint256 public withdrawCalls;
     uint256 public drawCalls;
     uint256 public settleDrawCalls;
+    bool public lastPostEndIsolationHeld = true;
 
     mapping(address user => uint256 amount) public netDeposits;
 
@@ -138,34 +139,50 @@ contract LokHandler {
         accounting.attemptReentrantMutation();
     }
 
-    function settleDraw(uint256 randomWord, uint256 rawPrize) external {
+    function settleDraw(uint256 randomWord, uint256 batchSeed) external {
         ++settleDrawCalls;
-        uint256 available = accounting.availableYield();
-        uint256 prize = rawPrize % (available + 1);
-        if (prize == 0) {
-            _assertSettlementSafety();
-            return;
-        }
-
-        uint256[] memory weights = new uint256[](_participants.length);
-        uint256 totalWeight;
+        uint256[] memory endWeights = new uint256[](_participants.length);
+        uint8[] memory endTheta = new uint8[](_participants.length);
         for (uint256 i; i < _participants.length; ++i) {
             address user = _participants[i];
-            weights[i] = (accounting.balanceOf(user) * uint256(theta[user])) / 4;
-            totalWeight += weights[i];
-        }
-        if (totalWeight == 0) {
-            _assertSettlementSafety();
-            return;
+            endWeights[i] = accounting.balanceOf(user);
+            endTheta[i] = theta[user];
         }
 
-        address winner = draw.settle(_participants, weights, randomWord, prize);
-        if (winner == address(0)) {
-            _assertSettlementSafety();
-            return;
+        uint256 realisedYield = accounting.availableYield();
+        draw.beginProductionSettlement(realisedYield, _participants.length, randomWord);
+        _applyPostEndAction(batchSeed);
+        _assertSettlementSafety();
+
+        uint256 cursor;
+        while (cursor < _participants.length) {
+            uint256 end = cursor + 1 + addmod(batchSeed, cursor, 3);
+            if (end > _participants.length) end = _participants.length;
+            for (uint256 i = cursor; i < end; ++i) {
+                address user = _participants[i];
+                draw.processProductionPassA(user, endWeights[i], endTheta[i]);
+            }
+            cursor = end;
         }
-        accounting.creditFundedYield(winner, prize);
-        ++drawCalls;
+        lastPostEndIsolationHeld = true;
+        for (uint256 i; i < _participants.length; ++i) {
+            uint256 expectedBaseRisk = (endWeights[i] * (endTheta[i] < 4 ? endTheta[i] : 4)) / 4;
+            if (draw.lastBaseWeight(_participants[i]) != expectedBaseRisk) lastPostEndIsolationHeld = false;
+        }
+        draw.finalizeProductionPassA();
+        cursor = 0;
+        while (cursor < _participants.length) {
+            uint256 end = cursor + 1 + addmod(batchSeed, cursor, 2);
+            if (end > _participants.length) end = _participants.length;
+            for (uint256 i = cursor; i < end; ++i) {
+                uint256 credit = draw.processProductionPassB(_participants[i]);
+                if (credit != 0) accounting.creditFundedYield(_participants[i], credit);
+                _assertSettlementSafety();
+            }
+            cursor = end;
+        }
+        draw.completeProductionSettlement();
+        if (draw.lastAllocatedTotal() != 0) ++drawCalls;
         _assertSettlementSafety();
     }
 
@@ -188,6 +205,20 @@ contract LokHandler {
     function _debitNetDeposit(address user, uint256 moved) private {
         uint256 debit = moved < netDeposits[user] ? moved : netDeposits[user];
         netDeposits[user] -= debit;
+    }
+
+    function _applyPostEndAction(uint256 seed) private {
+        address user = _user(seed);
+        if (seed & 1 == 0) {
+            uint256 moved = _amount(seed);
+            accounting.deposit(user, moved);
+            netDeposits[user] += moved;
+        } else {
+            uint256 moved = seed % (accounting.balanceOf(user) + 1);
+            accounting.withdraw(user, moved);
+            _debitNetDeposit(user, moved);
+        }
+        theta[user] = uint8((uint256(theta[user]) + 1) % 5);
     }
 
     function _assertSettlementSafety() private view {

@@ -17,9 +17,32 @@ contract LokDrawReference {
     uint256 public totalPrizeSettled;
     uint256 public totalPrizeCredited;
     uint256 public voidDraws;
+    uint256 public lastRealisedYield;
+    uint256 public lastPrizeAmount;
+    uint256 public lastDirectCreditTotal;
+    uint256 public lastAllocatedTotal;
+    uint256 public lastPassACursor;
+    uint256 public lastPassBCursor;
+    bool public lastPassAExactlyOnce = true;
+    bool public lastPassBExactlyOnce = true;
+    bool public lastFundedAllocationBounded = true;
     bool public lastPartitionExact = true;
     bool public lastPrefixWithinEuint64 = true;
     bool public lastForgedOutcomeRejected = true;
+
+    uint256 private _productionNonce;
+    uint256 private _productionExpected;
+    uint256 private _productionRandomWord;
+    uint256 private _productionTotalBaseRisk;
+    uint256 private _productionTotalYieldWeight;
+    uint256 private _productionTotalEffective;
+    uint256 private _productionDirectRate;
+    uint256 private _productionRandomTicket;
+    mapping(uint256 nonce => mapping(address user => bool processed)) private _productionPassASeen;
+    mapping(uint256 nonce => mapping(address user => bool processed)) private _productionPassBSeen;
+    mapping(uint256 nonce => mapping(address user => uint256 weight)) private _productionDirectWeight;
+    mapping(uint256 nonce => mapping(address user => uint256 start)) private _productionRangeStart;
+    mapping(uint256 nonce => mapping(address user => uint256 end)) private _productionRangeEnd;
 
     error Unauthorized();
 
@@ -37,12 +60,11 @@ contract LokDrawReference {
         controller = controller_;
     }
 
-    function settle(
-        address[] calldata users,
-        uint256[] calldata baseWeights,
-        uint256 randomWord,
-        uint256 prize
-    ) external onlyController returns (address winner) {
+    function settle(address[] calldata users, uint256[] calldata baseWeights, uint256 randomWord, uint256 prize)
+        external
+        onlyController
+        returns (address winner)
+    {
         if (users.length != baseWeights.length) return address(0);
 
         uint256[] memory effectiveWeights = new uint256[](users.length);
@@ -84,11 +106,103 @@ contract LokDrawReference {
         }
     }
 
-    function partitionWinner(
-        address[] calldata users,
-        uint256[] calldata weights,
-        uint256 r
-    ) external pure returns (address winner, uint256 matches) {
+    function beginProductionSettlement(uint256 realisedYield, uint256 expected, uint256 randomWord)
+        external
+        onlyController
+    {
+        ++_productionNonce;
+        _productionExpected = expected;
+        _productionRandomWord = randomWord;
+        _productionTotalBaseRisk = 0;
+        _productionTotalYieldWeight = 0;
+        _productionTotalEffective = 0;
+        _productionDirectRate = 0;
+        _productionRandomTicket = 0;
+        lastRealisedYield = realisedYield;
+        lastPrizeAmount = 0;
+        lastDirectCreditTotal = 0;
+        lastAllocatedTotal = 0;
+        lastPassACursor = 0;
+        lastPassBCursor = 0;
+        lastPassAExactlyOnce = true;
+        lastPassBExactlyOnce = true;
+        lastFundedAllocationBounded = true;
+    }
+
+    function processProductionPassA(address user, uint256 balance, uint8 thetaValue) external onlyController {
+        if (_productionPassASeen[_productionNonce][user]) {
+            lastPassAExactlyOnce = false;
+            return;
+        }
+        _productionPassASeen[_productionNonce][user] = true;
+        _register(user);
+
+        uint256 baseRisk = (balance * (thetaValue < 4 ? thetaValue : 4)) / 4;
+        uint256 boundedFortune = fortune[user] < FORTUNE_CAP ? fortune[user] : FORTUNE_CAP;
+        uint256 boost = (baseRisk * boundedFortune) / FORTUNE_DENOMINATOR;
+        if (boost > (baseRisk >> 1)) boost = baseRisk >> 1;
+        uint256 effective = baseRisk + boost;
+
+        _productionDirectWeight[_productionNonce][user] = balance - baseRisk;
+        _productionRangeStart[_productionNonce][user] = _productionTotalEffective;
+        _productionTotalEffective += effective;
+        _productionRangeEnd[_productionNonce][user] = _productionTotalEffective;
+        _productionTotalBaseRisk += baseRisk;
+        _productionTotalYieldWeight += balance;
+        lastBaseWeight[user] = baseRisk;
+        ++lastPassACursor;
+        if (_productionTotalEffective > type(uint64).max) lastPrefixWithinEuint64 = false;
+    }
+
+    function finalizeProductionPassA() external onlyController {
+        lastPassAExactlyOnce = lastPassAExactlyOnce && lastPassACursor == _productionExpected;
+        if (_productionTotalYieldWeight == 0) {
+            ++voidDraws;
+            return;
+        }
+        lastPrizeAmount = (lastRealisedYield * _productionTotalBaseRisk) / _productionTotalYieldWeight;
+        _productionDirectRate = (lastRealisedYield << 26) / _productionTotalYieldWeight;
+        if (_productionTotalEffective != 0) {
+            _productionRandomTicket = _productionRandomWord % _productionTotalEffective;
+        }
+        totalPrizeSettled += lastPrizeAmount;
+    }
+
+    function processProductionPassB(address user) external onlyController returns (uint256 credit) {
+        if (!_productionPassASeen[_productionNonce][user] || _productionPassBSeen[_productionNonce][user]) {
+            lastPassBExactlyOnce = false;
+            return 0;
+        }
+        _productionPassBSeen[_productionNonce][user] = true;
+        bool won = lastPrizeAmount != 0 && _productionRandomTicket >= _productionRangeStart[_productionNonce][user]
+            && _productionRandomTicket < _productionRangeEnd[_productionNonce][user];
+        uint256 directCredit = (_productionDirectWeight[_productionNonce][user] * _productionDirectRate) >> 26;
+        uint256 userPrize = won ? lastPrizeAmount : 0;
+        credit = directCredit + userPrize;
+        lastDirectCreditTotal += directCredit;
+        lastAllocatedTotal += credit;
+        if (userPrize != 0) {
+            prizeCredit[user] += userPrize;
+            totalPrizeCredited += userPrize;
+            fortune[user] = 0;
+        } else {
+            uint256 next = fortune[user] + 1;
+            fortune[user] = next < FORTUNE_CAP ? next : FORTUNE_CAP;
+        }
+        ++lastPassBCursor;
+        lastFundedAllocationBounded = lastAllocatedTotal <= lastRealisedYield;
+    }
+
+    function completeProductionSettlement() external onlyController {
+        lastPassBExactlyOnce = lastPassBExactlyOnce && lastPassBCursor == _productionExpected;
+        lastFundedAllocationBounded = lastAllocatedTotal <= lastRealisedYield;
+    }
+
+    function partitionWinner(address[] calldata users, uint256[] calldata weights, uint256 r)
+        external
+        pure
+        returns (address winner, uint256 matches)
+    {
         return _partitionWinner(users, weights, r);
     }
 
@@ -123,12 +237,11 @@ contract LokDrawReference {
         return aggregateBoost <= singleBoost;
     }
 
-    function snapshotWeight(
-        uint256 start,
-        uint256 end,
-        uint256 touch,
-        uint256 balance
-    ) external pure returns (uint256) {
+    function snapshotWeight(uint256 start, uint256 end, uint256 touch, uint256 balance)
+        external
+        pure
+        returns (uint256)
+    {
         touch;
         if (end <= start) return 0;
         return balance * (end - start);
@@ -161,10 +274,11 @@ contract LokDrawReference {
         return allocated <= realisedYield;
     }
 
-    function effectiveTotalWithinBounds(
-        uint64[] calldata baseWeights,
-        uint8[] calldata fortunes
-    ) external pure returns (bool) {
+    function effectiveTotalWithinBounds(uint64[] calldata baseWeights, uint8[] calldata fortunes)
+        external
+        pure
+        returns (bool)
+    {
         if (baseWeights.length != fortunes.length) return false;
         uint256 baseTotal;
         uint256 effectiveTotal;
@@ -185,11 +299,11 @@ contract LokDrawReference {
         }
     }
 
-    function _partitionWinner(
-        address[] memory users,
-        uint256[] memory weights,
-        uint256 r
-    ) private pure returns (address winner, uint256 matches) {
+    function _partitionWinner(address[] memory users, uint256[] memory weights, uint256 r)
+        private
+        pure
+        returns (address winner, uint256 matches)
+    {
         if (users.length != weights.length) return (address(0), 0);
 
         uint256 cursor;

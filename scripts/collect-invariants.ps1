@@ -1,205 +1,192 @@
 [CmdletBinding()]
 param(
-    [ValidateRange(1, [int]::MaxValue)]
-    [int]$Sequences = 10000000,
-
-    [ValidateRange(1, 1024)]
-    [int]$Depth = 32,
-
-    [ValidateRange(1, 128)]
-    [int]$ShardsPerCampaign = 28
+    [ValidateRange(1, [int]::MaxValue)] [int]$Sequences = 10000000,
+    [ValidateRange(1, 1024)] [int]$Depth = 32,
+    [ValidateRange(1, 128)] [int]$ShardsPerCampaign = 28
 )
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+. (Join-Path $PSScriptRoot "invariant-evidence.ps1")
 $ArtifactRoot = Join-Path $ProjectRoot "artifacts\invariants"
 $ShardRoot = Join-Path $ArtifactRoot "shards"
-$Forge = "C:\Users\TBC\.foundry\bin\forge.exe"
-$runsPerShard = [int][math]::Ceiling($Sequences / [double]$ShardsPerCampaign)
 
 $campaigns = @(
     [pscustomobject]@{ Name = "safety"; Contract = "LokSafetyInvariantTest" },
     [pscustomobject]@{ Name = "fairness"; Contract = "LokFairnessInvariantTest" }
 )
-
-function New-DeterministicSeed([string]$Campaign, [int]$Shard) {
-    $sha = [System.Security.Cryptography.SHA256]::Create()
-    try {
-        $bytes = [System.Text.Encoding]::UTF8.GetBytes("lok-task10:${Campaign}:${Shard}")
-        $hash = $sha.ComputeHash($bytes)
-        return "0x" + (($hash | ForEach-Object { $_.ToString("x2") }) -join "")
-    }
-    finally {
-        $sha.Dispose()
-    }
-}
-
-function Get-CampaignSelectorSet([string]$Campaign) {
-    if ($Campaign -ne "safety") { return @() }
-    return @(
-        "deposit",
-        "withdraw",
-        "emergencyWithdraw",
-        "exit",
-        "setTheta",
-        "fundYield",
-        "directCredit",
-        "openCheckpoint",
-        "submitCheckpoint",
-        "submitForgedCheckpoint",
-        "moveCustody",
-        "proposeAdapter",
-        "advanceTime",
-        "activateAdapter",
-        "drainRetiringAdapter",
-        "removeRetiringAdapter",
-        "pause",
-        "openDraw",
-        "abortDraw",
-        "attemptReentrantMutation",
-        "submitForgedTotals",
-        "settleDraw"
-    )
-}
-
-$expected = @()
-foreach ($campaign in $campaigns) {
-    for ($shard = 0; $shard -lt $ShardsPerCampaign; ++$shard) {
-        $baseName = "$($campaign.Name)-$($shard.ToString('D3'))"
-        $expected += [pscustomobject]@{
-            Campaign = $campaign.Name
-            Contract = $campaign.Contract
-            Shard = $shard
-            Seed = New-DeterministicSeed $campaign.Name $shard
-            StdoutPath = Join-Path $ShardRoot "$baseName.stdout.log"
-            StderrPath = Join-Path $ShardRoot "$baseName.stderr.log"
-            ExitCodePath = Join-Path $ShardRoot "$baseName.exitcode"
-        }
-    }
-}
-
-$missingLogs = @($expected | Where-Object { -not (Test-Path -LiteralPath $_.StdoutPath -PathType Leaf) })
-if ($missingLogs.Count -ne 0) {
-    throw "Cannot collect: $($missingLogs.Count) expected shard logs do not exist."
-}
-
-$startedAt = ($expected | ForEach-Object { (Get-Item -LiteralPath $_.StdoutPath).CreationTimeUtc } | Sort-Object | Select-Object -First 1)
-$lastProgress = [DateTime]::UtcNow.AddMinutes(-1)
-do {
-    $complete = @($expected | Where-Object { Test-Path -LiteralPath $_.ExitCodePath -PathType Leaf }).Count
-    if (([DateTime]::UtcNow - $lastProgress).TotalSeconds -ge 60) {
-        Write-Output "Completed shard exit files: $complete/$($expected.Count)"
-        $lastProgress = [DateTime]::UtcNow
-    }
-    if ($complete -lt $expected.Count) { Start-Sleep -Seconds 10 }
-} while ($complete -lt $expected.Count)
-
-$completedAt = (
-    $expected |
-        ForEach-Object { (Get-Item -LiteralPath $_.ExitCodePath).LastWriteTimeUtc } |
-        Sort-Object |
-        Select-Object -Last 1
-)
-
-$forgeVersion = (& $Forge --version | Select-Object -First 1).Trim()
-$gitCommit = "unavailable-not-a-git-repository"
-if (Test-Path -LiteralPath (Join-Path $ProjectRoot ".git")) {
-    $gitCommit = (& git -C $ProjectRoot rev-parse HEAD).Trim()
-}
-
+$currentCommit = (& git -C $ProjectRoot rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw "Cannot collect without a Git commit." }
+$allCommits = [System.Collections.Generic.HashSet[string]]::new()
+$codeCommit = $null
+$allForgeVersions = [System.Collections.Generic.HashSet[string]]::new()
+$allSolcVersions = [System.Collections.Generic.HashSet[string]]::new()
+$allNodeVersions = [System.Collections.Generic.HashSet[string]]::new()
 $reports = @()
+
 foreach ($campaign in $campaigns) {
-    $campaignEntries = @($expected | Where-Object { $_.Campaign -eq $campaign.Name })
+    $discovered = @(Get-ChildItem -LiteralPath $ShardRoot -Filter "$($campaign.Name)-*.shard.json" -File)
+    if ($discovered.Count -gt $ShardsPerCampaign) {
+        throw "duplicate shard evidence: expected $ShardsPerCampaign, found $($discovered.Count) for $($campaign.Name)."
+    }
+    if ($discovered.Count -lt $ShardsPerCampaign) {
+        throw "missing shard evidence: expected $ShardsPerCampaign, found $($discovered.Count) for $($campaign.Name)."
+    }
+
+    $seenShards = [System.Collections.Generic.HashSet[int]]::new()
     $campaignSequences = [int64]0
     $campaignCalls = [int64]0
     $campaignReverts = [int64]0
     $campaignExitCode = 0
-    $shardReports = @()
+    $settleDrawCallCount = [int64]0
+    $selectorCallCounts = @{}
+    $validatedShards = @()
     $combined = New-Object System.Text.StringBuilder
+    $startedAtUtc = $null
+    $endedAtUtc = $null
 
-    foreach ($entry in $campaignEntries) {
-        $stdout = [System.IO.File]::ReadAllText($entry.StdoutPath)
-        $stderr = [System.IO.File]::ReadAllText($entry.StderrPath)
-        $match = [regex]::Match(
-            $stdout,
-            "invariant_[^\r\n]*\(runs:\s*([\d,]+),\s*calls:\s*([\d,]+),\s*reverts:\s*([\d,]+)\)"
-        )
-        if (-not $match.Success) {
-            throw "Could not parse invariant counts for $($campaign.Name) shard $($entry.Shard)."
+    for ($shard = 0; $shard -lt $ShardsPerCampaign; ++$shard) {
+        $baseName = "$($campaign.Name)-$($shard.ToString('D3'))"
+        $artifactPath = Join-Path $ShardRoot "$baseName.shard.json"
+        if (-not (Test-Path -LiteralPath $artifactPath -PathType Leaf)) {
+            throw "missing shard $shard for campaign $($campaign.Name)."
+        }
+        $metadata = Get-Content -Raw -Encoding UTF8 -LiteralPath $artifactPath | ConvertFrom-Json
+        if (-not $seenShards.Add([int]$metadata.shard)) {
+            throw "duplicate shard $($metadata.shard) for campaign $($campaign.Name)."
+        }
+        if ([int]$metadata.shard -ne $shard -or [int]$metadata.shardCount -ne $ShardsPerCampaign) {
+            throw "missing shard identity or wrong shard count in $artifactPath."
+        }
+        if ([int]$metadata.depth -ne $Depth) {
+            throw "Shard depth mismatch in $artifactPath."
+        }
+        if ($metadata.campaign -ne $campaign.Name -or $metadata.contract -ne $campaign.Contract) {
+            throw "Shard campaign/contract mismatch in $artifactPath."
+        }
+        if ($metadata.seed -ne (New-DeterministicInvariantSeed $campaign.Name $shard)) {
+            throw "Shard seed mismatch in $artifactPath."
+        }
+        if ([string]$metadata.sourceStatusBeforeRun -ne "") {
+            throw "dirty-source campaign rejected in $artifactPath."
+        }
+        if ([string]::IsNullOrWhiteSpace([string]$metadata.exactCommand) -or
+            [string]::IsNullOrWhiteSpace([string]$metadata.forgeVersion) -or
+            [string]::IsNullOrWhiteSpace([string]$metadata.solcVersion) -or
+            [string]::IsNullOrWhiteSpace([string]$metadata.nodeVersion)) {
+            throw "Shard command/tool provenance is incomplete in $artifactPath."
+        }
+        [void]$allCommits.Add([string]$metadata.gitCommit)
+        [void]$allForgeVersions.Add([string]$metadata.forgeVersion)
+        [void]$allSolcVersions.Add([string]$metadata.solcVersion)
+        [void]$allNodeVersions.Add([string]$metadata.nodeVersion)
+        if ($null -eq $codeCommit) { $codeCommit = [string]$metadata.gitCommit }
+        if ([string]$metadata.gitCommit -ne $codeCommit) {
+            throw "mixed code commits: shard=$($metadata.gitCommit), expected=$codeCommit."
         }
 
-        $actualSequences = [int64]($match.Groups[1].Value.Replace(",", ""))
-        $actualCalls = [int64]($match.Groups[2].Value.Replace(",", ""))
-        $reverts = [int64]($match.Groups[3].Value.Replace(",", ""))
-        $shardExitCode = [int][System.IO.File]::ReadAllText($entry.ExitCodePath)
-        $campaignSequences += $actualSequences
-        $campaignCalls += $actualCalls
-        $campaignReverts += $reverts
-        if ($shardExitCode -ne 0) { $campaignExitCode = $shardExitCode }
+        $stdoutPath = Join-Path $ProjectRoot ([string]$metadata.rawStdout)
+        $stderrPath = Join-Path $ProjectRoot ([string]$metadata.rawStderr)
+        $launchPath = Join-Path $ProjectRoot ([string]$metadata.launchMetadata)
+        if ((Get-FileSha256 $stdoutPath) -ne [string]$metadata.rawStdoutSha256 -or
+            (Get-FileSha256 $stderrPath) -ne [string]$metadata.rawStderrSha256 -or
+            (Get-FileSha256 $launchPath) -ne [string]$metadata.launchMetadataSha256) {
+            throw "hash mismatch for raw shard evidence $baseName."
+        }
+        $launch = Get-Content -Raw -Encoding UTF8 -LiteralPath $launchPath | ConvertFrom-Json
+        foreach ($field in @("campaign", "contract", "shard", "shardCount", "seed", "gitCommit", "exactCommand",
+                "forgeVersion", "solcVersion", "nodeVersion", "startedAtUtc")) {
+            if ([string]$launch.$field -ne [string]$metadata.$field) {
+                throw "Launch metadata mismatch for $baseName/$field."
+            }
+        }
+        if ([string]$launch.sourceStatusBeforeRun -ne "") {
+            throw "dirty-source launch rejected in $launchPath."
+        }
+        $stdout = [System.IO.File]::ReadAllText($stdoutPath)
+        $stderr = [System.IO.File]::ReadAllText($stderrPath)
+        $parsed = Read-ForgeInvariantOutput $stdout
+        if ($parsed.sequences -ne [int64]$metadata.sequences -or
+            $parsed.calls -ne [int64]$metadata.calls -or
+            $parsed.reverts -ne [int64]$metadata.reverts -or
+            $parsed.settleDrawCallCount -ne [int64]$metadata.settleDrawCallCount) {
+            throw "Parsed raw counts disagree with shard metadata for $baseName."
+        }
+        foreach ($property in $parsed.selectorCallCounts.PSObject.Properties) {
+            if ([int64]$metadata.selectorCallCounts.($property.Name) -ne [int64]$property.Value) {
+                throw "Parsed selector count mismatch for $baseName/$($property.Name)."
+            }
+        }
+        if (@($metadata.selectorCallCounts.PSObject.Properties).Count -ne
+            @($parsed.selectorCallCounts.PSObject.Properties).Count) {
+            throw "Parsed selector set mismatch for $baseName."
+        }
 
-        [void]$combined.AppendLine("===== shard $($entry.Shard) seed $($entry.Seed) =====")
+        $campaignSequences += $parsed.sequences
+        $campaignCalls += $parsed.calls
+        $campaignReverts += $parsed.reverts
+        $settleDrawCallCount += $parsed.settleDrawCallCount
+        Add-SelectorCounts $selectorCallCounts $parsed.selectorCallCounts
+        if ([int]$metadata.exitCode -ne 0) { $campaignExitCode = [int]$metadata.exitCode }
+        $validatedShards += $metadata
+        $shardStart = [DateTime]::Parse([string]$metadata.startedAtUtc).ToUniversalTime()
+        $shardEnd = [DateTime]::Parse([string]$metadata.endedAtUtc).ToUniversalTime()
+        if ($null -eq $startedAtUtc -or $shardStart -lt $startedAtUtc) { $startedAtUtc = $shardStart }
+        if ($null -eq $endedAtUtc -or $shardEnd -gt $endedAtUtc) { $endedAtUtc = $shardEnd }
+        [void]$combined.AppendLine("===== shard $shard seed $($metadata.seed) =====")
         [void]$combined.AppendLine($stdout)
-        if ($stderr.Length -gt 0) {
-            [void]$combined.AppendLine("----- stderr -----")
-            [void]$combined.AppendLine($stderr)
-        }
-        $shardReports += [pscustomobject]@{
-            shard = $entry.Shard
-            seed = $entry.Seed
-            sequences = $actualSequences
-            calls = $actualCalls
-            reverts = $reverts
-            exitCode = $shardExitCode
-        }
+        if ($stderr.Length -gt 0) { [void]$combined.AppendLine($stderr) }
     }
 
-    $passed = $campaignExitCode -eq 0 -and $campaignSequences -ge $Sequences -and $campaignReverts -eq 0
-    $durationSeconds = [math]::Round(($completedAt - $startedAt).TotalSeconds, 3)
-    [System.IO.File]::WriteAllText((Join-Path $ArtifactRoot "$($campaign.Name).log"), $combined.ToString())
+    if ($seenShards.Count -ne $ShardsPerCampaign) { throw "missing shard after identity validation." }
+    $settlementSelectorIncluded = $settleDrawCallCount -gt 0
+    $passed = $campaignExitCode -eq 0 -and $campaignSequences -ge $Sequences -and `
+        $campaignReverts -eq 0 -and $settlementSelectorIncluded
+    if (-not $passed) {
+        throw "Campaign $($campaign.Name) failed: sequences=$campaignSequences reverts=$campaignReverts settleDraw=$settleDrawCallCount exit=$campaignExitCode."
+    }
+
+    $rawLogPath = Join-Path $ArtifactRoot "$($campaign.Name).raw.txt"
+    [System.IO.File]::WriteAllText($rawLogPath, $combined.ToString())
+    $rawLogSha256 = Get-FileSha256 $rawLogPath
     $report = [ordered]@{
-        abi = @()
-        campaign = $campaign.Name
-        contract = $campaign.Contract
-        status = if ($passed) { "PASS" } else { "FAIL" }
-        targetSequences = $Sequences
-        sequences = $campaignSequences
-        depth = $Depth
-        calls = $campaignCalls
-        reverts = $campaignReverts
-        shards = $ShardsPerCampaign
-        runsPerShard = $runsPerShard
-        selectorSet = Get-CampaignSelectorSet $campaign.Name
-        settlementSelectorIncluded = $campaign.Name -ne "safety" -or ((Get-CampaignSelectorSet $campaign.Name) -contains "settleDraw")
-        shardResults = $shardReports
-        durationSeconds = $durationSeconds
-        forgeVersion = $forgeVersion
-        gitCommit = $gitCommit
-        generatedAtUtc = [DateTime]::UtcNow.ToString("o")
+        abi = @(); schemaVersion = 2; campaign = $campaign.Name; contract = $campaign.Contract; status = "PASS"
+        targetSequences = $Sequences; sequences = $campaignSequences; depth = $Depth; calls = $campaignCalls
+        reverts = $campaignReverts; shards = $ShardsPerCampaign
+        selectorCallCounts = [pscustomobject]$selectorCallCounts
+        settleDrawCallCount = $settleDrawCallCount; settlementSelectorIncluded = $settlementSelectorIncluded
+        shardResults = $validatedShards; gitCommit = $codeCommit; sourceStatusBeforeRun = ""
+        exactCommand = ".\scripts\collect-invariants.ps1 -Sequences $Sequences -Depth $Depth -ShardsPerCampaign $ShardsPerCampaign"
+        forgeVersion = $validatedShards[0].forgeVersion; solcVersion = $validatedShards[0].solcVersion
+        nodeVersion = $validatedShards[0].nodeVersion
+        startedAtUtc = $startedAtUtc.ToString("o"); endedAtUtc = $endedAtUtc.ToString("o")
+        durationSeconds = [math]::Round(($endedAtUtc - $startedAtUtc).TotalSeconds, 3)
+        rawLog = "artifacts/invariants/$($campaign.Name).raw.txt"; rawLogSha256 = $rawLogSha256
         proofWorker = "codex-current-context-by-owner-exception"
-        independentReview = "PENDING_HUMAN_SIGNOFF"
-        separationException = "Owner authorized the implementation context to execute Task 10 on 2026-08-10; this is not an independent-context review."
-        exitCode = $campaignExitCode
-        log = "artifacts/invariants/$($campaign.Name).log"
+        independentReview = "PENDING_INDEPENDENT_AUDIT"; exitCode = $campaignExitCode
     }
     [System.IO.File]::WriteAllText(
         (Join-Path $ArtifactRoot "$($campaign.Name).json"),
-        ($report | ConvertTo-Json -Depth 8) + [Environment]::NewLine
+        ($report | ConvertTo-Json -Depth 12) + [Environment]::NewLine
     )
     $reports += [pscustomobject]$report
-    if (-not $passed) { throw "Campaign $($campaign.Name) failed collection gate." }
 }
 
+if ($allCommits.Count -ne 1) { throw "mixed code commits across campaigns." }
+& git -C $ProjectRoot merge-base --is-ancestor $codeCommit $currentCommit
+if ($LASTEXITCODE -ne 0) {
+    throw "Evidence code commit $codeCommit is not an ancestor of current commit $currentCommit."
+}
+if ($allForgeVersions.Count -ne 1 -or $allSolcVersions.Count -ne 1 -or $allNodeVersions.Count -ne 1) {
+    throw "mixed tool versions across campaign shards."
+}
 $summary = [ordered]@{
-    abi = @()
-    status = "PASS"
-    requiredSequencesPerCampaign = $Sequences
-    campaigns = $reports
-    generatedAtUtc = [DateTime]::UtcNow.ToString("o")
-    independentReview = "PENDING_HUMAN_SIGNOFF"
+    abi = @(); schemaVersion = 2; status = "PASS"; requiredSequencesPerCampaign = $Sequences
+    gitCommit = $codeCommit; sourceStatusBeforeRun = ""; campaigns = $reports
+    generatedAtUtc = [DateTime]::UtcNow.ToString("o"); independentReview = "PENDING_INDEPENDENT_AUDIT"
 }
 [System.IO.File]::WriteAllText(
     (Join-Path $ArtifactRoot "summary.json"),
-    ($summary | ConvertTo-Json -Depth 10) + [Environment]::NewLine
+    ($summary | ConvertTo-Json -Depth 14) + [Environment]::NewLine
 )
-
-$reports | Format-Table campaign, status, sequences, calls, shards, durationSeconds -AutoSize
+$reports | Format-Table campaign, status, sequences, calls, settleDrawCallCount, shards, durationSeconds -AutoSize

@@ -63,6 +63,7 @@ describe("Lok static privacy surface", function () {
         "acl-uniformity",
         {
           status: "PASS",
+          sourceTestIdentifiers: ["acl-fixture"],
           grantMultisetExact: true,
           winnerGrantCount: 1,
           loserGrantCounts: [1, 1],
@@ -73,12 +74,26 @@ describe("Lok static privacy surface", function () {
         "log-indistinguishability",
         {
           status: "PASS",
-          comparedRawAndParsedPrizeCreditedFields: true,
-          comparedLoserIndices: [0, 2],
+          sourceTestIdentifiers: ["log-fixture"],
+          comparedFullLifecycleRawAndParsedFields: true,
+          comparedEveryWinnerAgainstEveryOther: true,
+          counterfactualWinnerIndices: [0, 1, 2, 3, 4],
+          protocolInfrastructureLogsCompared: false,
+          residual: "protocol logs pending",
         },
         directory,
       );
-      writePrivacyEvidence("gas-indistinguishability", { status: "PASS", globalHcuDelta: 0 }, directory);
+      writePrivacyEvidence(
+        "gas-indistinguishability",
+        {
+          status: "PASS",
+          sourceTestIdentifiers: ["gas-fixture"],
+          allPositionsMeasured: true,
+          sweepAndFinalizationOutcomeIndependent: true,
+          positions: [{}, {}, {}],
+        },
+        directory,
+      );
       const evidence = collectPrivacyEvidence(directory);
       expect(evidence.status).to.equal("PASS");
       expect(Object.keys(evidence.fragments)).to.have.members([
@@ -87,10 +102,10 @@ describe("Lok static privacy surface", function () {
         "gas-indistinguishability",
       ]);
       const report = buildPrivacyReport(directory, "2026-08-11T00:00:00.000Z");
-      expect(report.propositions["P-P1"].status).to.equal("PASS");
+      expect(report.propositions["P-P1"].status).to.equal("FAIL");
       expect(report.propositions["P-P9-ABI"].status).to.equal("PASS");
       expect(report.propositions["P-P9-UX"].status).to.equal("NOT_TESTABLE");
-      expect(report.status).to.equal("PASS");
+      expect(report.status).to.equal("FAIL");
     } finally {
       rmSync(directory, { recursive: true, force: true });
     }
@@ -147,6 +162,11 @@ describe("Lok static privacy surface", function () {
     writePrivacyEvidence("acl-uniformity", {
       status: "PASS",
       proposition: "P-P2",
+      sourceTestIdentifiers: [
+        "test/privacy/acl-uniformity.t.ts:grants each participant exactly one ACL entry on their own prize-credit handle",
+      ],
+      command:
+        'npx hardhat test test/privacy/acl-uniformity.t.ts --grep "grants each participant exactly one ACL entry"',
       participants: fixture.participants.length,
       grantMultisetExact: true,
       expectedPairs,

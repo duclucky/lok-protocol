@@ -16,7 +16,10 @@ param(
     [int]$Threads,
 
     [Parameter(Mandatory = $true)]
-    [string]$ExitCodePath
+    [string]$ExitCodePath,
+
+    [Parameter(Mandatory = $true)]
+    [string]$EndedAtPath
 )
 
 $ErrorActionPreference = "Continue"
@@ -24,4 +27,5 @@ Set-Location -LiteralPath $ProjectRoot
 & $Forge test --match-contract "^$Contract$" --match-test "^invariant_" --fuzz-seed $Seed --threads $Threads -vv
 $code = $LASTEXITCODE
 [System.IO.File]::WriteAllText($ExitCodePath, $code.ToString())
+[System.IO.File]::WriteAllText($EndedAtPath, [DateTime]::UtcNow.ToString("o"))
 exit $code

@@ -87,7 +87,7 @@ burned amount and does not change encrypted Lok accounting. Participant removal 
 ### Funded Prize and Direct-Yield Credit
 
 Let `Y` be realised funded yield and `W` total yield weight. Let `B` be total base-risk weight and
-`D = sum(d_i) = W - B` be total direct weight. With `Q = 2^32`, production computes:
+`D = sum(d_i) = W - B` be total direct weight. With `Q = 2^26`, production computes:
 
 ```text
 prizeAmount = floor(Y * B / W)

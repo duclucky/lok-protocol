@@ -1,9 +1,12 @@
+import { FhevmType } from "@fhevm/hardhat-plugin";
 import { expect } from "chai";
 import { Result } from "ethers";
 import { fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
 import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
+import { forceDrawRandom } from "./forced-random";
+import { findFunction, loadSourceAst, outcomeBindingShape, type AstNode, walkAst } from "../ast/solidity";
 
 type DrawInfo = Result & {
   tEnd: bigint;
@@ -60,13 +63,73 @@ async function reachAwaitTotal(participantCount: number, yieldAmount = 0n, zeroT
 }
 
 async function totalsProof(draw: Awaited<ReturnType<typeof reachAwaitTotal>>["draw"]): Promise<TotalsProof> {
-  const info = (await read(draw, "drawInfo", [1n])) as DrawInfo;
+  const currentDrawId = (await read(draw, "drawId")) as bigint;
+  const info = (await read(draw, "drawInfo", [currentDrawId])) as DrawInfo;
   const handles = [asHandle(info.cumRunning), asHandle(info.cumBaseRiskRunning), asHandle(info.cumYieldRunning)];
   const decrypted = await fhevm.publicDecrypt(handles);
   return {
     cleartexts: decrypted.abiEncodedClearValues,
     proof: decrypted.decryptionProof,
     totals: handles.map((handle) => decrypted.clearValues[handle] as bigint),
+  };
+}
+
+async function passAResult(
+  fixture: Awaited<ReturnType<typeof reachAwaitTotal>>,
+  preSyncBatches: bigint[],
+  crankBatches: bigint[],
+) {
+  for (const batch of preSyncBatches) await write(fixture.draw, "preSyncA", [batch]);
+  for (const batch of crankBatches) await write(fixture.draw, "crankA", [batch]);
+  const proof = await totalsProof(fixture.draw);
+  await write(fixture.draw, "submitTotals", [proof.cleartexts, proof.proof]);
+  const currentDrawId = (await read(fixture.draw, "drawId")) as bigint;
+  const info = (await read(fixture.draw, "drawInfo", [currentDrawId])) as DrawInfo;
+  const participants: string[] = [];
+  for (let index = 0; index < 5; index += 1) {
+    participants.push((await read(fixture.vault, "participantAt", [BigInt(index)])) as string);
+  }
+  return {
+    participants,
+    totals: [info.totalTickets, info.totalBaseRiskWeight, info.totalYieldWeight],
+    realisedYield: info.realisedYield,
+    prizeAmount: info.prizeAmount,
+    directRate: info.directRate,
+    state: await read(fixture.draw, "state"),
+  };
+}
+
+async function passBResult(fixture: Awaited<ReturnType<typeof reachAwaitTotal>>, batches: bigint[]) {
+  for (const batch of batches) await write(fixture.draw, "crankB", [batch]);
+  const credits: bigint[] = [];
+  const directCredits: bigint[] = [];
+  const fortunes: bigint[] = [];
+  for (const user of fixture.users.slice(0, 5)) {
+    const creditHandle = asHandle((await read(fixture.draw, "prizeCredit", [1n, user.address])) as bigint);
+    const credit = await fhevm.userDecryptEuint(FhevmType.euint64, creditHandle, await fixture.draw.getAddress(), user);
+    credits.push(credit);
+    const balanceHandle = asHandle((await read(fixture.vault, "confidentialBalanceOf", [user.address])) as bigint);
+    const balance = await fhevm.userDecryptEuint(
+      FhevmType.euint64,
+      balanceHandle,
+      await fixture.vault.getAddress(),
+      user,
+    );
+    directCredits.push(balance - 1_000_000n - credit);
+    const fortuneHandle = asHandle((await read(fixture.vault, "fortuneOf", [user.address])) as bigint);
+    fortunes.push(
+      await fhevm.userDecryptEuint(FhevmType.euint16, fortuneHandle, await fixture.vault.getAddress(), user),
+    );
+  }
+  const info = (await read(fixture.draw, "drawInfo", [1n])) as DrawInfo;
+  return {
+    winnerIndex: credits.findIndex((credit) => credit !== 0n),
+    credits,
+    directCredits,
+    fortunes,
+    prizeAmount: info.prizeAmount,
+    settled: info.settled,
+    state: await read(fixture.draw, "state"),
   };
 }
 
@@ -173,5 +236,101 @@ describe("LokDrawManager outcome integrity", function () {
 
     await expect(fixture.draw.getFunction("submitTotals")(stale.cleartexts, stale.proof)).to.be.reverted;
     expect(await read(fixture.draw, "state")).to.equal(3n);
+  });
+
+  it("refines identical PASS A totals across varied valid batch partitions", async function () {
+    const variants = [
+      { pre: [4n, 1n], crank: [3n, 2n] },
+      { pre: [1n, 4n], crank: [1n, 1n, 3n] },
+      { pre: [2n, 3n], crank: [2n, 2n, 1n] },
+      { pre: [3n, 2n], crank: [1n, 3n, 1n] },
+    ];
+    let expected: Awaited<ReturnType<typeof passAResult>> | undefined;
+    for (const variant of variants) {
+      const fixture = await deployDrawFixture();
+      for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+      await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 1_003n]);
+      await write(fixture.draw, "openDraw", [false]);
+      const opened = (await read(fixture.draw, "drawInfo", [1n])) as DrawInfo;
+      await time.increaseTo(opened.tEnd + ((await read(fixture.draw, "MIN_SETTLE_DELAY")) as bigint));
+      const actual = await passAResult(fixture, variant.pre, variant.crank);
+      if (expected === undefined) expected = actual;
+      else expect(actual).to.deep.equal(expected);
+    }
+  });
+
+  it("refines identical winner, prize, direct credits, and completion across PASS B partitions", async function () {
+    const variants = [
+      [2n, 2n, 1n],
+      [1n, 2n, 2n],
+      [1n, 1n, 1n, 1n, 1n],
+      [2n, 1n, 2n],
+    ];
+    let expected: Awaited<ReturnType<typeof passBResult>> | undefined;
+    for (const variant of variants) {
+      const fixture = await reachAwaitTotal(5, 1_003n);
+      const proof = await totalsProof(fixture.draw);
+      await write(fixture.draw, "submitTotals", [proof.cleartexts, proof.proof]);
+      await write(fixture.draw, "openRandom");
+      await forceDrawRandom(fixture.draw, 1n, 0n);
+      const actual = await passBResult(fixture, variant);
+      if (expected === undefined) expected = actual;
+      else expect(actual).to.deep.equal(expected);
+    }
+  });
+
+  it("submits every representable invalid input class and preserves protected state", async function () {
+    const fixture = await reachAwaitTotal(5, 1_000n);
+    const proof = await totalsProof(fixture.draw);
+    const protectedState = async () => ({
+      state: await read(fixture.draw, "state"),
+      cursor: await read(fixture.draw, "cursor"),
+      drawId: await read(fixture.draw, "drawId"),
+      info: await read(fixture.draw, "drawInfo", [1n]),
+    });
+    const before = await protectedState();
+
+    await expect(fixture.draw.getFunction("submitTotals")("0x", "0x")).to.be.reverted;
+    expect(await protectedState()).to.deep.equal(before);
+    await expect(fixture.draw.getFunction("submitTotals")(proof.cleartexts, tamperLastByte(proof.proof))).to.be
+      .reverted;
+    expect(await protectedState()).to.deep.equal(before);
+    await expect(fixture.draw.getFunction("crankB")(1n)).to.be.revertedWithCustomError(fixture.draw, "InvalidState");
+    expect(await protectedState()).to.deep.equal(before);
+    await expect(fixture.draw.getFunction("openRandom")()).to.be.revertedWithCustomError(fixture.draw, "InvalidState");
+    expect(await protectedState()).to.deep.equal(before);
+
+    const crankAInputs = fixture.draw.interface.getFunction("crankA")?.inputs.map((input) => input.name);
+    const crankBInputs = fixture.draw.interface.getFunction("crankB")?.inputs.map((input) => input.name);
+    const randomInputs = fixture.draw.interface.getFunction("openRandom")?.inputs;
+    expect(crankAInputs).to.deep.equal(["batch"]);
+    expect(crankBInputs).to.deep.equal(["batch"]);
+    expect(randomInputs).to.have.length(0);
+    expect(fixture.draw.interface.getFunction("submitTotals")?.inputs.map((input) => input.name)).to.deep.equal([
+      "abiEncodedCleartexts",
+      "decryptionProof",
+    ]);
+  });
+
+  it("binds decoded totals to current aggregate handles and catches a caller-steering mutation", function () {
+    const submitTotals = findFunction(loadSourceAst("contracts/LokDrawManager.sol"), "submitTotals");
+    expect(outcomeBindingShape(submitTotals)).to.deep.equal({
+      signedCurrentAggregateHandles: ["cumBaseRiskRunning", "cumRunning", "cumYieldRunning"],
+      decodedAssignments: ["totalBaseRiskWeight", "totalTickets", "totalYieldWeight"],
+    });
+
+    const mutant = structuredClone(submitTotals) as AstNode;
+    let mutated = false;
+    walkAst(mutant, (node) => {
+      if (mutated || node.nodeType !== "Assignment") return;
+      const left = node.leftHandSide as AstNode | undefined;
+      const right = node.rightHandSide as AstNode | undefined;
+      if (left?.nodeType === "MemberAccess" && left.memberName === "totalTickets" && right?.nodeType === "Identifier") {
+        right.name = "callerTotal";
+        mutated = true;
+      }
+    });
+    expect(mutated).to.equal(true);
+    expect(outcomeBindingShape(mutant).decodedAssignments).to.not.include("totalTickets");
   });
 });

@@ -63,6 +63,10 @@ contract LokSafetyInvariantTest is StdInvariant, Test {
         assertTrue(accounting.lastForgedCheckpointRejected(), "P-O1 forged checkpoint accepted");
         assertTrue(accounting.lastReentrantMutationBlocked(), "P-S8 reentrant mutation accepted");
         assertTrue(draw.lastForgedOutcomeRejected(), "P-O1 forged outcome accepted");
+        assertTrue(draw.lastPassAExactlyOnce(), "P-S2 PASS A cursor consumed a participant twice");
+        assertTrue(draw.lastPassBExactlyOnce(), "P-S2 PASS B cursor consumed a participant twice");
+        assertTrue(draw.lastFundedAllocationBounded(), "P-S2 settlement exceeded realised funded yield");
+        assertTrue(handler.lastPostEndIsolationHeld(), "P-S2 PASS A used state changed after tEnd");
         assertEq(draw.totalPrizeCredited(), draw.totalPrizeSettled(), "P-S3 prize mismatch");
         assertEq(draw.sumPrizeCredits(), draw.totalPrizeCredited(), "P-S3 credit sum mismatch");
     }
@@ -106,5 +110,22 @@ contract LokSafetyInvariantTest is StdInvariant, Test {
         handler.attemptReentrantMutation();
         assertEq(accounting.totalLiability(), liabilityBefore);
         assertTrue(accounting.lastReentrantMutationBlocked());
+    }
+
+    function test_P_S2_SettlementAllocatesZeroRiskDirectYield() external {
+        handler.deposit(0, 100);
+        handler.deposit(1, 200);
+        handler.deposit(2, 300);
+        handler.setTheta(0, 0);
+        handler.setTheta(1, 0);
+        handler.setTheta(2, 0);
+        handler.fundYield(99);
+
+        handler.settleDraw(17, 1);
+
+        assertLt(accounting.availableYield(), 99, "P-S2 settlement skipped funded direct yield");
+        assertGt(accounting.balanceOf(address(0x1001)), 100, "P-S2 first direct credit missing");
+        assertGt(accounting.balanceOf(address(0x1002)), 200, "P-S2 second direct credit missing");
+        assertGt(accounting.balanceOf(address(0x1003)), 300, "P-S2 third direct credit missing");
     }
 }

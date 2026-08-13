@@ -220,13 +220,19 @@ The Foundry defaults in `foundry.toml` are intentionally small (`64` invariant r
 checks. They are not the tier-A evidence. Reproduce the audited sharded campaign with the PowerShell runner:
 
 ```powershell
-.\scripts\run-invariants.ps1 -Campaign safety -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28 -ThreadsPerShard 1
-.\scripts\run-invariants.ps1 -Campaign fairness -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28 -ThreadsPerShard 1
+.\scripts\run-invariants.ps1 -Campaign all -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28 -ThreadsPerShard 1
 ```
 
 The runner writes `artifacts/invariants/{safety,fairness,summary}.json`, records the Git commit hash, and includes the
-actual sequence and call counts parsed from Forge. The safety selector set must include `settleDraw`; `directCredit`
-alone is not settlement evidence.
+actual sequence and call counts parsed from Forge. It rejects a dirty worktree and retains each shard's raw
+stdout/stderr as `.txt` files with SHA-256 hashes in the shard metadata. Re-parse and validate the committed evidence
+independently with:
+
+```powershell
+.\scripts\collect-invariants.ps1 -Sequences 10000000 -Depth 32 -ShardsPerCampaign 28
+```
+
+The safety selector set must include `settleDraw`; `directCredit` alone is not settlement evidence.
 
 Sepolia deployment, keeper, verifier and benchmark commands require local secret variables described in
 [`docs/11-tooling.md`](docs/11-tooling.md). No private key, mnemonic or provider API key belongs in the repository.

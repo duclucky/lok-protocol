@@ -41,6 +41,7 @@ export async function encrypt64(contract: BaseContract, signer: HardhatEthersSig
 export async function deployVaultFixture(
   adapterName = "MockYieldAdapter",
   useDrawHarness = false,
+  tokenName = "YieldInjectingERC7984",
 ): Promise<VaultFixture> {
   const [owner, alice, outsider] = await ethers.getSigners();
 
@@ -48,7 +49,7 @@ export async function deployVaultFixture(
   const underlying = await underlyingFactory.deploy();
   await underlying.waitForDeployment();
 
-  const tokenFactory = await ethers.getContractFactory("YieldInjectingERC7984");
+  const tokenFactory = await ethers.getContractFactory(tokenName);
   const token = await tokenFactory.deploy(await underlying.getAddress());
   await token.waitForDeployment();
 

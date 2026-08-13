@@ -117,6 +117,45 @@ describe("LokVault confidential solvency checkpoints", function () {
     ).to.be.reverted;
   });
 
+  it("rejects wrong and duplicate nonces without authorizing protected risk state", async function () {
+    const fixture = await deployVaultFixture();
+    const checkpoint = await openAndDecryptCheckpoint(fixture.vault);
+    const protectedBefore = {
+      epoch: await read(fixture.vault, "riskEpoch"),
+      lastSolvent: await read(fixture.vault, "lastSolventRiskEpoch"),
+      restricted: await read(fixture.vault, "restricted"),
+      pending: await read(fixture.vault, "hasPendingSolvencyCheckpoint"),
+      handle: await read(fixture.vault, "pendingSolvencyHandle"),
+    };
+    await expect(
+      fixture.vault.getFunction("submitSolvencyCheckpoint")(
+        checkpoint.epoch,
+        checkpoint.nonce + 1n,
+        checkpoint.abiEncodedCleartexts,
+        checkpoint.proof,
+      ),
+    ).to.be.revertedWithCustomError(fixture.vault, "WrongNonce");
+    expect({
+      epoch: await read(fixture.vault, "riskEpoch"),
+      lastSolvent: await read(fixture.vault, "lastSolventRiskEpoch"),
+      restricted: await read(fixture.vault, "restricted"),
+      pending: await read(fixture.vault, "hasPendingSolvencyCheckpoint"),
+      handle: await read(fixture.vault, "pendingSolvencyHandle"),
+    }).to.deep.equal(protectedBefore);
+
+    await submitCheckpoint(fixture.vault, checkpoint);
+    const authorized = await read(fixture.vault, "lastSolventRiskEpoch");
+    await expect(
+      fixture.vault.getFunction("submitSolvencyCheckpoint")(
+        checkpoint.epoch,
+        checkpoint.nonce,
+        checkpoint.abiEncodedCleartexts,
+        checkpoint.proof,
+      ),
+    ).to.be.revertedWithCustomError(fixture.vault, "NoPendingCheckpoint");
+    expect(await read(fixture.vault, "lastSolventRiskEpoch")).to.equal(authorized);
+  });
+
   it("cannot remove a non-drained retiring adapter", async function () {
     const fixture = await deployVaultFixture();
     const initial = await openAndDecryptCheckpoint(fixture.vault);
