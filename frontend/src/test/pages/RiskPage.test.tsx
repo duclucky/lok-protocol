@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -9,13 +9,28 @@ describe("RiskPage", () => {
     render(<RiskPage />);
 
     expect(screen.getByRole("radio", { name: /100%/i })).toBeChecked();
-    expect(screen.getByText(/nobody can see this setting/i)).toBeVisible();
+    expect(screen.getByText(/selection is encrypted before it is submitted/i)).toBeVisible();
   });
 
   it("does not expose an estimated odds value", () => {
-    render(<RiskPage />);
+    const { container } = render(<RiskPage />);
 
     expect(screen.queryByText(/estimated odds/i)).not.toBeInTheDocument();
+    expect(container).not.toHaveTextContent(/LTV|liquidation|slashing|multiplier|insurance/i);
+  });
+
+  it("keeps the saved setting sealed separately from the editable target", async () => {
+    const user = userEvent.setup();
+    const revealTheta = vi.fn().mockResolvedValue(50);
+    render(<RiskPage revealTheta={revealTheta} />);
+
+    expect(screen.getByRole("radio", { name: /100%/i })).toBeChecked();
+    const savedSetting = screen.getByRole("region", { name: /saved risk setting/i });
+    expect(within(savedSetting).queryByText("50%")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /reveal saved risk setting/i }));
+    expect(await within(savedSetting).findByText("50%")).toBeVisible();
+    expect(revealTheta).toHaveBeenCalledOnce();
+    expect(screen.getByRole("radio", { name: /100%/i })).toBeChecked();
   });
 
   it("submits the selected encrypted risk setting", async () => {

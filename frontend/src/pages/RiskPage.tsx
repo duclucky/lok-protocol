@@ -2,12 +2,19 @@ import { LockKeyhole, Save, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
+import { SealedValue } from "../components/SealedValue";
 import { riskSettings, type RiskSetting } from "../features/vault/model";
 import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
 
-type RiskPageProps = { action?: Pick<LokTransactionActions, "pending" | "setRisk"> };
+type RiskPageProps = {
+  action?: Pick<LokTransactionActions, "pending" | "setRisk">;
+  revealTheta?: () => Promise<number>;
+};
 
-export function RiskPage({ action }: RiskPageProps = {}) {
+export function RiskPage({
+  action,
+  revealTheta = () => Promise.reject(new Error("Wallet decryption is not ready")),
+}: RiskPageProps = {}) {
   const [risk, setRisk] = useState<RiskSetting>(100);
   const [message, setMessage] = useState<string | undefined>();
   const selected = riskSettings.find((setting) => setting.value === risk) ?? riskSettings[0];
@@ -30,12 +37,21 @@ export function RiskPage({ action }: RiskPageProps = {}) {
     <div className="page page--risk">
       <PageHeader title="Risk dial" description="Choose how your yield participates in prizes." />
 
+      <section className="saved-setting" aria-label="Saved risk setting">
+        <div>
+          <p className="section-label">Current encrypted value</p>
+          <h2>Saved risk setting</h2>
+          <p>The clear value is available only through your wallet's explicit decryption permit.</p>
+        </div>
+        <SealedValue label="saved risk setting" reveal={async () => `${await revealTheta()}%`} />
+      </section>
+
       <section className="risk-control" aria-labelledby="risk-choice-title">
         <div className="risk-control__intro">
           <LockKeyhole aria-hidden="true" size={22} />
           <div>
-            <h2 id="risk-choice-title">Your private setting</h2>
-            <p>Nobody can see this setting: not other depositors, not Lok, not the network.</p>
+            <h2 id="risk-choice-title">Choose a new target</h2>
+            <p>Your selection is encrypted before it is submitted to LokVault.</p>
           </div>
         </div>
         <fieldset className="risk-options">

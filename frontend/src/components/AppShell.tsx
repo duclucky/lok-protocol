@@ -1,4 +1,4 @@
-import { BadgeCheck, CircleDollarSign, Dices, Gauge, Landmark, LockKeyhole, ShieldCheck } from "lucide-react";
+import { BadgeCheck, CircleDollarSign, Dices, Gauge, Landmark, LockKeyhole } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 import { sepoliaDeploymentAddresses } from "../contracts/addresses";
@@ -40,27 +40,33 @@ export function AppShell() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <header className="topbar">
+      <aside className="sidebar">
         <NavLink className="brand" to="/" aria-label="Lok Protocol home">
-          <span className="brand__mark">
-            <ShieldCheck aria-hidden="true" size={22} />
-          </span>
-          <span>
-            <strong>LOK</strong>
-            <small>Sealed savings</small>
-          </span>
+          <strong>LOK</strong>
+          <small>Confidential prize savings</small>
         </NavLink>
         <PrimaryNav className="desktop-nav" label="Primary navigation" />
-        <div className="topbar__actions">
+        <NavLink className="why-link" to="/why-encrypted">
+          <LockKeyhole aria-hidden="true" size={16} /> Why encrypted?
+        </NavLink>
+        <div className="sidebar-wallet">
           <div className="chain-label">
             <span className="network-dot" aria-hidden="true" />
             Sepolia
           </div>
-          <NavLink className="why-link" to="/why-encrypted">
-            <LockKeyhole aria-hidden="true" size={16} /> Why encrypted?
-          </NavLink>
           <WalletButton />
         </div>
+      </aside>
+
+      <header className="topbar">
+        <NavLink className="mobile-brand" to="/" aria-label="Lok Protocol home">
+          LOK
+        </NavLink>
+        <div className="chain-label">
+          <span className="network-dot" aria-hidden="true" />
+          Sepolia
+        </div>
+        <WalletButton />
       </header>
 
       <div className="app-frame">

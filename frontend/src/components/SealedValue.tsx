@@ -6,6 +6,7 @@ type SealedValueProps = {
   reveal: () => Promise<string>;
   autoHideMs?: number;
   valueTone?: "default" | "prize";
+  errorMessage?: string;
 };
 
 type ViewState =
@@ -14,7 +15,13 @@ type ViewState =
   | { status: "revealed"; value: string }
   | { status: "failed" };
 
-export function SealedValue({ label, reveal, autoHideMs = 60_000, valueTone = "default" }: SealedValueProps) {
+export function SealedValue({
+  label,
+  reveal,
+  autoHideMs = 60_000,
+  valueTone = "default",
+  errorMessage = "Could not reach the decryption network. This private read failed.",
+}: SealedValueProps) {
   const [state, setState] = useState<ViewState>({ status: "sealed" });
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -66,7 +73,7 @@ export function SealedValue({ label, reveal, autoHideMs = 60_000, valueTone = "d
       </div>
       {state.status === "failed" ? (
         <div className="sealed-value__error" role="alert">
-          <span>Could not reach the decryption network. Your funds are safe; this read failed.</span>
+          <span>{errorMessage}</span>
           <button className="text-button" type="button" onClick={() => void revealValue()}>
             <RefreshCw aria-hidden="true" size={16} /> Retry
           </button>

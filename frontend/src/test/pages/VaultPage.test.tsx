@@ -41,7 +41,9 @@ const publicData: LokPublicData = {
 
 describe("VaultPage", () => {
   it("renders public pool data immediately while the private balance stays sealed", () => {
-    render(<VaultPage publicData={publicData} nowMs={1_786_500_000_000} />, { wrapper: MemoryRouter });
+    const { container } = render(<VaultPage publicData={publicData} nowMs={1_786_500_000_000} />, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.getByText(/current prize/i)).toBeVisible();
     expect(screen.getAllByText("5.00 cUSDC funded")).toHaveLength(2);
@@ -50,6 +52,7 @@ describe("VaultPage", () => {
     expect(screen.queryByText("38")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /reveal your balance/i })).toBeVisible();
     expect(screen.queryByText("12,480.00 cUSDC")).not.toBeInTheDocument();
+    expect(container).not.toHaveTextContent(/LTV|liquidation|slashing|multiplier|insurance/i);
   });
 
   it("opens an actionable withdrawal form from the primary vault command", async () => {

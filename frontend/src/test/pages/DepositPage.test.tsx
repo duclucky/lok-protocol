@@ -34,6 +34,29 @@ describe("DepositPage", () => {
     );
   });
 
+  it("shows only real wallet funding data and keeps cUSDC sealed", async () => {
+    const user = userEvent.setup();
+    const revealWalletCusdc = vi.fn().mockResolvedValue("7.50 cUSDC");
+    render(
+      <DepositPage
+        walletData={{ status: "ready", publicUsdc: "12.34 USDC" }}
+        revealWalletCusdc={revealWalletCusdc}
+      />,
+      { wrapper: MemoryRouter },
+    );
+
+    expect(screen.queryByText("7.50 cUSDC")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /reveal wallet cusdc balance/i }));
+    expect(await screen.findByText("7.50 cUSDC")).toBeVisible();
+    await user.click(screen.getByRole("radio", { name: /public usdc/i }));
+    expect(screen.getByText("12.34 USDC")).toBeVisible();
+  });
+
+  it("does not introduce fabricated lending or insurance concepts", () => {
+    const { container } = render(<DepositPage />, { wrapper: MemoryRouter });
+    expect(container).not.toHaveTextContent(/LTV|liquidation|slashing|multiplier|insurance|fee/i);
+  });
+
   it("keeps mint, shield and private deposit as explicit transactions", async () => {
     const user = userEvent.setup();
     const mintTestTokens = vi.fn().mockResolvedValue("0xmint");

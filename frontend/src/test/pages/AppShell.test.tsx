@@ -10,7 +10,7 @@ vi.mock("../../components/WalletButton", () => ({
 }));
 
 describe("AppShell", () => {
-  it("uses a desktop top navigation and a separate mobile bottom navigation", () => {
+  it("uses a desktop utility sidebar and a separate mobile bottom navigation", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <Routes>
@@ -21,12 +21,15 @@ describe("AppShell", () => {
       </MemoryRouter>,
     );
 
-    const header = screen.getByRole("banner");
-    const desktopNav = within(header).getByRole("navigation", { name: "Primary navigation" });
+    const sidebar = screen.getByRole("complementary");
+    const desktopNav = within(sidebar).getByRole("navigation", { name: "Primary navigation" });
     expect(within(desktopNav).getAllByRole("link")).toHaveLength(5);
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
-    expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Why encrypted?" })).toHaveAttribute("href", "/why-encrypted");
+    expect(within(sidebar).getByRole("link", { name: "Why encrypted?" })).toHaveAttribute(
+      "href",
+      "/why-encrypted",
+    );
+    expect(within(sidebar).getByRole("button", { name: "Connect wallet" })).toBeVisible();
     expect(screen.queryByRole("button", { name: /language/i })).not.toBeInTheDocument();
   });
 

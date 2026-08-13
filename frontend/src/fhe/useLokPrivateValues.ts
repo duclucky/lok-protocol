@@ -1,4 +1,4 @@
-import { useDecryptValues, useGrantPermit, useHasPermit, useZamaSDK } from "@zama-fhe/react-sdk";
+import { useGrantPermit, useHasPermit, useZamaSDK } from "@zama-fhe/react-sdk";
 import { useCallback, useMemo } from "react";
 import { type Hex, zeroAddress } from "viem";
 import { useAccount, useReadContract } from "wagmi";
@@ -9,10 +9,6 @@ import { formatUsdc, ZERO_BYTES32 } from "../features/public-data/model";
 import { clearBigIntValue, clearBoolean, thetaValueToPercent } from "./private-value-model";
 
 const { confidentialToken, drawManager, vault } = sepoliaDeploymentAddresses;
-
-function encryptedInput(handle: Hex | undefined, contractAddress: Hex) {
-  return handle === undefined || handle === ZERO_BYTES32 ? [] : [{ encryptedValue: handle, contractAddress }];
-}
 
 function decryptedValue(values: Readonly<Record<Hex, unknown>> | undefined, handle: Hex): unknown {
   const value = values?.[handle];
@@ -72,21 +68,6 @@ export function useLokPrivateValues(drawId?: bigint): {
   const drawPermit = useHasPermit({ contractAddresses: drawContracts });
   const tokenPermit = useHasPermit({ contractAddresses: tokenContracts });
   const grantPermit = useGrantPermit();
-  const balanceHandle = balanceRead.data;
-  const creditHandle = creditRead.data;
-  const walletCusdcHandle = walletCusdcRead.data;
-  const thetaHandle = thetaRead.data;
-  const balanceInputs = useMemo(() => encryptedInput(balanceHandle, vault), [balanceHandle]);
-  const creditInputs = useMemo(() => encryptedInput(creditHandle, drawManager), [creditHandle]);
-  const walletCusdcInputs = useMemo(
-    () => encryptedInput(walletCusdcHandle, confidentialToken),
-    [walletCusdcHandle],
-  );
-  const thetaInputs = useMemo(() => encryptedInput(thetaHandle, vault), [thetaHandle]);
-  const balanceDecrypt = useDecryptValues(balanceInputs, { enabled: false, retry: false });
-  const creditDecrypt = useDecryptValues(creditInputs, { enabled: false, retry: false });
-  const walletCusdcDecrypt = useDecryptValues(walletCusdcInputs, { enabled: false, retry: false });
-  const thetaDecrypt = useDecryptValues(thetaInputs, { enabled: false, retry: false });
 
   const ensureVaultPermit = useCallback(async () => {
     if (address === undefined) throw new Error("Connect a wallet before revealing a private value.");
@@ -116,35 +97,40 @@ export function useLokPrivateValues(drawId?: bigint): {
   }, [address, grantPermit, tokenPermit]);
 
   const revealBalance = useCallback(async () => {
-    if (balanceRead.error !== null) throw balanceRead.error;
-    if (balanceHandle === undefined) throw new Error("The encrypted balance is not available yet.");
-    if (balanceHandle === ZERO_BYTES32) return formatUsdc(0n);
+    const refreshed = await balanceRead.refetch();
+    if (refreshed.error !== null) throw refreshed.error;
+    const currentHandle = refreshed.data;
+    if (currentHandle === undefined) throw new Error("The encrypted balance is not available yet.");
+    if (currentHandle === ZERO_BYTES32) return formatUsdc(0n);
     await ensureVaultPermit();
-    const result = await balanceDecrypt.refetch();
-    if (result.error !== null) throw result.error;
-    return formatUsdc(clearBigIntValue(decryptedValue(result.data, balanceHandle)));
-  }, [balanceDecrypt, balanceHandle, balanceRead.error, ensureVaultPermit]);
+    const result = await sdk.decryption.decryptValues([{ encryptedValue: currentHandle, contractAddress: vault }]);
+    return formatUsdc(clearBigIntValue(decryptedValue(result, currentHandle)));
+  }, [balanceRead, ensureVaultPermit, sdk.decryption]);
 
   const revealWalletCusdc = useCallback(async () => {
-    if (walletCusdcRead.error !== null) throw walletCusdcRead.error;
-    if (walletCusdcHandle === undefined) throw new Error("The encrypted cUSDC balance is not available yet.");
-    if (walletCusdcHandle === ZERO_BYTES32) return formatUsdc(0n);
+    const refreshed = await walletCusdcRead.refetch();
+    if (refreshed.error !== null) throw refreshed.error;
+    const currentHandle = refreshed.data;
+    if (currentHandle === undefined) throw new Error("The encrypted cUSDC balance is not available yet.");
+    if (currentHandle === ZERO_BYTES32) return formatUsdc(0n);
     await ensureTokenPermit();
-    const result = await walletCusdcDecrypt.refetch();
-    if (result.error !== null) throw result.error;
-    return formatUsdc(clearBigIntValue(decryptedValue(result.data, walletCusdcHandle)));
-  }, [ensureTokenPermit, walletCusdcDecrypt, walletCusdcHandle, walletCusdcRead.error]);
+    const result = await sdk.decryption.decryptValues([
+      { encryptedValue: currentHandle, contractAddress: confidentialToken },
+    ]);
+    return formatUsdc(clearBigIntValue(decryptedValue(result, currentHandle)));
+  }, [ensureTokenPermit, sdk.decryption, walletCusdcRead]);
 
   const revealTheta = useCallback(async () => {
-    if (thetaRead.error !== null) throw thetaRead.error;
-    if (thetaHandle === undefined || thetaHandle === ZERO_BYTES32) {
+    const refreshed = await thetaRead.refetch();
+    if (refreshed.error !== null) throw refreshed.error;
+    const currentHandle = refreshed.data;
+    if (currentHandle === undefined || currentHandle === ZERO_BYTES32) {
       throw new Error("No encrypted risk setting is available for this wallet.");
     }
     await ensureVaultPermit();
-    const result = await thetaDecrypt.refetch();
-    if (result.error !== null) throw result.error;
-    return thetaValueToPercent(decryptedValue(result.data, thetaHandle));
-  }, [ensureVaultPermit, thetaDecrypt, thetaHandle, thetaRead.error]);
+    const result = await sdk.decryption.decryptValues([{ encryptedValue: currentHandle, contractAddress: vault }]);
+    return thetaValueToPercent(decryptedValue(result, currentHandle));
+  }, [ensureVaultPermit, sdk.decryption, thetaRead]);
 
   const revealActionStatus = useCallback(async () => {
     if (actionStatusRead.error !== null) throw actionStatusRead.error;
@@ -162,14 +148,17 @@ export function useLokPrivateValues(drawId?: bigint): {
   }, [actionStatusRead, ensureVaultPermit, sdk.decryption]);
 
   const revealCredit = useCallback(async () => {
-    if (creditRead.error !== null) throw creditRead.error;
-    if (creditHandle === undefined) throw new Error("This draw has no encrypted credit for the connected wallet.");
-    if (creditHandle === ZERO_BYTES32) return 0n;
+    const refreshed = await creditRead.refetch();
+    if (refreshed.error !== null) throw refreshed.error;
+    const currentHandle = refreshed.data;
+    if (currentHandle === undefined) throw new Error("This draw has no encrypted credit for the connected wallet.");
+    if (currentHandle === ZERO_BYTES32) return 0n;
     await ensureDrawPermit();
-    const result = await creditDecrypt.refetch();
-    if (result.error !== null) throw result.error;
-    return clearBigIntValue(decryptedValue(result.data, creditHandle));
-  }, [creditDecrypt, creditHandle, creditRead.error, ensureDrawPermit]);
+    const result = await sdk.decryption.decryptValues([
+      { encryptedValue: currentHandle, contractAddress: drawManager },
+    ]);
+    return clearBigIntValue(decryptedValue(result, currentHandle));
+  }, [creditRead, ensureDrawPermit, sdk.decryption]);
 
   return { revealBalance, revealWalletCusdc, revealTheta, revealActionStatus, revealCredit };
 }

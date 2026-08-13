@@ -3,17 +3,33 @@ import { type FormEvent, useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
 import { ActionStatus } from "../components/ActionStatus";
+import { SealedValue } from "../components/SealedValue";
 import { DemoControl } from "../features/demo/DemoControl";
 import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
+import type { WalletPublicData } from "../features/wallet/model";
 
 type DepositPath = "private" | "public";
 
 type DepositPageProps = {
   actions?: Pick<LokTransactionActions, "deposit" | "mintTestTokens" | "pending" | "shield">;
   revealActionStatus?: () => Promise<boolean>;
+  revealWalletCusdc?: () => Promise<string>;
+  walletData?: WalletPublicData;
 };
 
-export function DepositPage({ actions, revealActionStatus }: DepositPageProps = {}) {
+function publicBalanceLabel(walletData: WalletPublicData): string {
+  if (walletData.status === "ready") return walletData.publicUsdc;
+  if (walletData.status === "error") return walletData.message;
+  if (walletData.status === "loading") return "Reading wallet balance";
+  return "Connect wallet to view";
+}
+
+export function DepositPage({
+  actions,
+  revealActionStatus,
+  revealWalletCusdc = () => Promise.reject(new Error("Wallet decryption is not ready")),
+  walletData = { status: "disconnected" },
+}: DepositPageProps = {}) {
   const [path, setPath] = useState<DepositPath>("private");
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState<string | undefined>();
@@ -136,9 +152,13 @@ export function DepositPage({ actions, revealActionStatus }: DepositPageProps = 
             />
             <span>{path === "private" ? "cUSDC" : "USDC"}</span>
           </div>
-          <div className="available-row">
-            <span>Available</span>
-            <span className="mono">Connect wallet to view</span>
+          <div className="funding-balance" aria-label="Available funding balance">
+            <span>Available in wallet</span>
+            {path === "private" ? (
+              <SealedValue label="wallet cUSDC balance" reveal={revealWalletCusdc} />
+            ) : (
+              <strong className="mono">{publicBalanceLabel(walletData)}</strong>
+            )}
           </div>
           <button
             className="button button--primary button--wide"
