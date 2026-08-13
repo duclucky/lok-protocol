@@ -47,7 +47,7 @@ record in `docs/API-VERIFIED.md`:
 | Operator approval for the vault            | `useConfidentialSetOperator` |
 | Sign the EIP-712 decryption permit         | `useGrantPermit`             |
 | Check whether a permit is cached           | `useHasPermit`               |
-| Decrypt arbitrary handles (our credits, θ) | `useDecryptValues`           |
+| Decrypt arbitrary handles (our credits, θ) | `useDecryptValues` or the SDK decryption client, after refetching the current handle |
 | Encrypt a plaintext input                  | `useEncrypt`                 |
 | Find the cUSDC wrapper for USDC            | `useWrapperDiscovery`        |
 
@@ -56,10 +56,11 @@ record in `docs/API-VERIFIED.md`:
 Decryption requires a signed EIP-712 permit authorising the relayer to serve re-encrypted values for specific contracts.
 Two rules:
 
-- **Request the permit once, early, with an explanation.** A wallet signature prompt appearing unexpectedly when a user
-  clicks "show balance" reads as an attack. Prompt during onboarding: _"Sign once so only you can read your balance."_
-- **Gate `useDecryptValues` on a cached permit.** It is disabled by default for exactly this reason; enabling it without
-  checking `useHasPermit` produces surprise prompts.
+- **Request the permit only after an explicit reveal action, with an explanation.** Never prompt during render or
+  onboarding. The user must understand which private value the signature will allow this device to read.
+- **Gate decryption on a cached permit.** Whether the implementation uses `useDecryptValues` or the SDK decryption
+  client directly, it must first confirm or obtain the permit and refetch the current encrypted handle. Never decrypt a
+  stale handle captured before a state-changing transaction.
 
 Persist permits so a page refresh does not re-prompt.
 
@@ -111,8 +112,9 @@ Copy for each position, written from the user's side:
 | 25%     | Mostly savings | Your yield mostly accrues; a small share buys chances.                 |
 | 0%      | Savings only   | Your yield accrues to your balance. You do not enter draws.            |
 
-Beneath the control: _"Nobody can see this setting — not other depositors, not Lok, not the network."_ That single line
-is the product. Say it where the choice is made.
+Beneath the control: _"Your saved setting is encrypted on-chain. Reveal it only through an explicit wallet permit."_
+Do not claim that infrastructure can observe nothing; public transactions, membership and ciphertext transcripts remain
+observable even when the underlying value is encrypted.
 
 Do **not** display estimated odds. It is technically impossible (the numerator is encrypted and must stay so, per
 invariant I3) and it is also the exact behaviour the thesis identifies as fatal. If a reviewer asks why odds are absent,
@@ -127,16 +129,16 @@ Live view of the state machine. Reviewers judge sophistication here, so make the
   becomes visible — an asset, not something to hide.
 - The randomness commitment: show the handle and the block, labelled _"Committed before any winner was determined.
   Nobody can read this value, including us."_
-- After settlement: the revealed `r`, the total ticket space, and a **"Verify this draw"** button that runs the same
-  checks as `scripts/verify-draw.ts` client-side and prints the result.
+- After settlement: the revealed `r`, the total ticket space, and a link to the external verification evidence. The app
+  must not simulate a verifier or display a local success state unless the complete verifier actually ran.
 - **Your result:** _"Check my result"_ → decrypt your own credit for the draw. Two outcomes only: _"No prize this draw"_
-  or the celebratory reveal with a **"Publish proof"** option.
+  or the celebratory reveal. This is a device-local private read and must not imply that a public proof was published.
 
 ### Proof of win
 
-Only reachable after a user decrypts a non-zero credit. Publishes a public decryption of their own credit handle,
-producing a shareable, independently verifiable proof-of-win card. Copy: _"Only you can do this. Publishing is your
-choice, and it cannot be undone."_
+Only reachable after a user decrypts a non-zero credit. It explains what the private result establishes and links to
+the public draw evidence. Public proof publication is not currently supported. If added later, it requires a separately
+specified and audited public-decryption flow; the frontend must never imitate that flow with a local status message.
 
 ---
 
@@ -159,8 +161,9 @@ Requirements:
 - **Never block the whole screen on a decryption.** Public data renders immediately; private values fill in.
 - **`FAILED` states must be honest and actionable.** _"Couldn't reach the decryption network. Your balance is safe —
   this is a read failure, not a transaction failure. Retry."_ Never a bare "Error".
-- **Cache aggressively.** A decrypted value stays valid until the underlying handle changes. Refetching on every mount
-  wastes shared testnet quota and will make the demo fail under load.
+- **Cache by encrypted handle.** A decrypted value stays valid until the underlying handle changes. Refetch the handle
+  immediately before an explicit reveal, but do not automatically decrypt on mount or repeatedly decrypt an unchanged
+  handle.
 - **Exponential backoff on retry**, capped, with no automatic retry storm.
 
 ---
@@ -195,46 +198,46 @@ The reviewer arrives with an empty wallet and no patience. Every item here is re
 | Empty pool makes a draw meaningless           | Pre-seeded participants via `scripts/seed-demo.ts` — 30 to 50 addresses with varied balances and θ, so pagination visibly runs |
 | Nobody waits a week for a draw                | **"Run draw now"** — clearly labelled `DEMO CONTROL`, visually separated from user actions                                     |
 | Relayer slow or rate-limited                  | Everything in §4                                                                                                               |
-| Reviewer cannot tell what is real             | Footer with verified Sepolia contract addresses linking to Etherscan, the commit hash, and the FHEVM version in use            |
+| Reviewer cannot tell what is real             | Verified Sepolia deployment addresses linking to Etherscan, plus an explicit network label; never hard-code a stale commit or SDK version |
 | Reviewer wants the argument, not just the app | A one-screen **"Why encrypted?"** page carrying the thesis with its numbers                                                    |
 
 ---
 
 ## 7. Design direction
 
-Reject the default AI-generated aesthetic. As calibration, current machine-generated design clusters around three looks:
-warm cream background with high-contrast serif and terracotta accent; near-black with a single acid-green or vermilion
-accent; and broadsheet layouts with hairline rules and zero border radius. All three are recognisable as defaults. Do
-not ship any of them.
+**Concept: Zama App-inspired confidential savings utility.** Use [Zama App](https://app.zama.org/activity) as the visual
+calibration for hierarchy and restraint, without copying its logo, assets, source code or product wording. The interface
+is a light operational dashboard: a neutral canvas, a floating white navigation surface, crisp white data panels,
+charcoal typography and black primary actions. Yellow identifies the selected navigation item only; it is not a gradient
+or decorative wash.
 
-**Concept: the sealed ledger.** The product's subject matter is a savings passbook whose figures are covered. Derive the
-visual language from that — bank-note guilloche, ledger ruling, and a masking treatment that reads as _deliberately
-covered_ rather than _not yet loaded_.
-
-**Tokens** — commit these before writing components, then derive every value from them:
+**Tokens** — derive all component values from these semantic roles:
 
 ```
---ink        #10131A   near-black, primary text and rules
---paper      #F7F4EC   warm off-white, primary surface
---seal       #7A1F2B   deep lacquer red, THE accent — the seal, the win state
---patina     #2F5D50   muted jade, secondary accent for verified/public state
---gold       #B08D3F   restrained metallic, reserved for the prize and nothing else
---veil       #C9C2B2   the masking colour for sealed values
+--ink           #292929   primary text and black actions
+--paper         #F1F1F1   application canvas
+--surface       #FFFFFF   navigation and card surfaces
+--surface-quiet #F6F6F6   nested and read-only surfaces
+--seal          #FFE56A   selected navigation and encrypted-value accent
+--patina        #0B7159   verified and healthy public state
+--gold          #9A7020   prize figures only
+--border        #DDDDDA   quiet structural borders
 ```
 
-Two accents plus one metallic, used with discipline. `--gold` appears only on prize amounts; overuse destroys it.
+**Type:** IBM Plex Sans for interface copy and figures, with IBM Plex Mono for addresses, handles and fixed-width
+technical values. Use tabular numerals. Hierarchy comes from weight, scale and whitespace rather than a decorative
+display font.
 
-**Type:** a characterful display face used sparingly for numbers and headings — something with the engraved quality of
-security printing — paired with a clean neutral body face, and a tabular monospace for addresses, handles and figures.
-Three roles, no more. Numbers must be tabular so live-updating figures do not jitter.
+**Layout:** on desktop, use a floating rounded sidebar and a single bounded content column. On mobile, reduce this to a
+compact top bar plus a fixed bottom navigation bar, while preserving enough bottom padding that controls and content are
+never obscured. Cards use a 16px family radius; small controls use 4–8px radii; wallet and primary actions may use pills.
 
-**The signature element** is the **sealed-value treatment**: how an encrypted figure looks before reveal. Get this right
-and the whole product reads as intentional. It should suggest a covered ledger entry — a guilloche pattern, or a
-repeating motif under a veil — never a grey skeleton. Include a satisfying but brief reveal transition. This is the one
-place to spend boldness; keep everything around it quiet.
+**The signature element** remains the **sealed-value treatment**. An encrypted figure must look intentionally covered,
+using a quiet repeating slash or security-line pattern beneath a veil—never a loading skeleton. Revealing it may use one
+brief transition; the rest of the interface stays calm.
 
-**Motion:** one orchestrated moment (the reveal) rather than effects scattered throughout. Respect
-`prefers-reduced-motion`. Excess animation is itself a tell of machine-generated design.
+**Motion:** use motion only for state changes such as reveal, navigation and progress. Respect
+`prefers-reduced-motion`; do not add ambient animation.
 
 **Quality floor, unannounced:** responsive to mobile, visible keyboard focus, adequate contrast, correct labels on every
 control.

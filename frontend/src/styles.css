@@ -596,7 +596,7 @@ select {
 
 .vault-balance {
   position: relative;
-  display: none;
+  display: flex;
   min-height: 210px;
   align-items: center;
   justify-content: space-between;

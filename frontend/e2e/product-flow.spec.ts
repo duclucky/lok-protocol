@@ -25,14 +25,11 @@ test("risk defaults to 100 percent without an odds estimate", async ({ page }) =
   await expect(page.getByText(/Estimated odds/i)).toHaveCount(0);
 });
 
-test("draw demo exposes every modeled state", async ({ page }) => {
+test("draw page uses only live public state", async ({ page }) => {
   await page.goto("/draw");
-  const states = ["IDLE", "OPEN", "SWEEP_A", "AWAIT_TOTAL", "REVEAL", "RANDOM_SET", "SWEEP_B", "SETTLED"];
 
-  for (const state of states) {
-    await page.getByRole("combobox", { name: "Draw state" }).selectOption(state);
-    await expect(page.getByRole("heading", { name: state })).toBeVisible();
-  }
+  await expect(page.getByRole("combobox", { name: "Draw state" })).toHaveCount(0);
+  await expect(page.getByText(/live public state, sealed participant outcomes/i)).toBeVisible();
 });
 
 test("result check stays neutral until local decryption", async ({ page }) => {
@@ -40,9 +37,26 @@ test("result check stays neutral until local decryption", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: "Check my result" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Publish proof/ })).toHaveCount(0);
-  await page.getByRole("button", { name: "Check my result" }).click();
-  await expect(page.getByRole("button", { name: "Publish proof" })).toBeVisible();
-  await expect(page.getByText(/Publishing is your choice, and it cannot be undone/)).toBeVisible();
+  await expect(page.getByText(/your credit is sealed/i)).toBeVisible();
+});
+
+test("shell follows the Zama-style light utility system", async ({ page }) => {
+  await page.goto("/");
+  const viewport = page.viewportSize();
+
+  await expect(page.getByRole("button", { name: "Connect wallet" }).first()).toBeVisible();
+  const paper = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--paper").trim());
+  expect(paper.toLowerCase()).toBe("#f1f1f1");
+  if ((viewport?.width ?? 0) >= 1024) {
+    await expect(page.getByRole("complementary")).toBeVisible();
+    const activeBackground = await page
+      .getByRole("complementary")
+      .getByRole("link", { name: "Vault" })
+      .evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(activeBackground).toBe("rgb(255, 229, 106)");
+  } else {
+    await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
+  }
 });
 
 test("every route fits the target viewport", async ({ page }, testInfo) => {
