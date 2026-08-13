@@ -22,14 +22,14 @@ describe("ProofPage", () => {
     expect(revealCredit).toHaveBeenCalledOnce();
   });
 
-  it("offers publication only after a non-zero local reveal and warns that it is irreversible", async () => {
+  it("does not simulate proof publication after a non-zero local reveal", async () => {
     const user = userEvent.setup();
     render(<ProofPage revealCredit={vi.fn().mockResolvedValue(250_000n)} />);
 
     await user.click(screen.getByRole("button", { name: "Check my result" }));
 
-    expect(await screen.findByRole("button", { name: /publish proof/i })).toBeVisible();
-    expect(screen.getByText(/publishing is your choice, and it cannot be undone/i)).toBeVisible();
+    expect(await screen.findByText(/public proof publication is not available in this build/i)).toBeVisible();
+    expect(screen.queryByRole("button", { name: /publish proof/i })).not.toBeInTheDocument();
   });
 
   it("formats a six-decimal cUSDC prize", async () => {

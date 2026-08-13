@@ -1,4 +1,4 @@
-import { CheckCircle2, Copy, Dices, Play, ShieldCheck } from "lucide-react";
+import { Copy, Dices, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
@@ -10,7 +10,6 @@ export { DRAW_STATES };
 type DrawPageProps = { publicData: LokPublicData };
 
 export function DrawPage({ publicData }: DrawPageProps) {
-  const [verified, setVerified] = useState(false);
   const [copied, setCopied] = useState(false);
 
   if (publicData.status !== "ready") {
@@ -171,10 +170,10 @@ export function DrawPage({ publicData }: DrawPageProps) {
               <dd className="mono">{draw.totalTickets.toLocaleString("en-US")}</dd>
             </div>
           </dl>
-          <button className="button button--secondary" type="button" onClick={() => setVerified(true)}>
-            {verified ? <CheckCircle2 aria-hidden="true" size={18} /> : <Play aria-hidden="true" size={18} />}
-            {verified ? "Verification requested" : "Verify this draw"}
-          </button>
+          <p className="verification-note">
+            Use the external verifier to reproduce the complete settlement checks. This interface does not simulate
+            verification.
+          </p>
         </section>
       )}
     </div>

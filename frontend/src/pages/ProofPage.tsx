@@ -1,4 +1,4 @@
-import { BadgeCheck, Eye, LoaderCircle, LockKeyhole, Share2, ShieldAlert } from "lucide-react";
+import { BadgeCheck, Eye, LoaderCircle, LockKeyhole, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
@@ -13,7 +13,6 @@ export function ProofPage({
 }: ProofPageProps) {
   const [state, setState] = useState<ResultState>("sealed");
   const [credit, setCredit] = useState<bigint>(0n);
-  const [published, setPublished] = useState(false);
 
   async function checkResult() {
     setState("decrypting");
@@ -92,14 +91,10 @@ export function ProofPage({
       {state === "winner" && (
         <section className="publish-panel" aria-labelledby="publish-title">
           <div>
-            <p className="section-label">Optional public proof</p>
-            <h2 id="publish-title">Publish your win</h2>
-            <p>Only you can do this. Publishing is your choice, and it cannot be undone.</p>
+            <p className="section-label">Public proof</p>
+            <h2 id="publish-title">Private result only</h2>
+            <p>Public proof publication is not available in this build. Your revealed result remains on this device.</p>
           </div>
-          <button className="button button--seal" type="button" onClick={() => setPublished(true)}>
-            <Share2 aria-hidden="true" size={18} />
-            {published ? "Proof published" : "Publish proof"}
-          </button>
         </section>
       )}
     </div>

@@ -60,4 +60,11 @@ describe("DrawPage", () => {
     expect(screen.getByText(/30 participants/i)).toBeVisible();
     expect(screen.queryByRole("combobox", { name: /draw state/i })).not.toBeInTheDocument();
   });
+
+  it("routes settled-draw verification to the external verifier without simulating success", () => {
+    render(<DrawPage publicData={publicData("SETTLED")} />);
+
+    expect(screen.getByText(/use the external verifier/i)).toBeVisible();
+    expect(screen.queryByRole("button", { name: /verify this draw/i })).not.toBeInTheDocument();
+  });
 });
