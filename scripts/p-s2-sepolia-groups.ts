@@ -742,6 +742,71 @@ async function preflight(manifest: SepoliaDeploymentManifest, ledger: Ledger, la
   console.log(json({ status: "PREFLIGHT_PASS", label, block: block?.number, balanceWei: entry.balanceWei }));
 }
 
+async function preflightDedicatedPhase2(
+  manifest: SepoliaDeploymentManifest,
+  ledger: Ledger,
+  operatorAddress: string,
+): Promise<void> {
+  await preflight(manifest, ledger, "B");
+  const addresses = ledger.dedicated?.addresses;
+  const hashes = ledger.dedicated?.runtimeBytecodeHashes;
+  if (
+    addresses?.underlying === undefined ||
+    addresses.token === undefined ||
+    addresses.malicious === undefined ||
+    addresses.vault === undefined ||
+    addresses.honest === undefined
+  ) {
+    throw new Error("Hard stop: dedicated deployment addresses incomplete");
+  }
+  for (const key of ["underlying", "token", "malicious", "vault", "honest"] as const) {
+    const code = await ethers.provider.getCode(addresses[key]!);
+    if (code === "0x" || hashes?.[key] === undefined || keccak256(code) !== hashes[key]) {
+      throw new Error(`Hard stop: dedicated ${key} runtime bytecode mismatch`);
+    }
+  }
+  const totals = groupTotals(ledger, "B");
+  if (totals.count !== 22 || totals.deployments !== 5 || !hasStep(ledger, "D22")) {
+    throw new Error("Hard stop: Group B phase 1 ledger is not exactly D01-D22 with five deployments");
+  }
+  const state = await dedicatedState(ledger, operatorAddress);
+  if (
+    state.participantCount !== "1" ||
+    state.pendingCheckpoint !== true ||
+    state.restricted !== false ||
+    state.riskEpoch !== "1" ||
+    state.riskEpoch !== state.lastSolventRiskEpoch ||
+    getAddress(state.activeAdapter as string) !== getAddress(addresses.malicious) ||
+    getAddress(state.proposedAdapter as string) !== getAddress(addresses.honest) ||
+    getAddress(state.retiringAdapter as string) !== ZeroAddress ||
+    state.retiringAdapterDrained !== false
+  ) {
+    throw new Error(`Hard stop: dedicated state differs from pre-D23 manifest: ${JSON.stringify(state)}`);
+  }
+  const latest = await ethers.provider.getBlock("latest");
+  const activateAfter = BigInt(state.activateAfter as string);
+  if (latest === null || BigInt(latest.timestamp) < activateAfter) {
+    throw new Error("Hard stop: adapter activation timelock has not elapsed");
+  }
+  await assertBudgetBefore(ledger, "B", 150_000n, false);
+  const entry = {
+    label: "B-PHASE-2-DEDICATED",
+    generatedAtUtc: new Date().toISOString(),
+    blockNumber: latest.number,
+    blockTimestamp: latest.timestamp,
+    activateAfter: activateAfter.toString(),
+    operator: operatorAddress,
+    dedicatedState: state,
+    runtimeBytecodeHashes: hashes,
+    groupTotals: totals,
+    executorHead: (await runGit(["rev-parse", "HEAD"])).trim(),
+  };
+  ledger.preflights.push(entry);
+  await writeHashed(`preflight-b-phase-2-${ledger.preflights.length}.json`, entry);
+  await saveLedger(ledger);
+  console.log(json({ status: "PREFLIGHT_PASS", label: entry.label, block: latest.number }));
+}
+
 async function runGroupA(manifest: SepoliaDeploymentManifest, ledger: Ledger): Promise<void> {
   const groupStarted = ledger.steps.some((step) => step.group === "A");
   if (!groupStarted) await preflight(manifest, ledger, "A");
@@ -1459,7 +1524,7 @@ async function runGroupB1(manifest: SepoliaDeploymentManifest, ledger: Ledger): 
   await saveLedger(ledger);
 }
 
-async function runGroupB2(ledger: Ledger): Promise<void> {
+async function runGroupB2(manifest: SepoliaDeploymentManifest, ledger: Ledger): Promise<void> {
   if (!hasStep(ledger, "D22")) throw new Error("Group B phase 2 requires completed D22");
   if (hasStep(ledger, "D39")) return;
   const [operator] = await ethers.getSigners();
@@ -1471,6 +1536,7 @@ async function runGroupB2(ledger: Ledger): Promise<void> {
   const state = () => dedicatedState(ledger, operator.address);
   const activateAfter = (await vault.getFunction("adapterActivateAfter").staticCall()) as bigint;
   await waitUntil(activateAfter);
+  if (!hasStep(ledger, "D23")) await preflightDedicatedPhase2(manifest, ledger, operator.address);
   await sendStep({
     ledger,
     id: "D23",
@@ -1733,7 +1799,7 @@ async function main(): Promise<void> {
   if (phase === "preflight-b") await preflight(manifest, ledger, "B");
   if (phase === "group-a") await runGroupA(manifest, ledger);
   if (phase === "group-b-1") await runGroupB1(manifest, ledger);
-  if (phase === "group-b-2") await runGroupB2(ledger);
+  if (phase === "group-b-2") await runGroupB2(manifest, ledger);
   await writeSummary(ledger);
   console.log(
     json({ status: "PHASE_COMPLETE", phase, groupA: groupTotals(ledger, "A"), groupB: groupTotals(ledger, "B") }),
