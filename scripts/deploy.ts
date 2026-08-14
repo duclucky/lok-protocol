@@ -10,17 +10,17 @@ const SEPOLIA_CHAIN_ID = 11155111;
 const MANIFEST_PATH = path.join(process.cwd(), "deployments", "sepolia.json");
 const ETHERSCAN_V2_URL = "https://api.etherscan.io/v2/api";
 export const SEPOLIA_DRAW_TIMING = {
-  drawPeriod: 120,
-  minSettleDelay: 30,
-  revealWindow: 180,
-  stateTimeout: 600,
+  drawPeriod: 60,
+  minSettleDelay: 24,
+  revealWindow: 120,
+  stateTimeout: 300,
 } as const;
 export const SEPOLIA_DEPLOYMENT_NAMES = {
-  underlyingToken: "LokNearInstantMockUSDC",
-  confidentialToken: "LokNearInstantConfidentialToken",
-  yieldAdapter: "LokNearInstantMockYieldAdapter",
-  vault: "LokNearInstantVault",
-  drawManager: "LokNearInstantDrawManager",
+  underlyingToken: "LokMinimumTimingMockUSDC",
+  confidentialToken: "LokMinimumTimingConfidentialToken",
+  yieldAdapter: "LokMinimumTimingMockYieldAdapter",
+  vault: "LokMinimumTimingVault",
+  drawManager: "LokMinimumTimingDrawManager",
 } as const;
 
 type DeploymentAddress = string;

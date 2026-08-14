@@ -14,10 +14,10 @@ export type DrawFixture = {
 };
 
 export const TEST_DRAW_TIMING = {
-  drawPeriod: 120n,
-  minSettleDelay: 30n,
-  revealWindow: 180n,
-  stateTimeout: 600n,
+  drawPeriod: 60n,
+  minSettleDelay: 24n,
+  revealWindow: 120n,
+  stateTimeout: 300n,
 } as const;
 
 export const TEST_DRAW_TIMING_ARGS = [

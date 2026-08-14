@@ -38,10 +38,10 @@ function record(name: string, address: string, args: readonly string[]) {
 }
 
 type ReviewedTiming = {
-  drawPeriod: 120;
-  minSettleDelay: 30;
-  revealWindow: 180;
-  stateTimeout: 600;
+  drawPeriod: 60;
+  minSettleDelay: 24;
+  revealWindow: 120;
+  stateTimeout: 300;
 };
 
 function manifest(): SepoliaDeploymentManifest & { timing: ReviewedTiming } {
@@ -53,10 +53,10 @@ function manifest(): SepoliaDeploymentManifest & { timing: ReviewedTiming } {
     commit: "source-sha256:0123456789abcdef",
     owner: "0x0000000000000000000000000000000000000010",
     timing: {
-      drawPeriod: 120,
-      minSettleDelay: 30,
-      revealWindow: 180,
-      stateTimeout: 600,
+      drawPeriod: 60,
+      minSettleDelay: 24,
+      revealWindow: 120,
+      stateTimeout: 300,
     },
     versions: {
       fhevm: "0.13",
@@ -78,10 +78,10 @@ function manifest(): SepoliaDeploymentManifest & { timing: ReviewedTiming } {
       drawManager: record("LokDrawManager", addresses.drawManager, [
         addresses.vault,
         "0x0000000000000000000000000000000000000010",
+        "60",
+        "24",
         "120",
-        "30",
-        "180",
-        "600",
+        "300",
       ]),
     },
     configuration: {
@@ -100,19 +100,14 @@ function manifest(): SepoliaDeploymentManifest & { timing: ReviewedTiming } {
 }
 
 describe("Sepolia deployment manifest", function () {
-  it("uses fresh hardhat-deploy identities for every near-instant contract", function () {
-    const names = Object.values(SEPOLIA_DEPLOYMENT_NAMES);
-    expect(names).to.have.length(5);
-    expect(new Set(names).size).to.equal(5);
-    for (const legacyName of [
-      "LokMockUSDC",
-      "LokConfidentialToken",
-      "LokMockYieldAdapter",
-      "LokVault",
-      "LokDrawManager",
-    ]) {
-      expect(names).not.to.include(legacyName);
-    }
+  it("uses fresh hardhat-deploy identities for the minimum-safe timing deployment", function () {
+    expect(SEPOLIA_DEPLOYMENT_NAMES).to.deep.equal({
+      underlyingToken: "LokMinimumTimingMockUSDC",
+      confidentialToken: "LokMinimumTimingConfidentialToken",
+      yieldAdapter: "LokMinimumTimingMockYieldAdapter",
+      vault: "LokMinimumTimingVault",
+      drawManager: "LokMinimumTimingDrawManager",
+    });
   });
 
   it("builds an Etherscan V2 standard-json verification payload", function () {
@@ -169,17 +164,17 @@ describe("Sepolia deployment manifest", function () {
     expect(() => assertDeploymentManifest(missingTiming)).to.throw("timing");
 
     const alteredTiming = manifest();
-    alteredTiming.timing.drawPeriod = 121 as 120;
+    alteredTiming.timing.drawPeriod = 61 as 60;
     expect(() => assertDeploymentManifest(alteredTiming)).to.throw("timing.drawPeriod");
 
     const mismatchedConstructor = manifest();
     mismatchedConstructor.contracts.drawManager.constructorArgs = [
       addresses.vault,
       mismatchedConstructor.owner,
-      "121",
-      "30",
-      "180",
-      "600",
+      "61",
+      "24",
+      "120",
+      "300",
     ];
     expect(() => assertDeploymentManifest(mismatchedConstructor)).to.throw("constructorArgs");
   });
