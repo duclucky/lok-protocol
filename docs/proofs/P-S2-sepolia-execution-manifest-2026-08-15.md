@@ -1,6 +1,6 @@
 # P-S2 Sepolia Execution Manifest
 
-**Status: PROPOSED / READ-ONLY / NOT AUTHORIZED / BLOCKED_PENDING_REVIEW.**
+**Status: PROPOSED / READ-ONLY / NOT AUTHORIZED.**
 
 This document does not authorize any transaction, deployment, public-decryption request, relayer request, or ETH spend.
 It exists only to cap a future Sepolia deployment budget pending explicit owner approval.
@@ -16,7 +16,7 @@ It exists only to cap a future Sepolia deployment budget pending explicit owner 
   SHA-256 `684FEEA38BA6FE2078735D745879EFB38014763AB3DBEB82A926C9D3D69C3AE4`.
 - Hard stop: do not send any transaction unless the owner approves this manifest and its ETH cap.
 - Hard stop: abort on chain, signer, bytecode, constructor-arg, balance, receipt, or state mismatch.
-- Reconciliation blocker: `scripts/deploy.ts` calls `fhevm.publicDecrypt([checkpointHandle])` between D08 and D09.
+- Mandatory off-chain step: `scripts/deploy.ts` calls `fhevm.publicDecrypt([checkpointHandle])` between D08 and D09.
   Owner approval must explicitly cover this public-decryption request before deployment execution. It decrypts only the
   initial empty-vault aggregate solvency boolean, not assets, liabilities, principal, or a per-user value.
 
@@ -64,15 +64,17 @@ Budget is based on the actual current Sepolia deployment receipts, with a 25-35%
 | Item | Limit |
 | --- | ---: |
 | State-changing transactions | `9` |
+| Public-decryption requests | `1` |
 | Total hard gas stop | `18,500,000` |
 | Estimated gas from ceilings | `18,290,000` |
 | Total ETH cap | `0.05 ETH` |
 | Admission ceiling | `maxFeePerGas <= 2,702,702,702 wei` (`0.05 ETH / 18,500,000 gas`) |
 
 Worst-case ETH spend is bounded by `18,500,000 * approved maxFeePerGas`. At the admission ceiling above, the worst-case
-transaction gas spend is at most `0.049999999987 ETH`, excluding any relayer/Gateway cost for the required public
-decryption. If fee data, bytecode, constructor args, public-decryption semantics, or any binding/checkpoint result
-changes, stop and re-review this manifest.
+transaction gas spend is at most `0.049999999987 ETH`. The public-decryption request is off-chain and does not consume
+Sepolia gas; if the owner wants to budget any relayer/Gateway charge for it, that must be authorized separately. If fee
+data, bytecode, constructor args, public-decryption semantics, or any binding/checkpoint result changes, stop and
+re-review this manifest.
 
 ## Recovery And Cleanup
 

@@ -1,6 +1,6 @@
 # P-S2 Sepolia Reconciliation
 
-**Status: READ-ONLY. Verdict: BLOCKED.**
+**Status: READ-ONLY. Verdict: READY_FOR_OWNER_APPROVAL.**
 
 No transaction, deployment, signing, public-decryption request, relayer request, or Sepolia ETH spend occurred during this
 reconciliation.
@@ -10,12 +10,9 @@ reconciliation.
 The apparent reduction from Group B `D23-D39` (`17` transactions) to the new manifest's `9` transactions is not a
 replacement of evidence obligations. `D23-D39` were the second half of the already-authorized disposable Group B
 execution against the 2026-08-13 `120/30/180/600` deployment. Those steps have mined evidence in
-`artifacts/sepolia/p-s2-groups-2026-08-13/`. The new `9` transactions are a separate proposed deployment of a fresh
-minimum-timing `60/24/120/300` stack.
-
-The new deployment manifest remains blocked because `scripts/deploy.ts` requires one `fhevm.publicDecrypt` call between
-the initial checkpoint-open transaction and checkpoint-submit transaction. That public-decryption request was not
-included as an authorized action in the original nine-transaction wording.
+`artifacts/sepolia/p-s2-groups-2026-08-13/`. The new deployment scope is a separate minimum-timing `60/24/120/300`
+stack with `9` state-changing transactions plus `1` mandatory public-decryption request between D08 and D09.
+That request is now explicitly scoped and no longer a hidden dependency.
 
 ## Reconciliation Matrix: Original D23-D39
 
@@ -105,11 +102,10 @@ receipts and four configuration receipts exist on Sepolia with receipt status `1
 
 ## Blocking Findings
 
-1. The new deployment flow needs one public-decryption request between D08 and D09. The transaction budget is internally
-   arithmetically correct, but the manifest cannot be treated as complete execution authorization until the owner
-   approves that request and any associated Gateway/relayer cost.
-2. The new deployment addresses are nonce-derived predictions only. Any owner transaction before deployment changes
+1. The new deployment addresses are nonce-derived predictions only. Any owner transaction before deployment changes
    D01-D05 addresses, so fresh preflight must recompute nonce/address emptiness immediately before execution.
+2. The public-decryption request is mandatory scope, but it is off-chain and does not consume Sepolia gas. Any separate
+   Gateway/relayer charge for it must be budgeted explicitly by the owner if applicable.
 
 ## Owner Authorization Conditions
 
@@ -138,4 +134,4 @@ Stop before or during execution if any condition below occurs:
 
 ## Verdict
 
-`BLOCKED`
+`READY_FOR_OWNER_APPROVAL`
