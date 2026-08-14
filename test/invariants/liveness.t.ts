@@ -7,6 +7,7 @@ import {
   asHandle,
   deployDrawFixture,
   mintAndDeposit,
+  NON_DUST_DEPOSIT,
   read,
   TEST_DRAW_TIMING_ARGS,
   write,
@@ -56,7 +57,7 @@ describe("Lok liveness boundaries", function () {
   it("test_Deposit_DuringEveryState", async function () {
     this.timeout(120_000);
     const fixture = await deployDrawFixture();
-    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     await write(fixture.token, "mintForTest", [fixture.alice.address, 20n]);
 
     await depositOne(fixture);

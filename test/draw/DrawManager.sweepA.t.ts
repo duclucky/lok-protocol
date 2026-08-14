@@ -3,7 +3,7 @@ import { BaseContract, Result } from "ethers";
 import { fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
 
 type DrawInfo = Result & {
   tEnd: bigint;
@@ -57,7 +57,7 @@ describe("LokDrawManager PASS A", function () {
 
   it("rejects early, zero, and oversized crank requests without moving the cursor", async function () {
     const fixture = await deployDrawFixture();
-    await mintAndDeposit(fixture, fixture.alice, 1_000_000n);
+    await mintAndDeposit(fixture, fixture.alice, NON_DUST_DEPOSIT);
     await write(fixture.draw, "openDraw", [false]);
 
     await expect(fixture.draw.getFunction("crankA")(1n)).to.be.revertedWithCustomError(fixture.draw, "TooEarly");
@@ -69,7 +69,7 @@ describe("LokDrawManager PASS A", function () {
 
   it("processes each snapshotted participant exactly once across bounded batches", async function () {
     const fixture = await deployDrawFixture();
-    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     await write(fixture.draw, "openDraw", [false]);
     await moveToSweepTime(fixture.draw);
     await preSyncSnapshot(fixture);
@@ -117,7 +117,7 @@ describe("LokDrawManager PASS A", function () {
 
   it("keeps the open-draw participant snapshot stable when an exit finalizes", async function () {
     const fixture = await deployDrawFixture();
-    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     await write(fixture.draw, "openDraw", [false]);
 
     await finalizeExitDuringDraw(fixture, fixture.alice);

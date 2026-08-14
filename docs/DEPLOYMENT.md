@@ -3,8 +3,7 @@
 **Status:** TRANSITION - the 2026-08-12 stack is deployed, verified, seeded, settled and preserved as historical
 evidence; the approved minimum-timing replacement stack is pending a separate Sepolia transaction budget approval.
 **Network:** Ethereum Sepolia (`chainId = 11155111`)  
-**Historical deployment:** 2026-08-12
-**Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
+**Historical deployment:** 2026-08-12 **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
 
 ## Previous Verified Contracts
 
@@ -28,7 +27,7 @@ The approved final Sepolia profile is:
 | ------------------- | -----------------------------------------: |
 | `DRAW_PERIOD`       |                               `60 seconds` |
 | `MIN_SETTLE_DELAY`  |                               `24 seconds` |
-| `REVEAL_WINDOW`     | `120 seconds` (strict mode only)           |
+| `REVEAL_WINDOW`     |           `120 seconds` (strict mode only) |
 | `STATE_TIMEOUT`     | `300 seconds` (stalled-path recovery only) |
 | `ADAPTER_DELAY`     |                                    `1 day` |
 | `TICKET_SCALE_BITS` |                                       `26` |

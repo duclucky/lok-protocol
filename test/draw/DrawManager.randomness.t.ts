@@ -3,7 +3,7 @@ import { Result, solidityPackedKeccak256 } from "ethers";
 import { fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
 
 type DrawInfo = Result & {
   tEnd: bigint;
@@ -24,7 +24,7 @@ function commitment(entropy: string, salt: string): string {
 
 async function reachTotalsSubmitted(strict: boolean) {
   const fixture = await deployDrawFixture();
-  for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+  for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
   await write(fixture.draw, "openDraw", [strict]);
 
   if (strict) {

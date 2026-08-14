@@ -1,11 +1,7 @@
 import { expect } from "chai";
 import path from "node:path";
 
-import {
-  assertSharedDeploymentMatches,
-  drawSettleAt,
-  resolvePS2EvidenceDir,
-} from "../../scripts/p-s2-sepolia-groups";
+import { assertSharedDeploymentMatches, drawSettleAt, resolvePS2EvidenceDir } from "../../scripts/p-s2-sepolia-groups";
 
 const addresses = {
   underlyingToken: "0x0000000000000000000000000000000000000011",

@@ -4,7 +4,7 @@ import { ethers, fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
 import { asHandle, read, write } from "../unit/helpers";
-import { TEST_DRAW_TIMING_ARGS } from "../draw/helpers";
+import { NON_DUST_DEPOSIT, TEST_DRAW_TIMING_ARGS } from "../draw/helpers";
 
 type Fixture = {
   owner: Awaited<ReturnType<typeof ethers.getSigners>>[number];
@@ -154,7 +154,7 @@ describe("Lok reentrancy boundaries", function () {
   it("blocks draw-state cross-entry during harvest and rejects callback crank attempts", async function () {
     const fixture = await deployFixture();
     await proveSolvency(fixture.vault);
-    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 1_000n]);
     await write(fixture.draw, "openDraw", [true]);
     const opened = (await read(fixture.draw, "drawInfo", [1n])) as DrawInfo;

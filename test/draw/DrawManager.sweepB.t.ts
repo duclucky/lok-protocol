@@ -4,7 +4,7 @@ import { BaseContract, ContractTransactionReceipt, Result } from "ethers";
 import { fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
 
 type DrawInfo = Result & {
   tEnd: bigint;
@@ -20,7 +20,7 @@ type DrawInfo = Result & {
 
 async function reachSweepB(yieldAmount = 1_000n) {
   const fixture = await deployDrawFixture();
-  for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+  for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
   await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), yieldAmount]);
   await write(fixture.draw, "openDraw", [false]);
   const opened = (await read(fixture.draw, "drawInfo", [1n])) as DrawInfo;

@@ -4,7 +4,7 @@ import { Result } from "ethers";
 import { fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read, write } from "./helpers";
 import { forceDrawRandom } from "./forced-random";
 import { findFunction, loadSourceAst, outcomeBindingShape, type AstNode, walkAst } from "../ast/solidity";
 
@@ -36,7 +36,7 @@ function tamperLastByte(value: string): string {
 async function reachAwaitTotal(participantCount: number, yieldAmount = 0n, zeroTheta = false) {
   const fixture = await deployDrawFixture();
   for (const user of fixture.users.slice(0, participantCount)) {
-    await mintAndDeposit(fixture, user, 1_000_000n);
+    await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     if (zeroTheta) {
       const encrypted = await fhevm
         .createEncryptedInput(await fixture.vault.getAddress(), user.address)
@@ -115,7 +115,7 @@ async function passBResult(fixture: Awaited<ReturnType<typeof reachAwaitTotal>>,
       await fixture.vault.getAddress(),
       user,
     );
-    directCredits.push(balance - 1_000_000n - credit);
+    directCredits.push(balance - NON_DUST_DEPOSIT - credit);
     const fortuneHandle = asHandle((await read(fixture.vault, "fortuneOf", [user.address])) as bigint);
     fortunes.push(
       await fhevm.userDecryptEuint(FhevmType.euint16, fortuneHandle, await fixture.vault.getAddress(), user),
@@ -248,7 +248,7 @@ describe("LokDrawManager outcome integrity", function () {
     let expected: Awaited<ReturnType<typeof passAResult>> | undefined;
     for (const variant of variants) {
       const fixture = await deployDrawFixture();
-      for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, 1_000_000n);
+      for (const user of fixture.users.slice(0, 5)) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
       await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 1_003n]);
       await write(fixture.draw, "openDraw", [false]);
       const opened = (await read(fixture.draw, "drawInfo", [1n])) as DrawInfo;

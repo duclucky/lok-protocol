@@ -5,7 +5,7 @@ import { BaseContract, ContractTransactionResponse, Result, toBeHex, zeroPadValu
 import { ethers, fhevm } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
-import { TEST_DRAW_TIMING_ARGS } from "../draw/helpers";
+import { NON_DUST_DEPOSIT, TEST_DRAW_TIMING_ARGS } from "../draw/helpers";
 
 type LokFixture = {
   deployer: HardhatEthersSigner;
@@ -144,7 +144,7 @@ describe("Lok bounty compliance R1-R9", function () {
 
   it("test_R2_SpecExact_AllPoolYieldAwardedAsPrizes", async function () {
     const fixture = await deployLokFixture();
-    for (const user of fixture.users) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
 
     const accruedYield = 20n;
     await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), accruedYield]);
@@ -215,7 +215,7 @@ describe("Lok bounty compliance R1-R9", function () {
 
   it("test_R8_OnlyWinnerDecryptsNonZeroPrize", async function () {
     const fixture = await deployLokFixture();
-    for (const user of fixture.users) await mintAndDeposit(fixture, user, 1_000_000n);
+    for (const user of fixture.users) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
     await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 20n]);
     await reachSweepB(fixture, false);
     await write(fixture.draw, "crankB", [2n]);

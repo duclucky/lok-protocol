@@ -20,6 +20,8 @@ export const TEST_DRAW_TIMING = {
   stateTimeout: 300n,
 } as const;
 
+export const NON_DUST_DEPOSIT = 2_000_000n;
+
 export const TEST_DRAW_TIMING_ARGS = [
   TEST_DRAW_TIMING.drawPeriod,
   TEST_DRAW_TIMING.minSettleDelay,

@@ -15,7 +15,7 @@ import { ethers, fhevm, network } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
 
 import { opcodeShape, writePrivacyEvidence } from "../../scripts/privacy-scan";
-import { asHandle, deployDrawFixture, mintAndDeposit, read } from "../draw/helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read } from "../draw/helpers";
 import { createDrawRandomHandles, setDrawRandomHandle } from "../draw/forced-random";
 import { crankPrivacyParticipants, reachPrivacySweepB } from "./helpers";
 
@@ -149,7 +149,7 @@ async function reachCounterfactualBase(participantCount: number, participantIndi
   if (selectedIndices.length !== participantCount) throw new Error("participant index count mismatch");
   const fixture = await deployDrawFixture(true, Math.max(...selectedIndices) + 1);
   const participants = selectedIndices.map((index) => fixture.users[index]);
-  for (const user of participants) await mintAndDeposit(fixture, user, 1_000_000n);
+  for (const user of participants) await mintAndDeposit(fixture, user, NON_DUST_DEPOSIT);
   await transact(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 1_003n]);
 
   const receipts: ContractTransactionReceipt[] = [];

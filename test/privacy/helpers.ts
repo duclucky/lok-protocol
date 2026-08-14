@@ -2,7 +2,7 @@ import { time } from "@nomicfoundation/hardhat-network-helpers";
 import { ContractTransactionReceipt, Result } from "ethers";
 import { fhevm } from "hardhat";
 
-import { asHandle, deployDrawFixture, mintAndDeposit, read, write } from "../draw/helpers";
+import { NON_DUST_DEPOSIT, asHandle, deployDrawFixture, mintAndDeposit, read, write } from "../draw/helpers";
 
 type DrawInfo = Result & {
   tEnd: bigint;
@@ -19,7 +19,7 @@ export async function reachPrivacySweepB(participantCount = 5, options: { bounda
   const participants = fixture.users.slice(0, participantCount);
   for (let index = 0; index < participants.length; index += 1) {
     const isBoundary = index === 0 || index === participants.length - 1;
-    const amount = options.boundaryDust === true && isBoundary ? 1n : 1_000_000n;
+    const amount = options.boundaryDust === true && isBoundary ? 1n : NON_DUST_DEPOSIT;
     await mintAndDeposit(fixture, participants[index], amount);
   }
   await write(fixture.token, "injectYield", [await fixture.adapter.getAddress(), 1_000n]);

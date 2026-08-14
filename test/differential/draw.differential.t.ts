@@ -198,9 +198,9 @@ describe("LokDrawManager differential reference", function () {
     expect(evaluateDraw(vector)).to.include({ totalTickets: 0n, totalBaseRiskWeight: 0n, totalYieldWeight: 0n });
   });
 
-  it("normalizes the reviewed 120-second precision floor to one weight unit", function () {
-    const minimumUnits = 559_241n;
-    const yieldDelta = minimumUnits * 120n;
+  it("normalizes the reviewed 60-second precision floor to one weight unit", function () {
+    const minimumUnits = 1_118_482n;
+    const yieldDelta = minimumUnits * 60n;
     const evaluated = evaluateDraw({
       seed: "draw-scale-26-floor",
       realisedYield: 0n,
