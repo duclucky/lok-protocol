@@ -1,5 +1,8 @@
 # P-S2 Independent Review Remediation Response
 
+**Historical note:** this 2026-08-13 remediation response predates the executed Sepolia evidence and final review.
+Current P-S2 status is recorded in `docs/proofs/P-S2-final-review-2026-08-15.md`.
+
 **Purpose:** cumulative document-only response to proof gaps reported against the original package and the current
 independent re-review at baseline `7fbfb24ed1e93982842a97b7e187f8176bbc2749`. This is not a review verdict or signature.
 

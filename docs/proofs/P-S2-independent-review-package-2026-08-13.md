@@ -3,16 +3,17 @@
 - **Prepared by:** Codex AI proof remediation worker (owner-delegated, same-context, non-human, non-independent)
 - **Prepared:** 2026-08-13
 - **Hand-proof status:** `APPROVED`
-- **Full P-S2 status:** `BLOCKED`
+- **Full P-S2 status:** `MATCHES` after final review on 2026-08-15
 - **Code/test commit:** `65ff43262778a1c073d1d2f413a11d9c57cb98a5`
 - **Invariant evidence commit:** `03726508f417ccd270afb321ea570d73274318f6`
 - **Manifest commit reviewed by this package:** `8531d57db3ad4e62ff26bd53ac818a38040f74fb`
-- **Sepolia state-changing evidence:** not executed; Groups A and B require separate owner authorization
+- **Sepolia state-changing evidence:** executed and final-reviewed; see
+  `docs/proofs/P-S2-final-review-2026-08-15.md`
 
 This package was independently re-reviewed against commit `024a385a44353dc6203971d1ab8164827dff705f`. The remediation
 author did not sign that review. The hand proof was approved on 2026-08-13; the review record is
-`docs/proofs/P-S2-independent-re-review-record-2026-08-13.md`. Frozen section 3 is unchanged, and the full P-S2 verdict
-remains blocked pending separately authorized Sepolia Groups A and B.
+`docs/proofs/P-S2-independent-re-review-record-2026-08-13.md`. Frozen section 3 is unchanged. The later Sepolia
+state-changing evidence and final review close the full P-S2 obligation.
 
 ## Frozen Obligation
 
@@ -220,7 +221,7 @@ The independent reviewer must confirm:
 | Foundry safety reference   | `10,000,004` sequences; `320,000,128` calls; `14,550,605` settlement calls; 28 shards; 0 reported reverts                             | Production eTWAB/normalization or cryptographic proof rejection |
 | Hardhat local FHE          | Actual moved, ACL persistence, principal-first debit, checkpoint binding, oracle-pending recovery, tEnd boundaries, draw differential | Sepolia state-changing behavior                                 |
 | Existing Sepolia           | Read-only deployment validation and limited earlier probes                                                                            | Fresh complete P-S2 lifecycle and all negative cases            |
-| Planned Sepolia Groups A/B | Manifest only                                                                                                                         | No on-chain result until separately authorized and executed     |
+| Sepolia Groups A/B         | `101` receipt artifacts, complete Group A/B lifecycle, negative proof cases, and clean final state                                    | Permanent live Gateway/KMS outage is not deliberately induced   |
 | Hand proof                 | Remediated and ready for a new independent review                                                                                     | No independent verdict yet                                      |
 
 ## Assumption Register
@@ -256,7 +257,7 @@ The independent reviewer must confirm:
 
 ```text
 P-S2 hand proof: APPROVED
-Full P-S2: BLOCKED
+Full P-S2: MATCHES
 P-P1: WEAKER-THAN-CLAIMED
 Independent reviewer: Codex independent audit context (not the remediation author)
 Independent verdict: APPROVED

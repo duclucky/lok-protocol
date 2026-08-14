@@ -89,6 +89,6 @@ transition evidence. In particular:
 
 ```text
 P-S2 hand proof: APPROVED
-Full P-S2: BLOCKED_PENDING_INDEPENDENT_EVIDENCE_REVIEW
+Full P-S2: MATCHES
 P-P1: WEAKER-THAN-CLAIMED
 ```

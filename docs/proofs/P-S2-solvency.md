@@ -6,7 +6,7 @@
 
 **Hand-proof status:** APPROVED BY INDEPENDENT RE-REVIEW (2026-08-13)
 
-**Full P-S2 status:** BLOCKED pending authorized Sepolia Groups A and B
+**Full P-S2 status:** MATCHES after final review (2026-08-15)
 
 **Separation:** This remediation was prepared by the implementation/proof context. It is not an independent review or
 sign-off.
@@ -455,8 +455,8 @@ post-snapshot action isolation in its abstraction, and the funded-allocation bou
 production settlement model.
 
 Production normalized-`tEnd` correspondence instead depends jointly on the normalized lemmas in this proof, Hardhat
-`tEnd` boundary tests, draw/sync differential tests, and the still-unexecuted Sepolia Group A lifecycle. The campaign is
-not rerun because no production, reference, handler, selector, or assertion logic changed in this remediation.
+`tEnd` boundary tests, draw/sync differential tests, and the executed Sepolia Group A lifecycle. The campaign is not
+rerun because no production, reference, handler, selector, or assertion logic changed in this remediation.
 
 ### Forged-checkpoint evidence
 
@@ -468,7 +468,7 @@ Semantic cryptographic evidence is separated as follows:
 
 - local Hardhat FHE tests submit forged/tampered, replaced-handle, wrong-epoch, wrong-nonce, and duplicate cases;
 - existing Sepolia probes provide limited prior integration evidence;
-- planned Group A/B state-changing negative submissions remain BLOCKED pending owner authorization.
+- executed Group A/B state-changing negative submissions provide the final Sepolia integration evidence.
 
 ### Oracle-down recovery
 
@@ -481,14 +481,15 @@ state-machine/local evidence and planned pending-oracle D12-D13 sequence remain 
 
 - Independent hand-proof re-review is complete and approved; see
   `docs/proofs/P-S2-independent-re-review-record-2026-08-13.md`.
-- Sepolia Group A and Group B state-changing evidence remains BLOCKED and unauthorized.
+- Sepolia Group A and Group B state-changing evidence is complete; see
+  `docs/proofs/P-S2-sepolia-groups-evidence-handoff-2026-08-14.md`.
 - The supported yield venue's lossless full-return behavior remains the explicit frozen external trust boundary.
 - P-P1 remains WEAKER-THAN-CLAIMED and is not affected by this remediation.
 - Frozen section 3 is unchanged.
 
 ```text
 P-S2 hand proof: APPROVED
-Full P-S2: BLOCKED
+Full P-S2: MATCHES
 Independent reviewer: Codex independent audit context (not the remediation author)
 Independent verdict: APPROVED
 ```

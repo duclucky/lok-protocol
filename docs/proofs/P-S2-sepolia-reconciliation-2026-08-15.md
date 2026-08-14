@@ -1,6 +1,6 @@
 # P-S2 Sepolia Reconciliation
 
-**Status: READ-ONLY. Verdict: READY_FOR_REVIEW.**
+**Status: READ-ONLY. Verdict: MATCHES.**
 
 This reconciliation now records the executed Sepolia deployment evidence. No additional transaction, deployment,
 signing, public-decryption request, relayer request, or Sepolia ETH spend was sent while preparing this note.
@@ -168,4 +168,4 @@ Stop before or during execution if any condition below occurs:
 
 ## Verdict
 
-`READY_FOR_REVIEW`
+`MATCHES`

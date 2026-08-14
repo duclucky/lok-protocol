@@ -1,5 +1,9 @@
 # P-S2 Sepolia Execution Manifest
 
+**Historical note:** this manifest was an authorization document before execution. The resulting evidence and final
+review are recorded in `docs/proofs/P-S2-sepolia-groups-evidence-handoff-2026-08-14.md` and
+`docs/proofs/P-S2-final-review-2026-08-15.md`.
+
 **Status: PROPOSED / READ-ONLY / NOT AUTHORIZED.**
 
 No transaction, deployment, public-decryption request, relayer request that can create a Gateway transaction, or ETH

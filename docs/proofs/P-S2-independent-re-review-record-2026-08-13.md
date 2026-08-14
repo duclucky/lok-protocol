@@ -1,5 +1,8 @@
 # P-S2 Independent Hand-Proof Re-review Record
 
+**Historical note:** this record approved the hand proof before the later Sepolia state-changing evidence was executed.
+Current full P-S2 status is recorded in `docs/proofs/P-S2-final-review-2026-08-15.md`.
+
 - **Date:** 2026-08-13
 - **Reviewer:** Codex independent audit context (not the production-code or proof-remediation author)
 - **Review target:** `024a385a44353dc6203971d1ab8164827dff705f`
