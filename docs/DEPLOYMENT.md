@@ -1,11 +1,12 @@
 # Sepolia Deployment
 
-**Status:** COMPLETE - deployed, verified, seeded, settled, independently verified, and live-acceptance checked.  
+**Status:** TRANSITION - the 2026-08-12 stack is deployed, verified, seeded, settled and preserved as historical
+evidence; the approved minimum-timing replacement stack is pending a separate Sepolia transaction budget approval.
 **Network:** Ethereum Sepolia (`chainId = 11155111`)  
-**Deployed:** 2026-08-12  
+**Historical deployment:** 2026-08-12
 **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
 
-## Canonical Contracts
+## Previous Verified Contracts
 
 | Contract              | Address                                                                                                                              | Deployment transaction                                               | Source   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- | -------- |
@@ -21,16 +22,25 @@ verification flags are in `deployments/sepolia.json`. The prior seven-day releas
 
 ## Configuration
 
-| Setting             |         Value |
-| ------------------- | ------------: |
-| `DRAW_PERIOD`       | `120 seconds` |
-| `MIN_SETTLE_DELAY`  |  `30 seconds` |
-| `REVEAL_WINDOW`     | `180 seconds` |
-| `STATE_TIMEOUT`     | `600 seconds` |
-| `TICKET_SCALE_BITS` |          `26` |
+The approved final Sepolia profile is:
 
-All timing values are immutable constructor parameters. The live integration test confirms all runtime bytecode hashes,
-bindings, owners, exact timing getters, and the current risk-epoch solvency authorization.
+| Setting             |                                      Value |
+| ------------------- | -----------------------------------------: |
+| `DRAW_PERIOD`       |                               `60 seconds` |
+| `MIN_SETTLE_DELAY`  |                               `24 seconds` |
+| `REVEAL_WINDOW`     | `120 seconds` (strict mode only)           |
+| `STATE_TIMEOUT`     | `300 seconds` (stalled-path recovery only) |
+| `ADAPTER_DELAY`     |                                    `1 day` |
+| `TICKET_SCALE_BITS` |                                       `26` |
+
+The four draw timing values are immutable constructor parameters. `ADAPTER_DELAY` is a separate owner adapter
+replacement timelock and does not delay draws, deposits, withdrawals, exits or emergency withdrawals. The historical
+2026-08-12 stack used the superseded 120 / 30 / 180 / 600 profile and remains valid only as preserved evidence for that
+deployment. The replacement stack must be deployed with fresh `LokMinimumTiming*` deployment names after the owner
+approves a read-only transaction/gas/ETH manifest.
+
+The historical live integration test confirms all runtime bytecode hashes, bindings, owners, exact timing getters, and
+the current risk-epoch solvency authorization for the preserved 2026-08-12 stack.
 
 | Configuration action               | Transaction                                                          |
 | ---------------------------------- | -------------------------------------------------------------------- |
@@ -59,7 +69,7 @@ signers was supplied.
 | Realised yield / prize       | `5,000,000 / 4,734,848` base units                                   |
 | Seeder key persistence       | `false`                                                              |
 
-The draw settled 13 minutes 12 seconds after opening. The 120-second draw period and 30-second settlement delay were
+The draw settled 13 minutes 12 seconds after opening. The superseded draw-period and settlement-delay settings were
 honored; the remaining time was real Sepolia pagination and receipt latency for 8 pre-sync, 10 PASS A, aggregate proof,
 randomness, and 15 PASS B transactions.
 

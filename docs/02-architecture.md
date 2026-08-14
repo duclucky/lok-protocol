@@ -176,18 +176,21 @@ needs a written derivation. Here is the one for the accumulators; reproduce this
 uint8 constant THETA_DENOM = 4; // θ ∈ {0,1,2,3,4}
 uint8 constant TICKET_SCALE_BITS = 26; // right-shift before the draw
 uint128 constant RATE_CAP = 1 << 52; // saturation ceiling for balance·θ
-uint64 public immutable DRAW_PERIOD; // Sepolia demo: 120 seconds
-uint64 public immutable MIN_SETTLE_DELAY; // Sepolia demo: 30 seconds
-uint64 public immutable REVEAL_WINDOW; // Sepolia demo: 180 seconds
-uint64 public immutable STATE_TIMEOUT; // Sepolia demo: 600 seconds
+uint64 public immutable DRAW_PERIOD; // Sepolia minimum profile: 60 seconds
+uint64 public immutable MIN_SETTLE_DELAY; // Sepolia minimum profile: 24 seconds
+uint64 public immutable REVEAL_WINDOW; // Sepolia minimum profile: 120 seconds, strict mode only
+uint64 public immutable STATE_TIMEOUT; // Sepolia minimum profile: 300 seconds, stalled-path recovery only
 ```
 
 The four timing values are constructor parameters, fixed for the lifetime of a deployment. No owner, guardian, keeper or
-user can change them. The Sepolia demonstration profile is `120 / 30 / 180 / 600` seconds. Constructor validation
-enforces `60 <= DRAW_PERIOD <= 2²⁰`, `MIN_SETTLE_DELAY >= 24`, `REVEAL_WINDOW >= 120`, and `STATE_TIMEOUT >= 300`. The
-upper draw-period bound is part of the accumulator proof below; the lower bounds prevent same-block or operationally
-meaningless windows. A production deployment may choose a longer cadence within these reviewed bounds, but cadence is
-never runtime governance.
+user can change them. The reviewed Sepolia minimum profile is `DRAW_PERIOD = 60 seconds`,
+`MIN_SETTLE_DELAY = 24 seconds`, `REVEAL_WINDOW = 120 seconds (strict mode only)`, and
+`STATE_TIMEOUT = 300 seconds (stalled-path recovery only)`. `ADAPTER_DELAY = 1 day` is a separate owner adapter
+replacement timelock; it does not delay draws, deposits, withdrawals, exits or emergency withdrawals. Constructor
+validation enforces `60 <= DRAW_PERIOD <= 2²⁰`, `MIN_SETTLE_DELAY >= 24`, `REVEAL_WINDOW >= 120`, and
+`STATE_TIMEOUT >= 300`. The upper draw-period bound is part of the accumulator proof below; the lower bounds prevent
+same-block or operationally meaningless windows. A production deployment may choose a longer cadence within these
+reviewed bounds, but cadence is never runtime governance.
 
 ### Supported range and saturation
 
@@ -247,9 +250,9 @@ The Fortune multiplication is performed before division, so its separate `euint6
 above covers the maximum individual normalized position as well as the aggregate. The boost cap then gives
 `effectiveRisk64_i <= 1.5 * baseRisk64_i`, and summing that relation proves P-S9 for the full prefix accumulator.
 
-**Precision floor.** At the 120-second Sepolia profile, the smallest non-dust yield position is
-`ceil(2²⁶ / 120) = 559,241` token units, about `0.559241 USDC`. At default `theta = 4`, that same position produces the
-first base-risk ticket; at `theta = 1`, the first base-risk ticket requires about `2.236963 USDC`. Disclose in the UI
+**Precision floor.** At the 60-second Sepolia minimum profile, the smallest non-dust yield position is
+`ceil(2²⁶ / 60) = 1,118,482` token units, about `1.118482 USDC`. At default `theta = 4`, that same position produces the
+first base-risk ticket; at `theta = 1`, the first base-risk ticket requires about `4.473925 USDC`. Disclose in the UI
 and README: _"positions below the active draw's normalization threshold may round to zero weight."_ This is a real
 limitation; state it rather than hide it.
 
