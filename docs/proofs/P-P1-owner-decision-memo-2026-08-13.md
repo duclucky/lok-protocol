@@ -1,6 +1,11 @@
 # P-P1 Owner Decision Memo
 
-**Status: DECISION REQUIRED. Frozen section 3 is unchanged.**
+**Status: OPTION 2 OPENED FOR RE-REVIEW ON 2026-08-15. Frozen section 3 is unchanged.**
+
+Owner approval in the audit thread opened a separate P-P1 re-review round. The active re-review charter is
+[`P-P1-re-review-charter-2026-08-15.md`](./P-P1-re-review-charter-2026-08-15.md). This memo remains the provenance
+record for the decision; it does not reclassify P-P1. Until the chartered campaign, independent review and explicit
+owner re-freeze complete, the authoritative verdict remains **P-P1 WEAKER-THAN-CLAIMED**.
 
 ## Current Finding
 
