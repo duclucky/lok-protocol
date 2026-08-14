@@ -1,12 +1,12 @@
 # P-S2 Sepolia Groups A/B Evidence Handoff
 
-**Date:** 2026-08-14  
-**Network:** Ethereum Sepolia (`11155111`)  
-**Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`  
-**Execution manifest:** `docs/proofs/P-S2-sepolia-execution-manifest-2026-08-13.md`  
-**Code/test basis:** `65ff43262778a1c073d1d2f413a11d9c57cb98a5`  
-**Group A / Group B phase-1 executor:** `51c0b014e726066cfc1c6e61346a55b14e70ea3e`  
-**Group B phase-2 preflight executor:** `d46fc93b2dbb520bb3860bd4db0f1e94d45149f8`  
+- **Date:** 2026-08-14
+- **Network:** Ethereum Sepolia (`11155111`)
+- **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
+- **Execution manifest:** `docs/proofs/P-S2-sepolia-execution-manifest-2026-08-13.md`
+- **Code/test basis:** `65ff43262778a1c073d1d2f413a11d9c57cb98a5`
+- **Group A / Group B phase-1 executor:** `51c0b014e726066cfc1c6e61346a55b14e70ea3e`
+- **Group B phase-2 preflight executor:** `d46fc93b2dbb520bb3860bd4db0f1e94d45149f8`
 **Group B phase-2 control HEAD:** `d5521e9719a96bb1bc27417ba516754f4022a04d` (later commits changed only
 frontend/design/plan files relative to the executor source)
 
