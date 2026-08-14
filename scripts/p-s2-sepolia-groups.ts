@@ -17,7 +17,11 @@ import { assertDeploymentManifest, canReuseDeployment, SepoliaDeploymentManifest
 
 const ROOT = process.cwd();
 const DEPLOYMENT_PATH = path.join(ROOT, "deployments", "sepolia.json");
-const EVIDENCE_DIR = path.join(ROOT, "artifacts", "sepolia", "p-s2-groups-2026-08-13");
+export function resolvePS2EvidenceDir(root: string, override?: string): string {
+  return path.resolve(root, override ?? path.join("artifacts", "sepolia", "p-s2-groups-2026-08-13"));
+}
+
+const EVIDENCE_DIR = resolvePS2EvidenceDir(ROOT, process.env.LOK_P_S2_EVIDENCE_DIR);
 const LEDGER_PATH = path.join(EVIDENCE_DIR, "ledger.json");
 const ABI = AbiCoder.defaultAbiCoder();
 const UINT48_MAX = 2n ** 48n - 1n;
@@ -29,6 +33,27 @@ const FIXTURE_YIELD = 5_000_000n;
 type Group = "A" | "B";
 type Phase = "preflight-a" | "preflight-b" | "group-a" | "group-b-1" | "group-b-2" | "status";
 type Hex = `0x${string}`;
+
+export function drawSettleAt(tEnd: bigint, minSettleDelay: bigint): bigint {
+  return tEnd + minSettleDelay;
+}
+
+export function assertSharedDeploymentMatches(
+  expected: SepoliaDeploymentManifest["addresses"],
+  actual: SepoliaDeploymentManifest["addresses"],
+): void {
+  for (const key of Object.keys(expected) as Array<keyof SepoliaDeploymentManifest["addresses"]>) {
+    const expectedAddress = expected[key];
+    const actualAddress = actual[key];
+    if (expectedAddress === null || actualAddress === null) {
+      if (expectedAddress !== actualAddress) throw new Error(`Evidence ledger sharedDeployment.${key} mismatch`);
+      continue;
+    }
+    if (getAddress(expectedAddress) !== getAddress(actualAddress)) {
+      throw new Error(`Evidence ledger sharedDeployment.${key} mismatch`);
+    }
+  }
+}
 
 type Budget = {
   txCap: number;
@@ -139,6 +164,7 @@ async function readLedger(manifest: SepoliaDeploymentManifest, operator: string)
   try {
     const ledger = JSON.parse(await readFile(LEDGER_PATH, "utf8")) as Ledger;
     if (getAddress(ledger.operator) !== getAddress(operator)) throw new Error("Evidence ledger operator mismatch");
+    assertSharedDeploymentMatches(manifest.addresses, ledger.sharedDeployment);
     return ledger;
   } catch (error: unknown) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
@@ -893,6 +919,7 @@ async function runGroupA(manifest: SepoliaDeploymentManifest, ledger: Ledger): P
   });
   const drawId = (await draw.getFunction("drawId").staticCall()) as bigint;
   const info = await draw.getFunction("drawInfo").staticCall(drawId);
+  const minSettleDelay = (await draw.getFunction("MIN_SETTLE_DELAY").staticCall()) as bigint;
   await waitUntil(info.tEnd as bigint);
   for (let index = 0; index < 8; ++index) {
     const batch = index === 7 ? 3n : 4n;
@@ -946,7 +973,7 @@ async function runGroupA(manifest: SepoliaDeploymentManifest, ledger: Ledger): P
       await assertActionTrue(vault, operator);
     },
   });
-  await waitUntil((info.tEnd as bigint) + 30n);
+  await waitUntil(drawSettleAt(info.tEnd as bigint, minSettleDelay));
   for (let index = 0; index < 11; ++index) {
     const batch = index === 10 ? 1n : 3n;
     const id = `S${String(16 + index).padStart(2, "0")}`;
