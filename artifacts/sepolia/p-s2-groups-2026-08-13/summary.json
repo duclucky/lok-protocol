@@ -1,0 +1,635 @@
+{
+  "generatedAtUtc": "2026-08-14T13:39:04.047Z",
+  "sourceHead": "51c0b014e726066cfc1c6e61346a55b14e70ea3e",
+  "codeTestCommit": "65ff43262778a1c073d1d2f413a11d9c57cb98a5",
+  "operator": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+  "groupA": {
+    "count": 62,
+    "gas": "67802448",
+    "fee": "75200005179944378",
+    "deployments": 0,
+    "deploymentGas": "0",
+    "deploymentFee": "0"
+  },
+  "groupB": {
+    "count": 39,
+    "gas": "23229318",
+    "fee": "25528556527364514",
+    "deployments": 5,
+    "deploymentGas": "9109958",
+    "deploymentFee": "10045039268735450"
+  },
+  "groupAComplete": true,
+  "groupBComplete": true,
+  "handProofStatus": "APPROVED",
+  "fullPS2Status": "BLOCKED_PENDING_INDEPENDENT_EVIDENCE_REVIEW",
+  "pP1Status": "WEAKER-THAN-CLAIMED",
+  "receipts": [
+    {
+      "id": "D01",
+      "hash": "0xfa51d93ca3ed41a48c2623f7e65efb608a754bcf3ebcf94271d6c23fb8c31e7b",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D01.json",
+      "sha256": "70675ba91334da8a3130a4a5036e0d997eb5c3c210b45f391576a8d0f5f1a505"
+    },
+    {
+      "id": "D02",
+      "hash": "0x1e1b3515173746fe229c73d86ee095c610faeade3a1f77879df22f437f4bbfc2",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D02.json",
+      "sha256": "77aaf51c867938cdd535c1bdd8388babb7a2de49356c95d1c98d51c0eea2475a"
+    },
+    {
+      "id": "D03",
+      "hash": "0x9f6b19eaf32230587796cc6208e28f24ec21b32fc0d8581df96379aae270de8b",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D03.json",
+      "sha256": "62b2887959a224af3e78bc28b6242ddae9284c98cc73d6d8c06c740183b4f0ed"
+    },
+    {
+      "id": "D04",
+      "hash": "0x493622ef62b603dafa7f08c44b3821edd45cc6d57dd04eb56fdeb931acfe981a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D04.json",
+      "sha256": "4a1cd81b655654ed71708d582f8cb4df488410064199d376d2a4e00fdeb13641"
+    },
+    {
+      "id": "D05",
+      "hash": "0x76b64dece4c9d548ce9ddb0d7cef59391a54fdbd4fdf8ca5b2697a4577723baa",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D05.json",
+      "sha256": "fdf2630bc891ac93890492ae06533b100685da0122c8c60267a7d3e972d566ee"
+    },
+    {
+      "id": "D06",
+      "hash": "0x57e875e1ae8b3983f4a56c262ffdbd759639b607b64de1bea6f58e5ca108d9e3",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D06.json",
+      "sha256": "b7055d05191a826eb2ff647a6ca7eb59277cde36fb0f082401f737dff20ee1aa"
+    },
+    {
+      "id": "D07",
+      "hash": "0xcf5037fb2980eb27b244c4743e91a559e5e896fa96f6edbb3710929ce1056d09",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D07.json",
+      "sha256": "fdc37c86253bc0de348db7de3d6d9397ec2541d2051fd2e56f2e21a49465caae"
+    },
+    {
+      "id": "D08",
+      "hash": "0x9db9f0049ab442a646228040c0efeebe79a4380d0313ad8b8cff3380130e744a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D08.json",
+      "sha256": "fcf7000e17d2486a9ff353ab43779503a3e3def5c274d7a1be6053d54f8705e5"
+    },
+    {
+      "id": "D09",
+      "hash": "0xf3e834ed1905679cfe2ac199e48619e80bdc5fcb56572873f926c6c3659382c8",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D09.json",
+      "sha256": "704a6cfe0d0d83837ad44e7a95e8f4a1f0137dbc0d7bcbd33c81e2dfc40327d0"
+    },
+    {
+      "id": "D10",
+      "hash": "0x5ddcb19cc2ee235d5ec26fa35b9c68e9aa54edd119e9f940d2c759503df3f50d",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D10.json",
+      "sha256": "41c51319ad0b38eda768de2c964eab9b387e2c8b336ca41314b4d5f6546bcffc"
+    },
+    {
+      "id": "D11",
+      "hash": "0xdcd208024b18c20e379be9923a3303bad668447240c5c5a30c63d90744dcb302",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D11.json",
+      "sha256": "c02393e899c127212273a0283cc547aa604832c96a197989749611c15fce06fa"
+    },
+    {
+      "id": "D12",
+      "hash": "0x1c8cc601855883ed28540a3828f2d85e2ad30d7d8c30be44ba5f43504bc36416",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D12.json",
+      "sha256": "7f6a8c6177a39c43b58a9b0794926d887b9306b95339af0403193a403236b070"
+    },
+    {
+      "id": "D13",
+      "hash": "0xa1c4e83c2f4ba425b806194f3afd52bffe58195175b943e059212992667f4045",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D13.json",
+      "sha256": "81491bec7301a10c794d971f07eeb02802e0638408659d111d32f3c0d18ff8ab"
+    },
+    {
+      "id": "D14",
+      "hash": "0xbb5b53548261f8c437e2e6ecb5d9d8951fb21ab96671984284ee43df5dc89091",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D14.json",
+      "sha256": "92010b3fd7fddf787eb0a9322484b2d154f919a09bbec86789abb4c8b45f801d"
+    },
+    {
+      "id": "D15",
+      "hash": "0x2887bedeadf3a6853fb37ad76b6523ceef844a01c2e716d95262a09bfc0096f3",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D15.json",
+      "sha256": "9dd045078ed5666f2780e3a7b9ccd796277a959771fc003b61dc7c03d4135057"
+    },
+    {
+      "id": "D16",
+      "hash": "0xba23cfb7f4dedcfc81f461be6418b2598e03f2ba45cce61f1863a0c63f9151f9",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D16.json",
+      "sha256": "dee767a336e864476429b5b2447b34854c610029b309b1637c224d32c371469f"
+    },
+    {
+      "id": "D17",
+      "hash": "0x37f1c7353fabbc65fe48dad33c5a969e9ce87175c0cc578306c30c1e10ce0022",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D17.json",
+      "sha256": "ec9ea72240a871343e143aa2ca0826138a59cad1f0df0e4d66fff6df3c60970e"
+    },
+    {
+      "id": "D18",
+      "hash": "0xffe20a90a0d138a087176ee125ca4e14562783b2964e6d21f1bf813d22b30366",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D18.json",
+      "sha256": "b817ce7d4ca14df552e7fa65030befc8bad34555522652e758a6f63772050ebe"
+    },
+    {
+      "id": "D19",
+      "hash": "0xf3f0d785c6b98b3b10d6009f6dcbd5743f2f6903f18f4b077bff1020c17f2e69",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D19.json",
+      "sha256": "1a62d482d5ee80807de94df2bbcb3faeae832591b372dbf0803e9e41ac30d26c"
+    },
+    {
+      "id": "D20",
+      "hash": "0xd5c31c4daaf05e6bff66e30ec69307ff76c3c6c9c96f1da3674718602d86fc2a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D20.json",
+      "sha256": "caa57d6edc7f28a220f9312b0a46d97afcfe31004616ceae5a91d54f7d14de0e"
+    },
+    {
+      "id": "D21",
+      "hash": "0x2730217907dca5695e5fa27090e6a80e0373da89d6247b08a284d5277f33a243",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D21.json",
+      "sha256": "5c1c7f69802113046a60f5c9222a3a0fe4a3878e2db639f718bc64ba1fff6a79"
+    },
+    {
+      "id": "D22",
+      "hash": "0xb953fc24a13e35982ee56fe833727682bfa3445871ef9b77728414238d278022",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D22.json",
+      "sha256": "1574293cdf3b93ee2227f490b68dc301dcd20b0121f2350802642bf945374661"
+    },
+    {
+      "id": "S01",
+      "hash": "0xe56acfbf14120563f702aa7ac1d1afa2d876e9b8fbcddd0e2eff52b885af5622",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S01.json",
+      "sha256": "e0a3af671521c5fffe5e71824775904cf352a34ca2edf67805b69082abb863df"
+    },
+    {
+      "id": "S02",
+      "hash": "0x9247a9e051bf801619396c1d1a7920f5b784ba54b8821e3523a8eb74eadc8e34",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S02.json",
+      "sha256": "7d4a158adb44225fc45530549de0f82aeb8ddc9572e095d499e29f78eaba9a0d"
+    },
+    {
+      "id": "S03",
+      "hash": "0xc4a2c42a61664c58ccfc643411f31f1e7b0c725d7cfcf87d6ccf3a98f1221928",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S03.json",
+      "sha256": "90dee7eec3cb57414f9568cf5b5ee4ed16f1abfd90bccc6d76a3b0b0b560720d"
+    },
+    {
+      "id": "S04",
+      "hash": "0x29e16d42dc3b037f97894dc67e5d6a874a84b5863715745776bed728d8d63562",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S04.json",
+      "sha256": "42cc6d1fe3dba3febd36be329f3069339daa72ed0310e303c96088b72808a427"
+    },
+    {
+      "id": "S05",
+      "hash": "0xc8cebc9bf802f9d2c903a467c4c7c3b813bf3d596dc33f5853209459dcd8e0bb",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S05.json",
+      "sha256": "dfb5756029d0dc9c166373407b136e8d0d43240c96f992c5710baf847b99ed15"
+    },
+    {
+      "id": "S06",
+      "hash": "0x607657b7d34d835052ba4fb2207226401941de76a8b4220603a616bf6ca8555f",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S06.json",
+      "sha256": "39c40ba5f6554eea0b666a30099cd98aff62e05b36c1214dc020460643a10911"
+    },
+    {
+      "id": "S07",
+      "hash": "0x93042857b9c1ef4030eba7fe61b3303926906a253e87aa9af962dd0462dacaf3",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S07.json",
+      "sha256": "ad3d050c7b3bdd6b68d4ca789e3691ae06089be6de4dec5b43f52e03b1c9eeb2"
+    },
+    {
+      "id": "S08",
+      "hash": "0xe305d1981b8b43cc729247e5aabd3622ac96df500d33e62587448667f283f2b9",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S08.json",
+      "sha256": "0bbf3ebe95f3df3fe50f0760c60b0236320873f76ce68d531ce4379b316a76e9"
+    },
+    {
+      "id": "S09",
+      "hash": "0x24d424cde4b2bb8fb1b6632476f8e30a22ade62aa01897c9003d37e4d8224a60",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S09.json",
+      "sha256": "b6ff22715e77529de7f41ebecd2dfd5862cb18d36b0533fac5511b77f0600656"
+    },
+    {
+      "id": "S10",
+      "hash": "0x1f4227da2d1366118865b254fb14dfcedaf5914065c7f0fa24f7ad74614f96b9",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S10.json",
+      "sha256": "e51c5b801bc65fa82f2e8267c7e1bb05ec7ab7bf54fabfccbe5e074b525b7753"
+    },
+    {
+      "id": "S11",
+      "hash": "0xb6190e17b20cec2fd6929ae123f92818664e22edc776e007b7e710c6fecb51c0",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S11.json",
+      "sha256": "e41accca3714a973429e7e7889c13b73231a4f2e8fc9d6da841c70d62c256022"
+    },
+    {
+      "id": "S12",
+      "hash": "0x54708ee0e43669ed1aa2579cfb3b742a9b46afd98c1a236f3844097c981254d8",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S12.json",
+      "sha256": "e70a447ddc8ff9bf74f607c01ae27257e087cd9ba21fe64d324068f2a236dc92"
+    },
+    {
+      "id": "S13",
+      "hash": "0x4e1adcca48fbbe764b3ba5df14961d14de0c3eec29dcafbea08e3701aed19a3a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S13.json",
+      "sha256": "77faf180c112519ad8b76f9eca8f1aafe55b70a1062e59d184e5982f60b9bf2d"
+    },
+    {
+      "id": "S14",
+      "hash": "0x860a1b08f18e25a393d751c6de924a6aba3890d53817d8bf7e45cb666b2b950f",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S14.json",
+      "sha256": "be6ca8d4d88075d8a59010359d1cdc6d01a5b8f8f73edccd94d68586d93240b6"
+    },
+    {
+      "id": "S15",
+      "hash": "0x7dfb41c967a8bb02def9d7d96766fb944b8f62018efd6a529561f163d5076291",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S15.json",
+      "sha256": "4994b0eb09bbdb267df3c02958def2b38bb89209a0630767a93beb319bf2ad62"
+    },
+    {
+      "id": "S16",
+      "hash": "0xb613b0ff35d5ccfa7bb585898fc3c1f40f0b23c43f8713b5bd1b65dd441ff57d",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S16.json",
+      "sha256": "55dc37c05a7d37a5cbb1f9a5e02acb42859a1b8f5a1fe71da4027cae51fc1ee6"
+    },
+    {
+      "id": "S17",
+      "hash": "0x7996122cfcdce322753ea4c1e16c4fbe1e1bd8202af02c64633e492d05be2f93",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S17.json",
+      "sha256": "bab0e58313210a8ca3c70e9bdf2716ce3f58c0cd5bfd7fee094b154d1a8db0b6"
+    },
+    {
+      "id": "S18",
+      "hash": "0x0c13fbb68f03951929dd578dc5d0b80a78194154fd1ff159eec39a68d6e6f85e",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S18.json",
+      "sha256": "e5f23f9b0dd8879681d97d3ffe1c0430328bd19afd499df144cb8302c1541760"
+    },
+    {
+      "id": "S19",
+      "hash": "0x3b464ba18981037b93367bc8b003ef1cd8d4e058daf35b7c96c0120de5ae064b",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S19.json",
+      "sha256": "7680e428e3e50667f6a77ac38acc152d70155ea1a596e2022ae025d8fceaf7ba"
+    },
+    {
+      "id": "S20",
+      "hash": "0xe64260b4039fcfde6ad889c2e650f4185f8a59af741c7e73799f2e711363b23c",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S20.json",
+      "sha256": "a2cfabb771bafbebd23b9bcc9ffb1b3f5114dc56c8b76cc4a0fa38b75ee3d22d"
+    },
+    {
+      "id": "S21",
+      "hash": "0x7ea16c9f1c212d7770d28e2d6ffac9e22d71501ca5810679530d4e96959a3b5b",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S21.json",
+      "sha256": "91c83cbbfa3feba8733dfcfbd2af256ba89d4f3fb73ba1f6dc931e0bf0542305"
+    },
+    {
+      "id": "S22",
+      "hash": "0x37d17f592af4becf2849e2d2ec50f6b4894f168d6e1f5ef42ec1da2a207ccf99",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S22.json",
+      "sha256": "6543f6ae277b694f79f47a358adaa228f0c5d2d48a0f34374b1463ee2980a881"
+    },
+    {
+      "id": "S23",
+      "hash": "0xeed2d2456a2494d630406e351a481d1506759d7b1a40848b7f8df164afc7672a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S23.json",
+      "sha256": "e2704d478812ad9d245f6901d4f5306a5cafa44987b416fd551d1f677ce00af7"
+    },
+    {
+      "id": "S24",
+      "hash": "0xac4f2dca8b9e648719a310b4b4834e274d2069686ab831f03e8e558bc90415a5",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S24.json",
+      "sha256": "b746424a8948a6beba1790132c6bde4258706410229b644353e26c9e7ec71bfe"
+    },
+    {
+      "id": "S25",
+      "hash": "0x3bc769678148cfd29a9a2e3a7941e4264d9d7ccbcb62d3f0479c061b00ba0671",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S25.json",
+      "sha256": "3d2f3de557e2ae96276f8d377b41693664be5f45416466788fe6bc8d1832787b"
+    },
+    {
+      "id": "S26",
+      "hash": "0x97618f3fa95506d05033cd8e9fb2e8b1addcd20185e8ae5ba4e342dc40d4d6e7",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S26.json",
+      "sha256": "279cf07d14acf60ca576d2d9da11ed5f8d170b2a0bfe82915584e51cb6a4565a"
+    },
+    {
+      "id": "S27",
+      "hash": "0x62ea7c2c1bae11329b131d3169bd86ea7d66857b22133994ecc50986903d0fb6",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S27.json",
+      "sha256": "bdbf2db038bde379881aa4bbfd700bcae4ba482f5354123d9cf5d3bc1faa196e"
+    },
+    {
+      "id": "S28",
+      "hash": "0xd0423378ec169377fbe23819cfac8a7b4959a7e876099b928d152b4c70b275da",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S28.json",
+      "sha256": "b0cff7c46c64a56990248c172c4fcc6a4321a5c3d374fce1957772dc65d0704c"
+    },
+    {
+      "id": "S29",
+      "hash": "0x340e6300ad91dcc1b87d6c953c56413e44e1302c3b80dea6f0123183ae9f154f",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S29.json",
+      "sha256": "0e4bc2978315a0e1cb10094722508eba118c51097ebfb2f7d5060037ac1e42c5"
+    },
+    {
+      "id": "S30",
+      "hash": "0x8280170a52707999a594bf23debabe075c4747cff7cf21b020435ccdb6573a5e",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S30.json",
+      "sha256": "85527530954d26317e2f81f96c253524ebafac6cd8495b0f2813a302df9cc34e"
+    },
+    {
+      "id": "S31",
+      "hash": "0xf288b7891dbbb6ce91c7c89157d87332de0e28da8933ab57db0f5dbe837126a1",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S31.json",
+      "sha256": "7e09957d78ea7e6a4ea6efb76f12da699a6b381c7e9e5f29eb811fcdb55bde36"
+    },
+    {
+      "id": "S32",
+      "hash": "0x68786a62fec115d3ad3bfbfeb2282402da22af336f9152ddf4247edc4d460014",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S32.json",
+      "sha256": "70813ad6c26a63c599d26a2267c6aa6b3ae5efd6cd6602ddaac36e828828aa38"
+    },
+    {
+      "id": "S33",
+      "hash": "0x786b8d4b5cc1f60d55c076210e23a74b9dafed72d54798dff66378e9da1d03f1",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S33.json",
+      "sha256": "7c30f9adb15fd9df7513ceefa1b9a64d76de8da451b3b6f9b143cfb22a8ad284"
+    },
+    {
+      "id": "S34",
+      "hash": "0x2092875e91b2aba27d7cc88a7893667f77565c9c1952b57e7e3aaa4184d2904c",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S34.json",
+      "sha256": "633d1316884ff69c8037bdadf5e4505766497a3b19857a9ac45542e3926e995d"
+    },
+    {
+      "id": "S35",
+      "hash": "0x06e23cd28576b768fcbc79ec19d8182819f1fa9d909f004f8c9c3ac4ed521533",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S35.json",
+      "sha256": "2c32c146b6b550548421016cd4665ccd96a0c8f4015d04f4c111c007285733e5"
+    },
+    {
+      "id": "S36",
+      "hash": "0xa7dc85affffe4dc203e41f9e3197048e8eea35b5c7ce0fa2ee588def9f4f0564",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S36.json",
+      "sha256": "e18e2ead8d7b6f0192e09026ccc1167e7b70b3932768c68165ca9455d858b7cf"
+    },
+    {
+      "id": "S37",
+      "hash": "0xbe44bb7c5f8a519baad9744d8e5ec726d4c8a6ce4a28ec1782fe3d26f8e20393",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S37.json",
+      "sha256": "78f7beb6c0cf47471119058f8fb715f570ede1da7e0efc1488f489292cc2b83f"
+    },
+    {
+      "id": "S38",
+      "hash": "0x4c0261f28456c465dbc6de6d66bba81fa44e09d8441957e456f10284cbea46f5",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S38.json",
+      "sha256": "0b066799e7778c1780b1a0685b3d8c766695364b578867abd6db8cab9228a0ce"
+    },
+    {
+      "id": "S39",
+      "hash": "0x257119e54ae254472dc6e4b03241b6222f3b12724eeb3a7a421f556ff26b8400",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S39.json",
+      "sha256": "637d4839c75908f06073f273bc5ac634d1ee14a006c5aa763649894ae57f0017"
+    },
+    {
+      "id": "S40",
+      "hash": "0xb884c6c81119e9ab0660831465bab5bc5f00f6b982dccd737803ea974c8201d4",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S40.json",
+      "sha256": "873ac54180e3ca9e3db1868c12eaeee8f343c59966ff78f71ac135dd06a80d65"
+    },
+    {
+      "id": "S41",
+      "hash": "0xe1e8864bf9c900632a84e19c18273d7efd8ddb7f76e2c013f6b72d98f78121a0",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S41.json",
+      "sha256": "66dd0ec4f63d49bc7ec6785500a9e2fcef23012a26de5300705ae645578a9196"
+    },
+    {
+      "id": "S42",
+      "hash": "0xcabe88afc975fac50ce257b959c58f9ab7d627e2f6be87332931378df0d40839",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S42.json",
+      "sha256": "020114c266b289a8297f3f9fcdafe382e7040d6ee8079315a24854bc22821bfa"
+    },
+    {
+      "id": "S43",
+      "hash": "0x93e34f38382f8704d4d1c5298e580b94bc9b5e7ffb420f9710876738ce747e14",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S43.json",
+      "sha256": "f8f51460b8c6b14a1af81c9bff544783e71efebcc2afcaf999cd0333b26f94f0"
+    },
+    {
+      "id": "S44",
+      "hash": "0x08ae267f01f1c5ce17d84d8a4f3132101966d159936cc307dc855bc7c00cd72b",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S44.json",
+      "sha256": "b015ba0d4f507759471bd6cc0ad4ca1b159d996e0b6b8a4726819f711ab8a826"
+    },
+    {
+      "id": "S45",
+      "hash": "0x5bfdd452129aebdd5812d3b319f6090c4aaa111a9d2f282dc834ce74c42d8849",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S45.json",
+      "sha256": "130bf47db8ff1bbad24fa98cb777455c49a4ab6dbeaea45e54063be1b6eb8cf8"
+    },
+    {
+      "id": "S46",
+      "hash": "0xe8e41be93faae3941cf0d54bb12df8061e9d2651ca761101ec36acbdf2c54412",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S46.json",
+      "sha256": "b816a6ecd86a3add60cc57b2808b4ee05d19d9ff9e968b634f43f8741fe033d5"
+    },
+    {
+      "id": "S47",
+      "hash": "0xb89ba99fd674678884255cda63626559e83c3f3d392302e120f5e31bb1eb53c2",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S47.json",
+      "sha256": "8fb6ae7038d7f9ab55ff0871ea4c606a5f4637eef65a3be3dace301ce8785ada"
+    },
+    {
+      "id": "S48",
+      "hash": "0x980c7840b482debed2e4cce17ff80c10283415396628ee5742f62fa1de115ff1",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S48.json",
+      "sha256": "0564a9aca7f7a17771ae087309f47e5eb11e9b1f040371977c58922039cab2a1"
+    },
+    {
+      "id": "S49",
+      "hash": "0xb820ac3a73f93efa0650175057f00850cf1a5bd5a9d10b5ea3517047d72c2ddc",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S49.json",
+      "sha256": "272ba5e1e80cb0b95b5143cd38f0a36bed7171828e0893f6f139ea9d1d894fe3"
+    },
+    {
+      "id": "S50",
+      "hash": "0xc34eb515b8460529ebd6a0a02724af80f52ffc16008a6a91f20128a5bba04237",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S50.json",
+      "sha256": "6526b7891feac7be522d6ebaec0d3f58e9fe48800873968bef77e99a5537e499"
+    },
+    {
+      "id": "S51",
+      "hash": "0xbc74f8c16e46c801fd962c730384a9194dff1f3527233679230d92585487bfcc",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S51.json",
+      "sha256": "bd4cee01997e0d3018b1e9888f1c6b14eb85ccde78d7a52f6834b585a269d392"
+    },
+    {
+      "id": "S52",
+      "hash": "0xde6bfba32111ef3de329089cdd8adc76296c612a01b6496b999fed08d75f5aa9",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S52.json",
+      "sha256": "8bb0609624659c7bbf98810fd9523249d46e514bec4bd5e301f9f308ff39216b"
+    },
+    {
+      "id": "S53",
+      "hash": "0xf7bc66a4d12b256933fe81f9bf5fbbdd0eb9e37f6178562a7a56da507cee739f",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S53.json",
+      "sha256": "7a33c39b60c5fc33c77e9f158915641c4b439230fbbb0b45a3ac69773abe4545"
+    },
+    {
+      "id": "S54",
+      "hash": "0xbfb900e8093d19d8b76680024b61f291ced98ddde51949b4ddfd193f31376569",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S54.json",
+      "sha256": "4baa6a3abb82a7391c6b743ed85dbc92b07bbc3534b57d856b80b29891f2f171"
+    },
+    {
+      "id": "S55",
+      "hash": "0xc0ccb9ce2d23440b0e59896ba4cf39bb0aa20d25cfb42cd2144e35ad860dbabb",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S55.json",
+      "sha256": "5976843d9da4c166448084edc83c4c64ee5132e6a155be786fd89414d47c36c3"
+    },
+    {
+      "id": "S56",
+      "hash": "0x7209e9551d57525b6b9f4babff93d495bf07907a86ffd9ff799b2322f6820997",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S56.json",
+      "sha256": "e49ab10808486eaa0592729e7da41cb7807f03b2b815e541bed870eb134c321e"
+    },
+    {
+      "id": "S57",
+      "hash": "0x0e2fc2679a7f0f6e4fa024499077ae78ce8b012e87bb19cd8f475d5921281234",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S57.json",
+      "sha256": "d41e211183cf6869f700d4fa13c2004bd56ebf06ca26310436e65a8de7b016c7"
+    },
+    {
+      "id": "S58",
+      "hash": "0x82c82ecab0be62f15b7aaf65ab7ab6538aacd606f42bd142a7d6e3733e574e2a",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S58.json",
+      "sha256": "6665e7c55bc8e1c241a58ddfbf9464c3199b8f3df48ab99342aabdc1f4a28dee"
+    },
+    {
+      "id": "S59",
+      "hash": "0x65a74cd5f864f4b7f0346640b8677c8b10a5c8ecfed5f73211c060356b2937a7",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S59.json",
+      "sha256": "08022288dd725be4762684db2cc24b17fcf4c3905318a65f1fe513123d94809d"
+    },
+    {
+      "id": "S60",
+      "hash": "0x6173a394959276b3ba8a0c4ebe49ea10b6d85a391d2805f9423527415a10d3c6",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S60.json",
+      "sha256": "9f19ce9eae9ac68bd10f8cb2f29499f5baeb5e6de70a89284eab643efc79c532"
+    },
+    {
+      "id": "S61",
+      "hash": "0xc8aea364be0509256a93fc3d3bee02681edfedec60e2b398e98ec4d8da2d6e5f",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S61.json",
+      "sha256": "381c0ac8dfb7f4f85c479f8ab7cec2496a667189671a42f00deda381f7d4718e"
+    },
+    {
+      "id": "S62",
+      "hash": "0x6cd18b0adc6585affc471d03e479efa8a2e687fe14c94161afe8978a13ef7e45",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/S62.json",
+      "sha256": "6b3dc56cf4282ccae0c176e86a8847d383a77ba8d3d3f65ec7fdd1bc5a1024ef"
+    },
+    {
+      "id": "D23",
+      "hash": "0x4fd72e615ca7be76097ea53f20755684e75868e0ddbbf8d54ef2a821f358f82c",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D23.json",
+      "sha256": "10ee048a76e0e4b97f84a3a53fdab3559b3ad723c403f96db881fa4e0dffdb31"
+    },
+    {
+      "id": "D24",
+      "hash": "0xc9635599a4b90246582897dcacdb1f6124e79c62e25afd9f84ea92fa3fa55201",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D24.json",
+      "sha256": "1d455319333c10f15783774db29c6458011d75f5807e055117eb381bbd1dfa7b"
+    },
+    {
+      "id": "D25",
+      "hash": "0xacbeea23d3c02ef7b64245c1c142b5ca6907416fe53d612a28f9038fc51d61c2",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D25.json",
+      "sha256": "e4c46ccb55ff98cf81d1cebe9b12f0eb0e6815f4a1bd24390d3f4e1ddaef3bd5"
+    },
+    {
+      "id": "D26",
+      "hash": "0x15d8aea1307ef46fc22ea39963232da32a5f322f3097628e8bd0d3c825d07353",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D26.json",
+      "sha256": "49bed3724abc28e93fdb0b5d5221db831fd767b6f46a9b8af75783a591c8f0cd"
+    },
+    {
+      "id": "D27",
+      "hash": "0x0fa884989fda1a75fc02825864548d7cd99515fef3e15f36a2cc811401a23000",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D27.json",
+      "sha256": "4a86827cc9559715bc52bc14eedbd29e009f569832b5b3651fa8122bcb0c0c10"
+    },
+    {
+      "id": "D28",
+      "hash": "0xec6e52398089ba572e4686cd1c2b495d365eae4b6038abfd9353f75366edd622",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D28.json",
+      "sha256": "066b0471d592682faa9ad4bead14943077c8f6d22a2f39e37f1714d9d5c208af"
+    },
+    {
+      "id": "D29",
+      "hash": "0x699056d9b06266c1f4c6dc25dfdc2f3107d9aceab549691238c9872ea555d69d",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D29.json",
+      "sha256": "234c85ed9bbbae7f8a8beb5390ad3e924b833fd807170c20c1881006ccbcde08"
+    },
+    {
+      "id": "D30",
+      "hash": "0xae55cdf3edd3ad70f99880fb37ac0ae0e0a1be5d67ac8c60f4af54ecb63f59e1",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D30.json",
+      "sha256": "1ace21f36d52ef46428bf888cd419614206b70aebfa08ef97942c08e1e8480f5"
+    },
+    {
+      "id": "D31",
+      "hash": "0xb9d6e5cac06cfc32f878be151aacf46c7437e591044074ee332966f4ee30ed25",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D31.json",
+      "sha256": "6dc6b4d9117fb07b2ee8226601c26a242fd4d22e4477156982503fb1faf4e248"
+    },
+    {
+      "id": "D32",
+      "hash": "0xef00bf990e3a1df7548b43550e39e909f3bd4978c32fb1fc4de3c71648b433da",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D32.json",
+      "sha256": "271a34594657490970352dba22af32e97452f7e513ee34cc87b2e327be9d25df"
+    },
+    {
+      "id": "D33",
+      "hash": "0x170b373e98364bebadd84512e4237c0e932a2800f9153ddcf059d18b0b8887c3",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D33.json",
+      "sha256": "fc1c856d36bd17b4cac789466c8b56720a690abd2fb396478ef822d52c7cf4a2"
+    },
+    {
+      "id": "D34",
+      "hash": "0x3f90d7cb8ec879a037e9784b8212d29c2faeb029840339c98db0ecbe870cfce1",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D34.json",
+      "sha256": "85fd14b219761d3e824dc8e96d8421e975fd6ba499fe9058b5794dedbf9d800e"
+    },
+    {
+      "id": "D35",
+      "hash": "0x71cde9bc0c1f77c2c2d1e1c430c9c38029b784d060fe4d78b44981fc7f2c2880",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D35.json",
+      "sha256": "ca693ee9a4916e82c0ab659d0277e640b634d21882e715f52036557a7de58e4c"
+    },
+    {
+      "id": "D36",
+      "hash": "0xef7a220149b3f31ddbb57fffb70c6a47843c7ac5c854f3b05ffa810c4d67f0b2",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D36.json",
+      "sha256": "b4240664de1fc9ef5e706e15414865e40464e62936680e34e0b9c732681491c7"
+    },
+    {
+      "id": "D37",
+      "hash": "0xebe4b9fc0828dcb8b8e3c90c70d6ee6ca24baa41a5dd419b55b40a7505b26f64",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D37.json",
+      "sha256": "c1376fb18a015c764f842bbdcdab409ee80dfa63a4c9bc616bf9003fa175fa7c"
+    },
+    {
+      "id": "D38",
+      "hash": "0xc9897ce55d35fe483a6a520b6b9f7b49fb768b48f2ae91e728bdb060635a607d",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D38.json",
+      "sha256": "0de9980b2829ab2c6f9441c83b7ff3c265dbc56169618ad6717edb5d659271bb"
+    },
+    {
+      "id": "D39",
+      "hash": "0xaaae7b62be26347854b60ceb5cb8f119b93210797fcc349242c93b60032983bc",
+      "artifact": "artifacts/sepolia/p-s2-groups-2026-08-13/receipts/D39.json",
+      "sha256": "15a9bb3a7271c7f7c34e0a8eb5b3f3f7c57e143b975a87f9dd69933d2d0774b9"
+    }
+  ]
+}

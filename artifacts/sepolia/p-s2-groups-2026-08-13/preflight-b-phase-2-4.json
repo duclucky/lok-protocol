@@ -1,0 +1,52 @@
+{
+  "label": "B-PHASE-2-DEDICATED",
+  "generatedAtUtc": "2026-08-14T13:32:41.118Z",
+  "blockNumber": 11487505,
+  "blockTimestamp": 1786714356,
+  "activateAfter": "1786714152",
+  "operator": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+  "dedicatedState": {
+    "deployed": true,
+    "addresses": {
+      "underlying": "0x926d4f9C8E0818dB2dC858D34475D76DfF473207",
+      "token": "0x7bf8AFd5eB485F83e71b67Af8A08aD048F9422b5",
+      "malicious": "0x5fD70fa8b56b8Ba5815B41709Fe5D5c9a699A586",
+      "vault": "0x99935bFCCdc03052B63537aA40f4f65EF567C39A",
+      "honest": "0x5dD6E364B80d5e92b4765e8a0589B2400140b879"
+    },
+    "participantCount": "1",
+    "participantIndex": "1",
+    "accountingVersion": "6",
+    "riskEpoch": "1",
+    "lastSolventRiskEpoch": "1",
+    "restricted": false,
+    "pendingCheckpoint": true,
+    "pendingEpoch": "1",
+    "pendingAccountingVersion": "4",
+    "checkpointNonce": "4",
+    "checkpointHandle": "0x214ae6ca77382487f13e265e215f386db73df76ef4ff0000000000aa36a70000",
+    "activeAdapter": "0x5fD70fa8b56b8Ba5815B41709Fe5D5c9a699A586",
+    "proposedAdapter": "0x5dD6E364B80d5e92b4765e8a0589B2400140b879",
+    "activateAfter": "1786714152",
+    "retiringAdapter": "0x0000000000000000000000000000000000000000",
+    "retiringAdapterDrained": false,
+    "operatorIsTokenOperator": true,
+    "pendingExit": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "runtimeBytecodeHashes": {
+    "underlying": "0x74424333d40782057aad7f2e8d0d880454e0be054a5174b6a3a4d1a3db665a49",
+    "token": "0x83bd2f22d2e78b629ef9cbec77a4d7a0abe6eadd87968daaaba6064e6aaa0bac",
+    "malicious": "0x20cb2b7d8b4ead09a905cd0d40787aee70158e032a32f7f04918dff9c3a526fa",
+    "vault": "0xfbecb78078cd116a983d59dc6b0a786736d90eb09d79b426b3f371c79b3fda2d",
+    "honest": "0x49e9f00732bfe8f63179f775c2b78e9dfae839e1ada6e51e5717a2b1636165ff"
+  },
+  "groupTotals": {
+    "count": 22,
+    "gas": "16248005",
+    "fee": "17908696607881181",
+    "deployments": 5,
+    "deploymentGas": "9109958",
+    "deploymentFee": "10045039268735450"
+  },
+  "executorHead": "d5521e9719a96bb1bc27417ba516754f4022a04d"
+}

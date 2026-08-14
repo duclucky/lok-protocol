@@ -1,0 +1,51 @@
+{
+  "label": "A",
+  "generatedAtUtc": "2026-08-13T13:31:30.894Z",
+  "blockNumber": 11480497,
+  "blockTimestamp": 1786627884,
+  "operator": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+  "balanceWei": "1920995773800201124",
+  "feeData": {
+    "gasPrice": "1053645870",
+    "maxFeePerGas": "2106291740",
+    "maxPriorityFeePerGas": "1000000",
+    "admissionCeilingRemoved": true
+  },
+  "topology": {
+    "adapterVault": "0xAA7B956c551B7f5336c2d9e786CB9024aB1657e1",
+    "vaultDrawManager": "0x5592dB13624EB5C20B6Bb5841317148c79DFFAa5",
+    "vaultToken": "0x00eB52CF8f64eA64588BB0d427EE93A907Dbe107",
+    "vaultActiveAdapter": "0xB0FDA68126fC09DED8A7114ad436f2B638D89dfA",
+    "drawVault": "0xAA7B956c551B7f5336c2d9e786CB9024aB1657e1",
+    "tokenUnderlying": "0x68e13782C114A885f754109EF99Cea269eb401b2"
+  },
+  "sharedState": {
+    "participantCount": "30",
+    "participantIndex": "0",
+    "accountingVersion": "90",
+    "riskEpoch": "1",
+    "lastSolventRiskEpoch": "1",
+    "restricted": false,
+    "pendingCheckpoint": false,
+    "pendingEpoch": "1",
+    "pendingAccountingVersion": "0",
+    "checkpointNonce": "1",
+    "checkpointHandle": "0xbaf6cd6fd42fd2ea6202ea7b62271e995eb2801ea6ff0000000000aa36a70000",
+    "activeAdapter": "0xB0FDA68126fC09DED8A7114ad436f2B638D89dfA",
+    "retiringAdapter": "0x0000000000000000000000000000000000000000",
+    "retiringAdapterDrained": false,
+    "operatorIsTokenOperator": false,
+    "fundedYieldInAdapter": "0",
+    "fundedYieldInVault": "0",
+    "drawState": "7",
+    "drawId": "1",
+    "drawCursor": "30",
+    "preSyncCursor": "30",
+    "participantSnapshot": "30",
+    "drawTEnd": "1786549656",
+    "drawSettled": true,
+    "pendingExit": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "frozenSectionDiffEmpty": true,
+  "executableDiffFromCodeCommit": ""
+}
