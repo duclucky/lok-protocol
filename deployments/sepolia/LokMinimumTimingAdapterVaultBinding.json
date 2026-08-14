@@ -1,0 +1,26 @@
+{
+  "step": "D06",
+  "name": "MockYieldAdapter.setVault",
+  "transactionHash": "0xcbce063e6c8ec23b9636bdf2669827616ebe1a0f03d1fb1465d69de2d27d518c",
+  "receipt": {
+    "from": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+    "to": "0x35d0aDD9F37b2D8025881c12749315D8C85681e0",
+    "contractAddress": null,
+    "status": 1,
+    "gasUsed": "47363",
+    "cumulativeGasUsed": "5525380",
+    "transactionIndex": 86,
+    "blockNumber": 11488915,
+    "logs": [
+      {
+        "address": "0x35d0aDD9F37b2D8025881c12749315D8C85681e0",
+        "topics": [
+          "0x56874bd86360c59c5a3f65f0a0e9fa1c407bdd51b6578cb8d36cd621e849fed0",
+          "0x000000000000000000000000834933c7bfef21b134ffb1f6c952edc7720fd312"
+        ],
+        "data": "0x",
+        "logIndex": 111
+      }
+    ]
+  }
+}

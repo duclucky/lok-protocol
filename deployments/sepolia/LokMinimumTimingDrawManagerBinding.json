@@ -1,0 +1,26 @@
+{
+  "step": "D07",
+  "name": "LokVault.setDrawManager",
+  "transactionHash": "0x61ad82c8f636667792109e13f594fc0f0e22f8078d4dda55eeff363ca2628712",
+  "receipt": {
+    "from": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+    "to": "0x834933C7bFEF21B134FfB1F6c952Edc7720fD312",
+    "contractAddress": null,
+    "status": 1,
+    "gasUsed": "47437",
+    "cumulativeGasUsed": "5163746",
+    "transactionIndex": 98,
+    "blockNumber": 11488916,
+    "logs": [
+      {
+        "address": "0x834933C7bFEF21B134FfB1F6c952Edc7720fD312",
+        "topics": [
+          "0xadb835162e833908ef9512fb62f105358bf1ce29f80144a2f72ce244b79a68c6",
+          "0x000000000000000000000000ec9a5362a8667a37ce57b070d4f065d9798a367a"
+        ],
+        "data": "0x",
+        "logIndex": 92
+      }
+    ]
+  }
+}
