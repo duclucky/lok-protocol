@@ -7,6 +7,7 @@ import {
   canReuseDeployment,
   classifyEtherscanResponse,
   etherscanV2Url,
+  loadExistingSepoliaManifest,
   SEPOLIA_DEPLOYMENT_NAMES,
   type SepoliaDeploymentManifest,
 } from "../../scripts/deploy";
@@ -194,5 +195,24 @@ describe("Sepolia deployment manifest", function () {
     expect(await canReuseDeployment(value, async (address) => codes.get(address.toLowerCase()) ?? "0x")).to.equal(
       false,
     );
+  });
+
+  it("loads an existing manifest by default and refuses stale bytecode", async function () {
+    const value = manifest();
+    const codes = new Map<string, string>();
+    for (const [index, contract] of Object.values(value.contracts).entries()) {
+      const code = `0x61${index.toString(16).padStart(2, "0")}`;
+      codes.set(contract.address.toLowerCase(), code);
+      contract.runtimeBytecodeHash = keccak256(code);
+    }
+
+    await expect(
+      loadExistingSepoliaManifest(async () => value, async (address) => codes.get(address.toLowerCase()) ?? "0x"),
+    ).to.eventually.deep.equal(value);
+
+    codes.set(value.addresses.drawManager.toLowerCase(), "0x");
+    await expect(
+      loadExistingSepoliaManifest(async () => value, async (address) => codes.get(address.toLowerCase()) ?? "0x"),
+    ).to.be.rejectedWith("Existing Sepolia manifest is stale or bytecode-mismatched");
   });
 });

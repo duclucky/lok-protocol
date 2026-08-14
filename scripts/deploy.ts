@@ -257,6 +257,18 @@ async function readExistingManifest(): Promise<SepoliaDeploymentManifest | null>
   }
 }
 
+export async function loadExistingSepoliaManifest(
+  readManifest: () => Promise<SepoliaDeploymentManifest | null> = readExistingManifest,
+  getCode: (address: string) => Promise<string> = (address) => ethers.provider.getCode(address),
+): Promise<SepoliaDeploymentManifest | null> {
+  const manifest = await readManifest();
+  if (manifest === null) return null;
+  if (!(await canReuseDeployment(manifest, getCode))) {
+    throw new Error("Existing Sepolia manifest is stale or bytecode-mismatched; refusing an ambiguous redeploy");
+  }
+  return manifest;
+}
+
 async function waitForTransactionHash(tx: { hash: string; wait(): Promise<unknown> }): Promise<string> {
   await tx.wait();
   return tx.hash;
@@ -623,11 +635,8 @@ async function main(): Promise<void> {
   if (network.name !== "sepolia" || chainId !== SEPOLIA_CHAIN_ID) {
     throw new Error("deploy.ts only supports Ethereum Sepolia chain ID 11155111");
   }
-  let manifest = await readExistingManifest();
+  let manifest = await loadExistingSepoliaManifest();
   if (manifest !== null) {
-    if (!(await canReuseDeployment(manifest, (address) => ethers.provider.getCode(address)))) {
-      throw new Error("Existing Sepolia manifest is stale or bytecode-mismatched; refusing an ambiguous redeploy");
-    }
     console.log(`REUSE ${manifest.addresses.vault}`);
   } else {
     manifest = await deployFresh();

@@ -1,9 +1,9 @@
 # P-S2 Sepolia Reconciliation
 
-**Status: READ-ONLY. Verdict: READY_FOR_OWNER_APPROVAL.**
+**Status: READ-ONLY. Verdict: READY_FOR_REVIEW.**
 
-No transaction, deployment, signing, public-decryption request, relayer request, or Sepolia ETH spend occurred during this
-reconciliation.
+This reconciliation now records the executed Sepolia deployment evidence. No additional transaction, deployment,
+signing, public-decryption request, relayer request, or Sepolia ETH spend was sent while preparing this note.
 
 ## Scope Finding
 
@@ -69,8 +69,39 @@ new negative case. The public-decryption dependency between D08 and D09 is the b
   `18,500,000 * 2,702,702,702 = 49,999,999,987,000,000 wei = 0.049999999987 ETH`.
 - Current read-only balance: `2.702175908700773413 ETH`.
 
-This budget covers host-chain transaction gas only. It does not bound the required public-decryption request cost, so the
-deployment is not ready for execution authorization as written.
+This budget covered host-chain transaction gas only. The mandatory public-decryption request was executed off-chain
+between D08 and D09 and did not consume Sepolia gas.
+
+## Execution Evidence
+
+The approved minimum-timing deployment executed with the expected Sepolia addresses and receipts. The off-chain
+`fhevm.publicDecrypt([checkpointHandle])` request occurred between D08 and D09; it has no Sepolia tx hash and is not
+counted in the gas cap.
+
+| Step | Address / target | Tx hash | Status | Block | Gas used |
+|---|---|---|---|---:|---:|
+| D01 | `0x4a1936B6533048a319a7742211872138B509c5D7` | `0xd550f2ef09b8caffea6d841fe67489146693e4e00fe469f4b427f2c53f66faf3` | `1` | `11488910` | `505630` |
+| D02 | `0xf199649603B36b0278BF4eFF89aab5c6EfB6e8c4` | `0x1a4e9d4b2604092fd63e9883e3d73c39927efaae2317cf50775f32b306185771` | `1` | `11488911` | `2624045` |
+| D03 | `0x35d0aDD9F37b2D8025881c12749315D8C85681e0` | `0xe4b6f2d56b91f9f5d5a7642a7d6f23af1e656f9259154e86d6791fb16b007ac4` | `1` | `11488912` | `984334` |
+| D04 | `0x834933C7bFEF21B134FfB1F6c952Edc7720fD312` | `0xbb7cf80a03a6d5d3af6264be3993df5636a08956b07bd9a68879264ce9f12a4e` | `1` | `11488913` | `4341166` |
+| D05 | `0xec9A5362a8667a37cE57B070D4f065d9798a367a` | `0x159cb433a8a17e499ff4f583f6353def2499b6f296b48f5fa0659aea4a26811e` | `1` | `11488914` | `4159276` |
+| D06 | `MockYieldAdapter.setVault(0x834933C7bFEF21B134FfB1F6c952Edc7720fD312)` | `0xcbce063e6c8ec23b9636bdf2669827616ebe1a0f03d1fb1465d69de2d27d518c` | `1` | `11488915` | `47363` |
+| D07 | `LokVault.setDrawManager(0xec9A5362a8667a37cE57B070D4f065d9798a367a)` | `0x61ad82c8f636667792109e13f594fc0f0e22f8078d4dda55eeff363ca2628712` | `1` | `11488916` | `47437` |
+| D08 | `LokVault.openSolvencyCheckpoint()` | `0xc91143f8d0542c6c364df5a05fd97050ebb3f40cfc5bda28a5a32bbf6b36a9bc` | `1` | `11488917` | `293181` |
+| D09 | `LokVault.submitSolvencyCheckpoint(...)` | `0x11ec4dc96722fbd5f9763a48cbc096734da93b31ef53a3a379b0d136a8ef6846` | `1` | `11488918` | `369140` |
+
+Actual state-changing gas used: `13,371,572`.
+
+Evidence file SHA-256:
+
+| File | SHA-256 |
+|---|---|
+| `deployments/sepolia.json` | `05A366CCC207D75AB21CDBB69F836B4607DDEB23595775E3833468FABD2542D0` |
+| `deployments/sepolia/LokMinimumTimingMockUSDC.json` | `B30A104D9EF5F606041BBC2630F0B6ADFB6F0AF71E00F1C3042CF22D0D125168` |
+| `deployments/sepolia/LokMinimumTimingConfidentialToken.json` | `6E0ED6B2ECA1A5F7B9C72E5CD647827BEBEBB248E50AC86E7C47EB5A66C33C08` |
+| `deployments/sepolia/LokMinimumTimingMockYieldAdapter.json` | `105E3A68816B99B646C52A705319DBC121E6E17AD8D07B7BFB2D800C6EF61435` |
+| `deployments/sepolia/LokMinimumTimingVault.json` | `9F89C213B80BF3100B7EA897AD15904CE99CD1FDD926A2F7EF3B72012F67F6DF` |
+| `deployments/sepolia/LokMinimumTimingDrawManager.json` | `C9D5E6D395F534249C4656615BF4E3945660E460C125EC592ECEE2F370CA9B8C` |
 
 ## Deployment And Archive Provenance
 
@@ -100,16 +131,15 @@ receipts and four configuration receipts exist on Sepolia with receipt status `1
 - Evidence sidecars checked: `120`; mismatches `0`.
 - Frozen `docs/10-proof-strategy.md` section 3: zero diff.
 
-## Blocking Findings
+## Resolved Findings
 
-1. The new deployment addresses are nonce-derived predictions only. Any owner transaction before deployment changes
-   D01-D05 addresses, so fresh preflight must recompute nonce/address emptiness immediately before execution.
-2. The public-decryption request is mandatory scope, but it is off-chain and does not consume Sepolia gas. Any separate
-   Gateway/relayer charge for it must be budgeted explicitly by the owner if applicable.
+1. Fresh preflight was rerun immediately before D01 and the deployed addresses matched the nonce-derived predictions for
+   D01-D05.
+2. The mandatory public-decryption request was executed between D08 and D09 and did not consume Sepolia gas.
 
 ## Owner Authorization Conditions
 
-Do not run the deployment until a later owner message explicitly authorizes all of the following:
+The later owner message explicitly authorized all of the following:
 
 - The 9 state-changing transactions listed above.
 - Hard gas stop `18,500,000`.
@@ -134,4 +164,4 @@ Stop before or during execution if any condition below occurs:
 
 ## Verdict
 
-`READY_FOR_OWNER_APPROVAL`
+`READY_FOR_REVIEW`
