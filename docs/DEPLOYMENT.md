@@ -1,11 +1,12 @@
 # Sepolia Deployment
 
-**Status:** TRANSITION - the 2026-08-12 stack is deployed, verified, seeded, settled and preserved as historical
-evidence; the approved minimum-timing replacement stack is pending a separate Sepolia transaction budget approval.
+**Status:** CURRENT CANONICAL MANIFEST IS P-S2 EVIDENCE - `deployments/sepolia.json` points at the 2026-08-14
+minimum-timing evidence stack. The 2026-08-12 seeded demo stack is deployed, verified, settled and preserved as
+historical evidence.
 **Network:** Ethereum Sepolia (`chainId = 11155111`)  
 **Historical deployment:** 2026-08-12 **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
 
-## Previous Verified Contracts
+## Historical Demo Contracts
 
 | Contract              | Address                                                                                                                              | Deployment transaction                                               | Source   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- | -------- |
@@ -15,9 +16,9 @@ evidence; the approved minimum-timing replacement stack is pending a separate Se
 | LokVault              | [`0xAA7B956c551B7f5336c2d9e786CB9024aB1657e1`](https://sepolia.etherscan.io/address/0xAA7B956c551B7f5336c2d9e786CB9024aB1657e1#code) | `0x031b60e4fa62f4a479b0b2cc5afce003444ae0b78da0a60fa2b4abf0f7ece6be` | Verified |
 | LokDrawManager        | [`0x5592dB13624EB5C20B6Bb5841317148c79DFFAa5`](https://sepolia.etherscan.io/address/0x5592dB13624EB5C20B6Bb5841317148c79DFFAa5#code) | `0xaa01fe15b003f5473e5da1c0b991bdbac653820fa53906594defc0e1fa1b0d31` | Verified |
 
-The confidential token is also the wrapper. Exact constructor arguments, runtime bytecode hashes, versions, and
-verification flags are in `deployments/sepolia.json`. The prior seven-day release is preserved without modification in
-`deployments/history/sepolia-seven-day-2026-08-11.json`.
+The confidential token is also the wrapper. Exact historical constructor arguments, runtime bytecode hashes, versions,
+and verification flags are in `deployments/history/sepolia-2026-08-13-120-30-180-600.json`. The prior seven-day release
+is preserved without modification in `deployments/history/sepolia-seven-day-2026-08-11.json`.
 
 ## Configuration
 
@@ -34,12 +35,14 @@ The approved final Sepolia profile is:
 
 The four draw timing values are immutable constructor parameters. `ADAPTER_DELAY` is a separate owner adapter
 replacement timelock and does not delay draws, deposits, withdrawals, exits or emergency withdrawals. The historical
-2026-08-12 stack used the superseded 120 / 30 / 180 / 600 profile and remains valid only as preserved evidence for that
-deployment. The replacement stack must be deployed with fresh `LokMinimumTiming*` deployment names after the owner
-approves a read-only transaction/gas/ETH manifest.
+2026-08-12 stack used the superseded 120 / 30 / 180 / 600 profile and remains valid only as preserved demo evidence for
+that deployment. The current canonical minimum-timing stack uses fresh `LokMinimumTiming*` deployment names and is P-S2
+evidence, not a seeded demo stack.
 
-The historical live integration test confirms all runtime bytecode hashes, bindings, owners, exact timing getters, and
-the current risk-epoch solvency authorization for the preserved 2026-08-12 stack.
+The live integration test confirms all runtime bytecode hashes, bindings, owners, exact timing getters, unrestricted
+status, and current risk-epoch solvency authorization for the canonical manifest. Participant-count and settled-draw
+assertions apply only to a seeded demo manifest; the P-S2 evidence stack is expected to have no demo participants or
+settled demo draw.
 
 | Configuration action               | Transaction                                                          |
 | ---------------------------------- | -------------------------------------------------------------------- |
