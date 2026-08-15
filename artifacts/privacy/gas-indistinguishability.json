@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAtUtc": "2026-08-14T23:59:59.522Z",
-  "gitCommit": "6896f65c230d8e80e4cfec728168c59b2afee978",
+  "generatedAtUtc": "2026-08-15T02:09:20.373Z",
+  "gitCommit": "8d7b01b76983ace608eca9affc1fdc93e9c1d64f",
   "sourceStatusBeforeRun": "",
   "command": "npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep \"keeps first\"",
   "nodeVersion": "v24.11.1",
