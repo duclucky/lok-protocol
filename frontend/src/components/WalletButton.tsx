@@ -1,14 +1,31 @@
 import { LogOut, WalletCards } from "lucide-react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+
+import { LOK_CHAIN_ID } from "../contracts/addresses";
 
 function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function WalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address, chainId, isConnected } = useAccount();
   const { connectors, connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { switchChain, isPending: isSwitching } = useSwitchChain();
+
+  if (isConnected && address !== undefined && chainId !== LOK_CHAIN_ID) {
+    return (
+      <button
+        className="wallet-button wallet-button--network"
+        type="button"
+        onClick={() => switchChain({ chainId: LOK_CHAIN_ID })}
+        disabled={isSwitching}
+      >
+        <span className="network-dot" aria-hidden="true" />
+        {isSwitching ? "Switching" : "Switch to Sepolia"}
+      </button>
+    );
+  }
 
   if (isConnected && address !== undefined) {
     return (

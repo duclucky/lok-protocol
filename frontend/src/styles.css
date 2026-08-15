@@ -299,6 +299,11 @@ select {
   background: var(--surface);
   border-color: var(--border);
 }
+.wallet-button--network {
+  color: var(--ink);
+  background: var(--gold);
+  border-color: #d7bf55;
+}
 .main-content {
   min-height: calc(100dvh - 124px);
   outline: none;
@@ -475,6 +480,11 @@ select {
   background: var(--surface);
   border-color: var(--border);
   box-shadow: none;
+}
+.wallet-button--network {
+  color: var(--ink);
+  background: var(--gold);
+  border-color: #d7bf55;
 }
 .main-content {
   min-height: calc(100dvh - 56px);
