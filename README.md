@@ -86,7 +86,8 @@ of odds without revealing balances or per-user weights.
 
 **Quiet Win.** PASS B writes one encrypted credit for every participant. The winner receives the encrypted prize and
 everyone else receives encrypted zero through the same function, event shape and ACL pattern. A winner-only claim or ACL
-grant would identify the winner publicly.
+grant would identify the winner publicly. The app's "Claim / check prize" action is therefore an EIP-712 user-decryption
+read of the connected wallet's own credit, not a winner-only onchain claim transaction.
 
 ## 6. Architecture
 
@@ -104,6 +105,12 @@ The draw is paginated. PASS A snapshots participants, builds encrypted aggregate
 allowlisted totals. The resulting plaintext denominator permits reduction of encrypted randomness. PASS B carries an
 encrypted prefix across bounded transactions, tests half-open intervals with `FHE.select`, and credits every participant
 uniformly.
+
+The live UI includes a Keeper panel on the draw page. It reads the current draw state, proposes the next permissionless
+action, and can advance `openDraw`, `preSyncA`, `crankA`, aggregate `decryptPublicValues` plus `submitTotals`,
+`openRandom`, and `crankB`. The public-decrypt step uses only the three allowlisted aggregate handles
+`cumRunning`, `cumBaseRiskRunning`, and `cumYieldRunning`; it never requests per-user balances, weights, ranges, or prize
+credits.
 
 The naive algorithm fails three ways: a sequential encrypted sum hits transaction depth at roughly 30 participants;
 encrypted divisors make `r mod encryptedTotal` unavailable; and encrypted comparisons cannot control Solidity branches.

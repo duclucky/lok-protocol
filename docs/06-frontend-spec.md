@@ -131,8 +131,14 @@ Live view of the state machine. Reviewers judge sophistication here, so make the
   Nobody can read this value, including us."_
 - After settlement: the revealed `r`, the total ticket space, and a link to the external verification evidence. The app
   must not simulate a verifier or display a local success state unless the complete verifier actually ran.
-- **Your result:** _"Check my result"_ → decrypt your own credit for the draw. Two outcomes only: _"No prize this draw"_
-  or the celebratory reveal. This is a device-local private read and must not imply that a public proof was published.
+- **Keeper panel:** clearly labelled `DEMO CONTROL`, reads the live draw state, and proposes exactly one next
+  permissionless action. In `AWAIT_TOTAL`, it may request public decryption only for the three aggregate handles
+  `cumRunning`, `cumBaseRiskRunning`, and `cumYieldRunning`, then submit the returned proof. It must never request
+  per-user balances, ranges, weights or prize credits.
+- **Your result:** _"Claim / check prize"_ → decrypt your own credit for the draw through the same EIP-712 user-decrypt
+  path every participant uses. Two outcomes only: _"No prize this draw"_ or the celebratory reveal. This is a
+  device-local private read and must not imply that a public proof was published or that a winner-only claim transaction
+  exists.
 
 ### Proof of win
 
@@ -196,7 +202,7 @@ The reviewer arrives with an empty wallet and no patience. Every item here is re
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | No cUSDC on Sepolia                           | **"Get test tokens"** — mints mock USDC and shields it in one guided flow                                                      |
 | Empty pool makes a draw meaningless           | Pre-seeded participants via `scripts/seed-demo.ts` — 30 to 50 addresses with varied balances and θ, so pagination visibly runs |
-| Nobody waits a week for a draw                | **"Run draw now"** — clearly labelled `DEMO CONTROL`, visually separated from user actions                                     |
+| Nobody waits a week for a draw                | **Keeper panel** — clearly labelled `DEMO CONTROL`, auto-detects draw state and runs the next permissionless step              |
 | Relayer slow or rate-limited                  | Everything in §4                                                                                                               |
 | Reviewer cannot tell what is real             | Verified Sepolia deployment addresses linking to Etherscan, plus an explicit network label; never hard-code a stale commit or SDK version |
 | Reviewer wants the argument, not just the app | A one-screen **"Why encrypted?"** page carrying the thesis with its numbers                                                    |

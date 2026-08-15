@@ -1,3 +1,5 @@
+import type { KeeperExecutableAction } from "../keeper/model";
+
 export type LokTransactionActions = Readonly<{
   pending: boolean;
   mintTestTokens(): Promise<string>;
@@ -5,6 +7,7 @@ export type LokTransactionActions = Readonly<{
   deposit(amount: string): Promise<string>;
   setRisk(percent: number): Promise<string>;
   withdraw(amount: string): Promise<string>;
+  advanceDraw(action: KeeperExecutableAction): Promise<string>;
 }>;
 
 export function parseUsdcAmount(value: string): bigint {

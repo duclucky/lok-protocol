@@ -1,13 +1,13 @@
-import { useConfidentialSetOperator, useEncrypt, useShield } from "@zama-fhe/react-sdk";
+import { useConfidentialSetOperator, useDecryptPublicValues, useEncrypt, useShield } from "@zama-fhe/react-sdk";
 import { useMemo } from "react";
 import { type Address, type Hex } from "viem";
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from "wagmi";
 
-import { confidentialTokenAbi, lokVaultAbi, mockUsdcAbi } from "../../contracts/abis";
+import { confidentialTokenAbi, lokDrawManagerAbi, lokVaultAbi, mockUsdcAbi } from "../../contracts/abis";
 import { LOK_CHAIN_ID, sepoliaDeploymentAddresses } from "../../contracts/addresses";
 import { parseUsdcAmount, riskPercentToTheta, type LokTransactionActions } from "./model";
 
-const { confidentialToken, underlyingToken, vault, wrapper } = sepoliaDeploymentAddresses;
+const { confidentialToken, drawManager, underlyingToken, vault, wrapper } = sepoliaDeploymentAddresses;
 const TEST_TOKEN_AMOUNT = 10_000_000n;
 
 export function useLokTransactions(): LokTransactionActions {
@@ -15,6 +15,7 @@ export function useLokTransactions(): LokTransactionActions {
   const publicClient = usePublicClient({ chainId: LOK_CHAIN_ID });
   const write = useWriteContract();
   const encrypt = useEncrypt();
+  const decryptPublicValues = useDecryptPublicValues();
   const shieldMutation = useShield({ address: wrapper });
   const setOperator = useConfidentialSetOperator(confidentialToken);
   const operator = useReadContract({
@@ -59,7 +60,12 @@ export function useLokTransactions(): LokTransactionActions {
   return useMemo(
     () => ({
       pending:
-        write.isPending || encrypt.isPending || shieldMutation.isPending || setOperator.isPending || operator.isLoading,
+        write.isPending ||
+        encrypt.isPending ||
+        decryptPublicValues.isPending ||
+        shieldMutation.isPending ||
+        setOperator.isPending ||
+        operator.isLoading,
       async mintTestTokens() {
         const userAddress = requireWallet();
         const hash = await write.writeContractAsync({
@@ -113,7 +119,36 @@ export function useLokTransactions(): LokTransactionActions {
         });
         return waitForReceipt(hash);
       },
+      async advanceDraw(action) {
+        requireWallet();
+        if (action.kind === "submitTotals") {
+          const publicDecryption = await decryptPublicValues.mutateAsync([...action.handles]);
+          const hash = await write.writeContractAsync({
+            address: drawManager,
+            abi: lokDrawManagerAbi,
+            functionName: "submitTotals",
+            args: [publicDecryption.abiEncodedClearValues, publicDecryption.decryptionProof],
+            chainId: LOK_CHAIN_ID,
+          });
+          return waitForReceipt(hash);
+        }
+
+        const writeArgs =
+          action.kind === "openDraw"
+            ? ([action.strict] as const)
+            : action.kind === "preSyncA" || action.kind === "crankA" || action.kind === "crankB"
+              ? ([action.batch] as const)
+              : ([] as const);
+        const hash = await write.writeContractAsync({
+          address: drawManager,
+          abi: lokDrawManagerAbi,
+          functionName: action.kind,
+          args: writeArgs,
+          chainId: LOK_CHAIN_ID,
+        });
+        return waitForReceipt(hash);
+      },
     }),
-    [address, chainId, encrypt, operator, publicClient, setOperator, shieldMutation, write],
+    [address, chainId, decryptPublicValues, encrypt, operator, publicClient, setOperator, shieldMutation, write],
   );
 }

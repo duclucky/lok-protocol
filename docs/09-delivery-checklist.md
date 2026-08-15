@@ -103,7 +103,8 @@ The reviewer arrives with an empty wallet and limited patience. Each item is a l
 
 - [ ] **"Get test tokens"** mints mock USDC and shields it in one guided flow.
 - [ ] **Seeded pool** of 30–50 participants with varied balances and θ, so pagination visibly runs.
-- [ ] **"Run draw now"**, clearly labelled as a demo control and visually separated from user actions.
+- [ ] **Keeper panel**, clearly labelled as a demo control, visually separated from user actions, and limited to the next
+      permissionless state-machine step.
 - [x] **Every decryption out of band**, cached, retried with backoff, with honest failure states. The single most likely
       cause of a demo failing mid-video.
 - [ ] **Contracts verified** on Sepolia Etherscan; addresses in the README _and_ the app footer.

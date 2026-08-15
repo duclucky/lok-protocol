@@ -1,16 +1,23 @@
-import { Copy, Dices, ShieldCheck } from "lucide-react";
+import { Copy, Dices, LoaderCircle, Play, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
 import { DRAW_STATES, drawStateDetails } from "../features/draw/model";
+import { keeperDecision } from "../features/keeper/model";
 import { formatUtc, type LokPublicData, ZERO_BYTES32 } from "../features/public-data/model";
+import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
 
 export { DRAW_STATES };
 
-type DrawPageProps = { publicData: LokPublicData };
+type DrawPageProps = {
+  publicData: LokPublicData;
+  keeperAction?: Pick<LokTransactionActions, "pending" | "advanceDraw">;
+  nowMs?: number;
+};
 
-export function DrawPage({ publicData }: DrawPageProps) {
+export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
   const [copied, setCopied] = useState(false);
+  const [keeperMessage, setKeeperMessage] = useState<string>();
 
   if (publicData.status !== "ready") {
     const message =
@@ -26,6 +33,7 @@ export function DrawPage({ publicData }: DrawPageProps) {
   }
 
   const draw = publicData.snapshot.draw;
+  const keeper = keeperDecision(publicData.snapshot, nowMs);
   if (draw === undefined) {
     return (
       <div className="page page--draw">
@@ -33,6 +41,7 @@ export function DrawPage({ publicData }: DrawPageProps) {
         <section className="section-block data-message" role="status">
           No draw has opened on this deployment yet.
         </section>
+        <KeeperPanel decision={keeper} keeperAction={keeperAction} message={keeperMessage} setMessage={setKeeperMessage} />
       </div>
     );
   }
@@ -152,6 +161,8 @@ export function DrawPage({ publicData }: DrawPageProps) {
             </div>
           </dl>
         </section>
+
+        <KeeperPanel decision={keeper} keeperAction={keeperAction} message={keeperMessage} setMessage={setKeeperMessage} />
       </div>
 
       {state === "SETTLED" && (
@@ -177,5 +188,58 @@ export function DrawPage({ publicData }: DrawPageProps) {
         </section>
       )}
     </div>
+  );
+}
+
+type KeeperPanelProps = Readonly<{
+  decision: ReturnType<typeof keeperDecision>;
+  keeperAction?: Pick<LokTransactionActions, "pending" | "advanceDraw">;
+  message?: string;
+  setMessage(message: string | undefined): void;
+}>;
+
+function KeeperPanel({ decision, keeperAction, message, setMessage }: KeeperPanelProps) {
+  const disabled = keeperAction === undefined || keeperAction.pending || decision.action === undefined;
+  const pending = keeperAction?.pending === true;
+
+  async function advance() {
+    if (keeperAction === undefined || decision.action === undefined) return;
+    setMessage(
+      decision.action.kind === "submitTotals"
+        ? "Requesting public aggregate decryption, then submitting the proof."
+        : "Submitting keeper transaction.",
+    );
+    try {
+      const hash = await keeperAction.advanceDraw(decision.action);
+      setMessage(`Confirmed ${hash}`);
+    } catch (error) {
+      setMessage(transactionMessage(error));
+    }
+  }
+
+  return (
+    <section className="section-block keeper-block" aria-labelledby="keeper-title">
+      <div className="section-heading">
+        <div>
+          <p className="section-label">Demo control</p>
+          <h2 id="keeper-title">Keeper panel</h2>
+        </div>
+        <Play aria-hidden="true" size={22} />
+      </div>
+      <p>{decision.detail}</p>
+      <button className="button button--primary" type="button" disabled={disabled} onClick={() => void advance()}>
+        {pending ? <LoaderCircle className="spin" aria-hidden="true" size={18} /> : <Play aria-hidden="true" size={18} />}
+        {decision.label}
+      </button>
+      <p className="keeper-note">
+        Anyone can run keeper steps. The aggregate public-decrypt step submits only draw totals, never per-user balances
+        or prize credits.
+      </p>
+      {(decision.disabledReason !== undefined || keeperAction === undefined || message !== undefined) && (
+        <p className="form-message" role="status">
+          {message ?? decision.disabledReason ?? "Connect a Sepolia wallet to advance the draw."}
+        </p>
+      )}
+    </section>
   );
 }

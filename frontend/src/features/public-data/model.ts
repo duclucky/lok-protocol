@@ -24,6 +24,9 @@ export type PublicDrawSnapshot = Readonly<{
   totalTickets: bigint;
   totalBaseRiskWeight: bigint;
   totalYieldWeight: bigint;
+  cumRunning: Hex;
+  cumBaseRiskRunning: Hex;
+  cumYieldRunning: Hex;
   randomHandle: Hex;
   revealAccumulator: Hex;
 }>;

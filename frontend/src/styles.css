@@ -868,6 +868,19 @@ select {
   border: 1px dashed #3a5b4c;
   border-radius: var(--radius-sm);
 }
+.keeper-block {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: 16px;
+}
+.keeper-block .button {
+  align-self: flex-start;
+}
+.keeper-note {
+  margin-top: 0;
+  font-size: 0.88rem;
+}
 .demo-control__label {
   display: flex;
   align-items: center;

@@ -27,7 +27,7 @@ export function ProofPage({
 
   return (
     <div className="page page--proof">
-      <PageHeader title="Your draw result" description="The same private check for every participant." />
+      <PageHeader title="Claim privately" description="The same EIP-712 decrypt flow for every participant." />
 
       <section className={`proof-stage proof-stage--${state}`} aria-live="polite">
         {(state === "sealed" || state === "decrypting") && (
@@ -36,8 +36,8 @@ export function ProofPage({
               <LockKeyhole aria-hidden="true" size={32} />
             </div>
             <p className="section-label">{drawId === undefined ? "Current draw" : `Draw ${drawId.toString()}`}</p>
-            <h2>Your credit is sealed</h2>
-            <p>Only your wallet can request this result.</p>
+            <h2>Your prize credit is sealed</h2>
+            <p>Claiming means your wallet decrypts its own credit. There is no winner-only transaction.</p>
             <button
               className="button button--primary"
               type="button"
@@ -49,7 +49,7 @@ export function ProofPage({
               ) : (
                 <Eye aria-hidden="true" size={18} />
               )}
-              {state === "decrypting" ? "Checking result" : "Check my result"}
+              {state === "decrypting" ? "Checking prize" : "Claim / check prize"}
             </button>
           </>
         )}
@@ -69,9 +69,9 @@ export function ProofPage({
               <BadgeCheck aria-hidden="true" size={32} />
             </div>
             <p className="section-label">{drawId === undefined ? "Current draw" : `Draw ${drawId.toString()}`}</p>
-            <h2>You received a prize</h2>
+            <h2>Prize available</h2>
             <strong className="winner-amount">{(Number(credit) / 1_000_000).toFixed(2)} cUSDC</strong>
-            <p>This result is still private to your wallet.</p>
+            <p>The credit was assigned during settlement and is visible only through your wallet decryption.</p>
           </>
         )}
         {state === "failed" && (

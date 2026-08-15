@@ -1,8 +1,11 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { vi } from "vitest";
 
 import type { DrawState } from "../../features/draw/model";
 import type { LokPublicData } from "../../features/public-data/model";
+import type { LokTransactionActions } from "../../features/transactions/model";
 import { DRAW_STATES, DrawPage } from "../../pages/DrawPage";
 
 function publicData(state: DrawState): LokPublicData {
@@ -32,10 +35,20 @@ function publicData(state: DrawState): LokPublicData {
         totalTickets: state === "SETTLED" ? 48_291_774n : 0n,
         totalBaseRiskWeight: 0n,
         totalYieldWeight: 0n,
+        cumRunning: `0x${"11".repeat(32)}`,
+        cumBaseRiskRunning: `0x${"22".repeat(32)}`,
+        cumYieldRunning: `0x${"33".repeat(32)}`,
         randomHandle: `0x${(state === "SETTLED" ? "11" : "00").repeat(32)}`,
         revealAccumulator: `0x${"00".repeat(32)}`,
       },
     },
+  };
+}
+
+function keeperActions(): Pick<LokTransactionActions, "pending" | "advanceDraw"> {
+  return {
+    pending: false,
+    advanceDraw: vi.fn().mockResolvedValue(`0x${"44".repeat(32)}`),
   };
 }
 
@@ -69,5 +82,26 @@ describe("DrawPage", () => {
     expect(container).not.toHaveTextContent(
       /ZK|VRF|enclave|eligible volume|capacity utilization|root hash|verifier address|execution log/i,
     );
+  });
+
+  it("renders a keeper panel without replacing public state checks", () => {
+    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
+
+    expect(screen.getByRole("heading", { name: /keeper panel/i })).toBeVisible();
+    expect(screen.getByRole("button", { name: /decrypt totals and submit/i })).toBeVisible();
+    expect(screen.getByText(/public decryption for aggregate draw totals/i)).toBeVisible();
+  });
+
+  it("calls the next keeper action derived from state", async () => {
+    const user = userEvent.setup();
+    const actions = keeperActions();
+    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={actions} nowMs={1_787_256_624_000} />);
+
+    await user.click(screen.getByRole("button", { name: /decrypt totals and submit/i }));
+
+    expect(actions.advanceDraw).toHaveBeenCalledWith({
+      kind: "submitTotals",
+      handles: [`0x${"11".repeat(32)}`, `0x${"22".repeat(32)}`, `0x${"33".repeat(32)}`],
+    });
   });
 });

@@ -87,6 +87,9 @@ export function useLokPublicData(): LokPublicData {
         totalTickets: info.totalTickets,
         totalBaseRiskWeight: info.totalBaseRiskWeight,
         totalYieldWeight: info.totalYieldWeight,
+        cumRunning: info.cumRunning,
+        cumBaseRiskRunning: info.cumBaseRiskRunning,
+        cumYieldRunning: info.cumYieldRunning,
         randomHandle: info.r,
         revealAccumulator,
       };
