@@ -820,6 +820,35 @@ select {
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr);
   gap: 18px;
 }
+.draw-view-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+.draw-view-switch button {
+  min-height: 38px;
+  padding: 0 14px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.draw-view-switch button[aria-pressed="true"] {
+  color: var(--surface);
+  background: var(--ink);
+}
+.draw-view-switch button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--patina) 40%, transparent);
+  outline-offset: 2px;
+}
 .section-block {
   min-width: 0;
   padding: 26px;
@@ -903,6 +932,9 @@ select {
   flex-direction: column;
   gap: 16px;
 }
+.user-draw-block {
+  grid-column: 1 / -1;
+}
 .keeper-block .button {
   align-self: flex-start;
 }
@@ -923,6 +955,43 @@ select {
 .keeper-note {
   margin-top: 0;
   font-size: 0.88rem;
+}
+.sweep-tx-summary {
+  color: var(--ink);
+  font-weight: 650;
+}
+.execution-log-block {
+  grid-column: 1 / -1;
+}
+.execution-log-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.execution-log-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.execution-log-list li:first-child {
+  border-top: 0;
+}
+.execution-log-list span {
+  min-width: 0;
+  font-weight: 650;
+}
+.execution-log-list a {
+  color: var(--patina);
+  text-decoration: none;
+}
+.execution-log-list a:hover {
+  color: var(--ink);
+  text-decoration: underline;
 }
 .demo-control__label {
   display: flex;
@@ -1895,6 +1964,12 @@ select {
     gap: 16px;
     margin-bottom: 24px;
   }
+  .draw-view-switch {
+    width: 100%;
+  }
+  .draw-view-switch button {
+    flex: 1;
+  }
   .fhe-boundary {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -2007,6 +2082,13 @@ select {
   }
   .draw-console {
     padding: 22px;
+  }
+  .execution-log-list li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .execution-log-list a {
+    overflow-wrap: anywhere;
   }
   .state-rail {
     grid-template-columns: repeat(4, 1fr);

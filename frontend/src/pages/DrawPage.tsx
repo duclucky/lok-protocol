@@ -1,5 +1,6 @@
-import { Copy, Dices, LoaderCircle, Play, ShieldCheck } from "lucide-react";
+import { Copy, Dices, ExternalLink, LoaderCircle, Play, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import type { Hex } from "viem";
 
 import { PageHeader } from "../components/PageHeader";
 import { DRAW_STATES, drawStateDetails } from "../features/draw/model";
@@ -8,6 +9,14 @@ import { formatUtc, type LokPublicData, ZERO_BYTES32 } from "../features/public-
 import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
 
 export { DRAW_STATES };
+
+type DrawViewMode = "user" | "demo";
+
+type KeeperExecutionLogEntry = Readonly<{
+  id: number;
+  label: string;
+  hash: Hex;
+}>;
 
 type DrawPageProps = {
   publicData: LokPublicData;
@@ -18,6 +27,8 @@ type DrawPageProps = {
 export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
   const [copied, setCopied] = useState(false);
   const [keeperMessage, setKeeperMessage] = useState<string>();
+  const [viewMode, setViewMode] = useState<DrawViewMode>("user");
+  const [executionLog, setExecutionLog] = useState<readonly KeeperExecutionLogEntry[]>([]);
 
   if (publicData.status !== "ready") {
     const message =
@@ -41,7 +52,13 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
         <section className="section-block data-message" role="status">
           No draw has opened on this deployment yet.
         </section>
-        <KeeperPanel decision={keeper} keeperAction={keeperAction} message={keeperMessage} setMessage={setKeeperMessage} />
+        <KeeperPanel
+          decision={keeper}
+          keeperAction={keeperAction}
+          message={keeperMessage}
+          setMessage={setKeeperMessage}
+          onConfirmed={recordKeeperConfirmation}
+        />
       </div>
     );
   }
@@ -51,10 +68,15 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
   const cursor = state === "OPEN" ? draw.preSyncCursor : draw.cursor;
   const randomHandle = draw.randomHandle;
   const randomMaterialReady = randomHandle !== ZERO_BYTES32;
+  const isDemoView = viewMode === "demo";
 
   async function copyRandomHandle() {
     await navigator.clipboard.writeText(randomHandle);
     setCopied(true);
+  }
+
+  function recordKeeperConfirmation(label: string, hash: Hex) {
+    setExecutionLog((entries) => [{ id: Date.now(), label, hash }, ...entries].slice(0, 12));
   }
 
   return (
@@ -69,6 +91,15 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
           </span>
         }
       />
+
+      <div className="draw-view-switch" aria-label="Draw page view">
+        <button type="button" aria-pressed={viewMode === "user"} onClick={() => setViewMode("user")}>
+          User view
+        </button>
+        <button type="button" aria-pressed={viewMode === "demo"} onClick={() => setViewMode("demo")}>
+          Demo progress
+        </button>
+      </div>
 
       <section className="draw-console" aria-labelledby="draw-state-heading">
         <div className="draw-console__state">
@@ -114,6 +145,12 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
             value={state === "IDLE" ? 0 : Number(cursor)}
             max={Number(draw.participantSnapshot)}
           />
+          {executionLog.length > 0 && (
+            <p className="sweep-tx-summary">
+              This browser confirmed {executionLog.length.toString()} keeper{" "}
+              {executionLog.length === 1 ? "transaction" : "transactions"}.
+            </p>
+          )}
           <p>Small batches keep each encrypted transaction within the measured Sepolia compute cap.</p>
         </section>
 
@@ -162,7 +199,20 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
           </dl>
         </section>
 
-        <KeeperPanel decision={keeper} keeperAction={keeperAction} message={keeperMessage} setMessage={setKeeperMessage} />
+        {isDemoView ? (
+          <>
+            <KeeperPanel
+              decision={keeper}
+              keeperAction={keeperAction}
+              message={keeperMessage}
+              setMessage={setKeeperMessage}
+              onConfirmed={recordKeeperConfirmation}
+            />
+            <ExecutionLogPanel entries={executionLog} />
+          </>
+        ) : (
+          <UserDrawPanel state={state} settled={draw.settled} />
+        )}
       </div>
 
       {state === "SETTLED" && (
@@ -196,9 +246,10 @@ type KeeperPanelProps = Readonly<{
   keeperAction?: Pick<LokTransactionActions, "pending" | "advanceDraw">;
   message?: string;
   setMessage(message: string | undefined): void;
+  onConfirmed(label: string, hash: Hex): void;
 }>;
 
-function KeeperPanel({ decision, keeperAction, message, setMessage }: KeeperPanelProps) {
+function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed }: KeeperPanelProps) {
   const disabled = keeperAction === undefined || keeperAction.pending || decision.action === undefined;
   const pending = keeperAction?.pending === true;
 
@@ -212,6 +263,7 @@ function KeeperPanel({ decision, keeperAction, message, setMessage }: KeeperPane
     try {
       const hash = await keeperAction.advanceDraw(decision.action);
       setMessage(`Confirmed ${hash}`);
+      onConfirmed(decision.label, hash);
     } catch (error) {
       setMessage(transactionMessage(error));
     }
@@ -246,4 +298,69 @@ function KeeperPanel({ decision, keeperAction, message, setMessage }: KeeperPane
       )}
     </section>
   );
+}
+
+function UserDrawPanel({ state, settled }: Readonly<{ state: string; settled: boolean }>) {
+  const status = settled
+    ? "This draw is settled. Check your private result from the Proof page."
+    : state === "OPEN"
+      ? "This draw is open. You can deposit or withdraw without operating the keeper."
+      : "Draw automation is running. No action is needed from depositors.";
+
+  return (
+    <section className="section-block user-draw-block" aria-labelledby="user-draw-title">
+      <div className="section-heading">
+        <div>
+          <p className="section-label">User view</p>
+          <h2 id="user-draw-title">What you need to do</h2>
+        </div>
+        <ShieldCheck aria-hidden="true" size={22} />
+      </div>
+      <p>{status}</p>
+      <p>
+        Keeper transactions are protocol operations. They are visible in Demo progress mode for review, but ordinary
+        users only need deposit, check result, claim, and withdraw actions.
+      </p>
+    </section>
+  );
+}
+
+function ExecutionLogPanel({ entries }: Readonly<{ entries: readonly KeeperExecutionLogEntry[] }>) {
+  return (
+    <section className="section-block execution-log-block" aria-labelledby="execution-log-title">
+      <div className="section-heading">
+        <div>
+          <p className="section-label">Demo progress</p>
+          <h2 id="execution-log-title">Execution log</h2>
+        </div>
+        <ExternalLink aria-hidden="true" size={22} />
+      </div>
+      {entries.length === 0 ? (
+        <p>
+          No keeper transactions recorded in this browser session yet. Automation can still advance the draw onchain;
+          confirmed transactions remain visible on Sepolia explorers.
+        </p>
+      ) : (
+        <ol className="execution-log-list">
+          {entries.map((entry) => (
+            <li key={entry.id}>
+              <span>{entry.label}</span>
+              <a
+                className="mono"
+                href={`https://sepolia.etherscan.io/tx/${entry.hash}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {shortHash(entry.hash)}
+              </a>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
+function shortHash(hash: Hex): string {
+  return `${hash.slice(0, 6)}...${hash.slice(-4)}`;
 }

@@ -84,8 +84,41 @@ describe("DrawPage", () => {
     );
   });
 
-  it("renders a keeper panel without replacing public state checks", () => {
+  it("defaults to a user-focused draw view before exposing keeper controls", () => {
     render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
+
+    expect(screen.getByRole("button", { name: /user view/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText(/draw automation is running/i)).toBeVisible();
+    expect(screen.queryByRole("heading", { name: /keeper panel/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /execution log/i })).not.toBeInTheDocument();
+  });
+
+  it("shows keeper controls and confirmed transaction log in demo progress mode", async () => {
+    const user = userEvent.setup();
+    const actions = keeperActions();
+    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={actions} nowMs={1_787_256_624_000} />);
+
+    await user.click(screen.getByRole("button", { name: /demo progress/i }));
+
+    expect(screen.getByRole("button", { name: /demo progress/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("heading", { name: /keeper panel/i })).toBeVisible();
+    expect(screen.getByRole("heading", { name: /execution log/i })).toBeVisible();
+    expect(screen.getByText(/no keeper transactions recorded/i)).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: /manual: decrypt totals and submit/i }));
+
+    expect(await screen.findByRole("link", { name: /0x4444.*4444/i })).toHaveAttribute(
+      "href",
+      `https://sepolia.etherscan.io/tx/0x${"44".repeat(32)}`,
+    );
+    expect(screen.getAllByText(/Decrypt totals and submit/).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("renders a keeper panel without replacing public state checks", async () => {
+    const user = userEvent.setup();
+    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
+
+    await user.click(screen.getByRole("button", { name: /demo progress/i }));
 
     expect(screen.getByRole("heading", { name: /keeper panel/i })).toBeVisible();
     expect(screen.getByRole("button", { name: /manual: decrypt totals and submit/i })).toBeVisible();
@@ -98,6 +131,7 @@ describe("DrawPage", () => {
     const actions = keeperActions();
     render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={actions} nowMs={1_787_256_624_000} />);
 
+    await user.click(screen.getByRole("button", { name: /demo progress/i }));
     await user.click(screen.getByRole("button", { name: /manual: decrypt totals and submit/i }));
 
     expect(actions.advanceDraw).toHaveBeenCalledWith({

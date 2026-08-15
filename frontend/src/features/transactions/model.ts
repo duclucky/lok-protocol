@@ -1,13 +1,15 @@
+import type { Hex } from "viem";
+
 import type { KeeperExecutableAction } from "../keeper/model";
 
 export type LokTransactionActions = Readonly<{
   pending: boolean;
-  mintTestTokens(): Promise<string>;
-  shield(amount: string): Promise<string>;
-  deposit(amount: string): Promise<string>;
-  setRisk(percent: number): Promise<string>;
-  withdraw(amount: string): Promise<string>;
-  advanceDraw(action: KeeperExecutableAction): Promise<string>;
+  mintTestTokens(): Promise<Hex>;
+  shield(amount: string): Promise<Hex>;
+  deposit(amount: string): Promise<Hex>;
+  setRisk(percent: number): Promise<Hex>;
+  withdraw(amount: string): Promise<Hex>;
+  advanceDraw(action: KeeperExecutableAction): Promise<Hex>;
 }>;
 
 export function parseUsdcAmount(value: string): bigint {
