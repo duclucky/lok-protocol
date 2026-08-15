@@ -429,6 +429,7 @@ select {
   margin-left: 212px;
 }
 .topbar {
+  display: none;
   position: fixed;
   inset: auto auto 22px 22px;
   z-index: 50;
