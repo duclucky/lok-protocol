@@ -423,6 +423,7 @@ select {
 }
 .sidebar-wallet {
   display: grid;
+  min-width: 0;
   gap: 7px;
   margin-top: 8px;
 }
@@ -455,8 +456,13 @@ select {
 .chain-label {
   min-height: 26px;
   justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   padding: 0 8px;
   border-radius: 999px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .network-dot {
   background: var(--patina);
@@ -465,12 +471,24 @@ select {
 }
 .wallet-button {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   justify-content: center;
+  overflow: hidden;
   color: white;
   background: linear-gradient(#343434, #1f1f1f);
   border-color: #151515;
   border-radius: 999px;
   box-shadow: 0 5px 12px rgb(0 0 0 / 0.16);
+}
+.wallet-button .mono {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wallet-button svg {
+  flex: 0 0 auto;
 }
 .wallet-button:hover {
   background: #111;
