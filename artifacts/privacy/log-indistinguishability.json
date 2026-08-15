@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAtUtc": "2026-08-14T23:59:25.809Z",
-  "gitCommit": "6896f65c230d8e80e4cfec728168c59b2afee978",
+  "generatedAtUtc": "2026-08-15T02:08:47.407Z",
+  "gitCommit": "7169dfdbff3e6e7ce50aabf0dc9425d150000dfb",
   "sourceStatusBeforeRun": "",
   "command": "npx hardhat test test/privacy/log-indistinguishability.t.ts --grep \"compares complete lifecycle\"",
   "nodeVersion": "v24.11.1",
