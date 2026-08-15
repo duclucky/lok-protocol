@@ -1,13 +1,15 @@
 # Lok Protocol - Three-Minute Video Script
 
 **Human-only rule:** record with a real person and real voice. Do not use generated voice or video. Record only after
-draw `#1` is settled and `scripts/verify-draw.ts` passes against Sepolia.
+the latest demo draw is settled and `scripts/verify-draw.ts` passes against Sepolia using the preserved demo manifest
+`deployments/history/sepolia-2026-08-13-120-30-180-600.json`.
 
 ## Recording Setup
 
 - Use a fresh browser profile and a fresh Sepolia wallet.
 - Pre-open the production app, Etherscan contract tabs, `docs/BENCHMARK.md`, `artifacts/fairness.png`, and a terminal.
-- Keep the terminal at a legible font size with the verifier command ready.
+- Keep the terminal at a legible font size with the verifier command ready:
+  `LOK_VERIFY_MANIFEST=deployments/history/sepolia-2026-08-13-120-30-180-600.json` and `LOK_VERIFY_LATEST_SETTLED=1`.
 - Record a successful fallback take locally before publishing.
 - Replace the README video line with the final public URL before submission.
 
@@ -29,7 +31,7 @@ draw `#1` is settled and `scripts/verify-draw.ts` passes against Sepolia.
 1. The production URL and Sepolia network indicator.
 2. The public shielding warning before any shield transaction.
 3. A confidential deposit and encrypted setting transaction from the fresh wallet.
-4. Draw `#1` in `SETTLED`, with pagination visible in its recorded history.
+4. The latest demo draw in `SETTLED`, with pagination visible in its recorded history.
 5. The identical “Check my result” action for two participant wallets.
 6. `scripts/verify-draw.ts` printing PASS for the real settled draw.
 7. The measured HCU table and verified Etherscan source links.

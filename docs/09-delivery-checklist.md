@@ -184,4 +184,5 @@ Do not submit until every line is true:
 - [ ] Video is a real person, under 3:00, and demonstrates the spec-exact flow first
 - [ ] Thread published and tagged
 - [ ] Commit history spread across the full build window
-- [ ] `verify-draw.ts` passes against a real settled draw on Sepolia
+- [ ] `verify-draw.ts` passes against the preserved real settled Sepolia draw using
+      `LOK_VERIFY_MANIFEST=deployments/history/sepolia-2026-08-13-120-30-180-600.json`

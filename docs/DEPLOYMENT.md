@@ -3,7 +3,7 @@
 **Status:** CURRENT CANONICAL MANIFEST IS P-S2 EVIDENCE - `deployments/sepolia.json` points at the 2026-08-14
 minimum-timing evidence stack. The 2026-08-12 seeded demo stack is deployed, verified, settled and preserved as
 historical evidence.
-**Network:** Ethereum Sepolia (`chainId = 11155111`)  
+**Network:** Ethereum Sepolia (`chainId = 11155111`)
 **Historical deployment:** 2026-08-12 **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
 
 ## Historical Demo Contracts
@@ -54,7 +54,7 @@ settled demo draw.
 Guardian deployment is intentionally omitted because no reviewed threshold configuration with at least two independent
 signers was supplied.
 
-## Settled Draw Evidence
+## Seeded Demo Draw Evidence
 
 | Fact                         | Value                                                                |
 | ---------------------------- | -------------------------------------------------------------------- |
@@ -75,9 +75,32 @@ The draw settled 13 minutes 12 seconds after opening. The superseded draw-period
 honored; the remaining time was real Sepolia pagination and receipt latency for 8 pre-sync, 10 PASS A, aggregate proof,
 randomness, and 15 PASS B transactions.
 
+The latest settled verifier target on this preserved demo stack is draw `#2`:
+
+| Fact                        | Value                                                                |
+| --------------------------- | -------------------------------------------------------------------- |
+| Participant snapshot        | `31`                                                                 |
+| Draw ID / mode / state      | `2 / non-strict / SETTLED`                                           |
+| Open transaction            | `0xc8cebc9bf802f9d2c903a467c4c7c3b813bf3d596dc33f5853209459dcd8e0bb` |
+| Open / end                  | `2026-08-13 13:33:36 / 13:35:36 UTC`                                 |
+| Settlement transaction      | `0x08ae267f01f1c5ce17d84d8a4f3132101966d159936cc307dc855bc7c00cd72b` |
+| Settlement block / time     | `11480575 / 2026-08-13 13:47:48 UTC`                                 |
+| Effective/base/yield totals | `151 / 151 / 158`                                                    |
+| Realised yield / prize      | `5,000,000 / 4,778,481` base units                                   |
+
 `scripts/verify-draw.ts` passed all six public checks: event completeness, aggregate proof binding, range partition,
-randomness commitment, mode-appropriate reveal transcript, and prize conservation. The full live integration suite
-reports **3 passing**: bytecode/topology/timing, minimum participant set, and a real settled draw.
+randomness commitment, mode-appropriate reveal transcript, and prize conservation. Because `deployments/sepolia.json`
+now points to the unseeded P-S2 minimum-timing evidence stack, reproduce the settled demo verifier against the preserved
+historical manifest:
+
+```powershell
+$env:LOK_VERIFY_MANIFEST="deployments/history/sepolia-2026-08-13-120-30-180-600.json"
+$env:LOK_VERIFY_LATEST_SETTLED="1"
+npx --yes node@22 node_modules/hardhat/internal/cli/cli.js run scripts/verify-draw.ts --network sepolia
+```
+
+The full live integration suite reports **3 passing** for the canonical P-S2 evidence stack: bytecode/topology/timing,
+participant state matching the deployment role, and settled-draw state matching the deployment role.
 
 The default Sepolia RPC does not retain the historical `participantCount()` state at the draw-open block. For
 `--latest-settled` only, the verifier therefore uses the Draw Manager's retained current `participantSnapshot` after

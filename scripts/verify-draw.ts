@@ -3,6 +3,8 @@ import {
   Log,
   TransactionDescription,
   getAddress,
+  isAddress,
+  isHexString,
   solidityPackedKeccak256,
   toBeHex,
   zeroPadValue,
@@ -11,7 +13,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ethers, fhevm, network } from "hardhat";
 
-import { assertDeploymentManifest } from "./deploy";
+import type { SepoliaDeploymentManifest } from "./deploy";
 
 type Hex = `0x${string}`;
 
@@ -46,10 +48,107 @@ type ParticipantSnapshotReaders = {
   drawId: bigint;
   latestSettled: boolean;
   readHistorical: () => Promise<bigint>;
-  readCurrent: () => Promise<{ drawId: bigint; state: bigint; participantSnapshot: bigint }>;
+  readCurrent: () => Promise<{ drawId: bigint | number; state: bigint | number; participantSnapshot: bigint | number }>;
 };
 
 const DRAW_STATE_SETTLED = 7n;
+const SEPOLIA_CHAIN_ID = 11155111;
+
+function assertString(value: unknown, label: string): asserts value is string {
+  if (typeof value !== "string" || value.length === 0) throw new Error(`${label} is required`);
+}
+
+function assertAddress(value: unknown, label: string): asserts value is string {
+  if (typeof value !== "string" || !isAddress(value)) throw new Error(`${label} must be an Ethereum address`);
+}
+
+function assertHash(value: unknown, label: string): asserts value is string {
+  if (typeof value !== "string" || !isHexString(value, 32)) throw new Error(`${label} must be a 32-byte hash`);
+}
+
+function assertTiming(value: unknown, label: string): asserts value is number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(`${label} must be a positive integer`);
+  }
+}
+
+export function assertVerifierDeploymentManifest(value: unknown): asserts value is SepoliaDeploymentManifest {
+  if (typeof value !== "object" || value === null) throw new Error("deployment manifest must be an object");
+  const candidate = value as Partial<SepoliaDeploymentManifest>;
+  if (candidate.schemaVersion !== 1) throw new Error("deployment schemaVersion must be 1");
+  if (candidate.network !== "sepolia" || candidate.chainId !== SEPOLIA_CHAIN_ID) {
+    throw new Error("deployment must target Sepolia chain ID 11155111");
+  }
+  assertString(candidate.deployedAt, "deployedAt");
+  assertString(candidate.commit, "commit");
+  assertAddress(candidate.owner, "owner");
+  if (candidate.timing === undefined) throw new Error("timing is required");
+  assertTiming(candidate.timing.drawPeriod, "timing.drawPeriod");
+  assertTiming(candidate.timing.minSettleDelay, "timing.minSettleDelay");
+  assertTiming(candidate.timing.revealWindow, "timing.revealWindow");
+  assertTiming(candidate.timing.stateTimeout, "timing.stateTimeout");
+  if (candidate.versions === undefined) throw new Error("versions are required");
+  for (const [key, version] of Object.entries(candidate.versions)) assertString(version, `versions.${key}`);
+  if (candidate.addresses === undefined) throw new Error("addresses are required");
+  for (const key of [
+    "underlyingToken",
+    "confidentialToken",
+    "wrapper",
+    "yieldAdapter",
+    "vault",
+    "drawManager",
+  ] as const) {
+    assertAddress(candidate.addresses[key], `addresses.${key}`);
+  }
+  if (candidate.addresses.guardian !== null) assertAddress(candidate.addresses.guardian, "addresses.guardian");
+  if (getAddress(candidate.addresses.wrapper) !== getAddress(candidate.addresses.confidentialToken)) {
+    throw new Error("wrapper must alias the deployed confidential token");
+  }
+  if (candidate.contracts === undefined) throw new Error("contracts are required");
+  for (const key of ["underlyingToken", "confidentialToken", "yieldAdapter", "vault", "drawManager"] as const) {
+    const record = candidate.contracts[key];
+    if (record === undefined) throw new Error(`contracts.${key} is required`);
+    assertString(record.name, `contracts.${key}.name`);
+    assertAddress(record.address, `contracts.${key}.address`);
+    if (getAddress(record.address) !== getAddress(candidate.addresses[key])) {
+      throw new Error(`contracts.${key}.address does not match addresses.${key}`);
+    }
+    if (!Array.isArray(record.constructorArgs)) throw new Error(`contracts.${key}.constructorArgs must be an array`);
+    assertHash(record.deployTransactionHash, `contracts.${key}.deployTransactionHash`);
+    if (!Number.isSafeInteger(record.deployBlockNumber) || record.deployBlockNumber < 0) {
+      throw new Error(`contracts.${key}.deployBlockNumber must be a non-negative integer`);
+    }
+    assertHash(record.runtimeBytecodeHash, `contracts.${key}.runtimeBytecodeHash`);
+    assertString(record.etherscanUrl, `contracts.${key}.etherscanUrl`);
+    if (typeof record.verified !== "boolean") throw new Error(`contracts.${key}.verified must be boolean`);
+  }
+  const expectedDrawArgs = [
+    candidate.addresses.vault,
+    candidate.owner,
+    candidate.timing.drawPeriod.toString(),
+    candidate.timing.minSettleDelay.toString(),
+    candidate.timing.revealWindow.toString(),
+    candidate.timing.stateTimeout.toString(),
+  ];
+  const actualDrawArgs = candidate.contracts.drawManager.constructorArgs;
+  if (
+    actualDrawArgs.length !== expectedDrawArgs.length ||
+    actualDrawArgs.some((arg, index) => {
+      const expected = expectedDrawArgs[index];
+      if (index < 2) return typeof arg !== "string" || !isAddress(arg) || getAddress(arg) !== getAddress(expected);
+      return arg !== expected;
+    })
+  ) {
+    throw new Error("contracts.drawManager.constructorArgs do not match manifest timing");
+  }
+  if (candidate.configuration === undefined) throw new Error("configuration is required");
+  for (const [key, hash] of Object.entries(candidate.configuration)) assertHash(hash, `configuration.${key}`);
+  if (candidate.rolePolicy?.guardian !== "omitted" || candidate.rolePolicy.demoFundPower !== "none") {
+    throw new Error("rolePolicy must record the reviewed no-guardian/no-demo-fund-power deployment");
+  }
+  assertString(candidate.rolePolicy.guardianReason, "rolePolicy.guardianReason");
+  if (!Array.isArray(candidate.rolePolicy.ownerPowers)) throw new Error("rolePolicy.ownerPowers must be an array");
+}
 
 function environmentFlag(value: string | undefined, label: string): boolean {
   if (value === undefined || value === "0" || value === "false") return false;
@@ -60,7 +159,12 @@ function environmentFlag(value: string | undefined, label: string): boolean {
 export function resolveVerifierOptions(
   environment: VerifierEnvironment,
   args: readonly string[] = [],
-): { drawId: bigint | undefined; latestSettled: boolean; transcript: string | undefined } {
+): {
+  drawId: bigint | undefined;
+  latestSettled: boolean;
+  transcript: string | undefined;
+  manifest: string | undefined;
+} {
   const drawValue = environment.LOK_VERIFY_DRAW_ID ?? optionValue("--draw", args);
   const latestSettled =
     environmentFlag(environment.LOK_VERIFY_LATEST_SETTLED, "LOK_VERIFY_LATEST_SETTLED") ||
@@ -72,6 +176,7 @@ export function resolveVerifierOptions(
     drawId: drawValue === undefined ? undefined : BigInt(drawValue),
     latestSettled,
     transcript: environment.LOK_VERIFY_TRANSCRIPT ?? optionValue("--transcript", args),
+    manifest: environment.LOK_VERIFY_MANIFEST ?? optionValue("--manifest", args),
   };
 }
 
@@ -83,8 +188,22 @@ export async function readParticipantSnapshot(
   } catch (historicalError) {
     if (!readers.latestSettled) throw historicalError;
     const current = await readers.readCurrent();
-    if (current.drawId !== readers.drawId || current.state !== DRAW_STATE_SETTLED) throw historicalError;
+    if (BigInt(current.drawId) !== readers.drawId || BigInt(current.state) !== DRAW_STATE_SETTLED)
+      throw historicalError;
     return { participantSnapshot: Number(current.participantSnapshot), source: "current-settled" };
+  }
+}
+
+export async function readHistoricalOrCurrent<T>(readers: {
+  latestSettledCurrent: boolean;
+  readHistorical: () => Promise<T>;
+  readCurrent: () => Promise<T>;
+}): Promise<T> {
+  try {
+    return await readers.readHistorical();
+  } catch (historicalError) {
+    if (!readers.latestSettledCurrent) throw historicalError;
+    return readers.readCurrent();
   }
 }
 
@@ -184,7 +303,13 @@ export function verifyDrawEvidence(evidence: DrawVerificationEvidence): DrawVeri
         ? randomnessExpected
           ? "Committed r handle matches draw state and decrypts inside [0,totalTickets)."
           : "Zero-ticket draw correctly omitted random material."
-        : "Randomness event, handle, or public range check failed.",
+        : randomnessExpected
+          ? `Randomness event, handle, or public range check failed: events=${evidence.events.randomness.length}, ` +
+            `eventHandle=${evidence.events.randomness[0] ?? "none"}, stateHandle=${evidence.randomHandle ?? "none"}, ` +
+            `publicRandom=${evidence.publicRandom === null ? "null" : evidence.publicRandom.toString()}, ` +
+            `totalTickets=${evidence.publicTotals.tickets.toString()}.`
+          : `Zero-ticket draw emitted randomness or public random: events=${evidence.events.randomness.length}, ` +
+            `publicRandom=${evidence.publicRandom === null ? "null" : evidence.publicRandom.toString()}.`,
     },
     checkRevealTranscript(evidence),
     {
@@ -282,31 +407,46 @@ async function queryEventLogs(
   if (event === null) throw new Error(`${eventName} is missing from the verifier ABI`);
   const latest = await ethers.provider.getBlockNumber();
   const logs: Log[] = [];
-  const topics = drawId === undefined ? [event.topicHash] : [event.topicHash, zeroPadValue(toBeHex(drawId), 32)];
+  const eventTopic = event.topicHash;
+  const topics = drawId === undefined ? [eventTopic] : [eventTopic, zeroPadValue(toBeHex(drawId), 32)];
   for (let start = fromBlock; start <= latest; start += 5_000) {
+    const address = await contract.getAddress();
+    const toBlock = Math.min(start + 4_999, latest);
+    const direct = await ethers.provider.getLogs({ address, topics, fromBlock: start, toBlock });
+    if (drawId === undefined || direct.length > 0) {
+      logs.push(...direct);
+      continue;
+    }
+    const broad = await ethers.provider.getLogs({ address, topics: [eventTopic], fromBlock: start, toBlock });
     logs.push(
-      ...(await ethers.provider.getLogs({
-        address: await contract.getAddress(),
-        topics,
-        fromBlock: start,
-        toBlock: Math.min(start + 4_999, latest),
-      })),
+      ...broad.filter((log) => {
+        const parsed = contract.interface.parseLog(log);
+        return parsed !== null && BigInt(parsed.args.drawId as bigint | number) === drawId;
+      }),
     );
   }
   return logs;
+}
+
+async function isCurrentSettledDraw(draw: BaseContract, drawId: bigint, latestSettled: boolean): Promise<boolean> {
+  if (!latestSettled) return false;
+  const currentDrawId = BigInt((await draw.getFunction("drawId").staticCall()) as bigint | number);
+  const currentState = BigInt((await draw.getFunction("state").staticCall()) as bigint | number);
+  return currentDrawId === drawId && currentState === DRAW_STATE_SETTLED;
 }
 
 async function main(): Promise<void> {
   if (network.name !== "sepolia") throw new Error("verify-draw.ts only supports Ethereum Sepolia");
   await fhevm.initializeCLIApi();
   if (fhevm.isMock) throw new Error("verify-draw.ts refuses the mock FHEVM backend");
-  const raw: unknown = JSON.parse(await readFile(path.join(process.cwd(), "deployments", "sepolia.json"), "utf8"));
-  assertDeploymentManifest(raw);
+  const verifierOptions = resolveVerifierOptions(process.env, process.argv);
+  const manifestPath = verifierOptions.manifest ?? path.join("deployments", "sepolia.json");
+  const raw: unknown = JSON.parse(await readFile(path.resolve(manifestPath), "utf8"));
+  assertVerifierDeploymentManifest(raw);
   const draw = await ethers.getContractAt("LokDrawManager", raw.addresses.drawManager);
   const vault = await ethers.getContractAt("LokVault", raw.addresses.vault);
   const fromBlock = raw.contracts.drawManager.deployBlockNumber;
   let drawId: bigint;
-  const verifierOptions = resolveVerifierOptions(process.env, process.argv);
   if (verifierOptions.drawId !== undefined) drawId = verifierOptions.drawId;
   else if (verifierOptions.latestSettled) {
     const allSettled = await queryEventLogs(draw, "DrawSettled", fromBlock);
@@ -324,7 +464,12 @@ async function main(): Promise<void> {
   const credited = await queryEventLogs(draw, "PrizeCredited", fromBlock, drawId);
   const openBlock = await eventBlock(opened, "DrawOpened");
   const settlementBlock = await eventBlock(settled, "DrawSettled");
-  const info = await draw.getFunction("drawInfo").staticCall(drawId, { blockTag: settlementBlock });
+  const latestSettledCurrent = await isCurrentSettledDraw(draw, drawId, verifierOptions.latestSettled);
+  const info = await readHistoricalOrCurrent({
+    latestSettledCurrent,
+    readHistorical: async () => draw.getFunction("drawInfo").staticCall(drawId, { blockTag: settlementBlock }),
+    readCurrent: async () => draw.getFunction("drawInfo").staticCall(drawId),
+  });
   if (!(info.settled as boolean)) throw new Error(`Draw ${drawId} is not settled at its DrawSettled block`);
 
   const aggregateHandles = [
@@ -373,8 +518,16 @@ async function main(): Promise<void> {
     }),
   });
   const participantSnapshot = snapshot.participantSnapshot;
-  const drawCode = await ethers.provider.getCode(raw.addresses.drawManager, settlementBlock);
-  const vaultCode = await ethers.provider.getCode(raw.addresses.vault, settlementBlock);
+  const drawCode = await readHistoricalOrCurrent({
+    latestSettledCurrent,
+    readHistorical: async () => ethers.provider.getCode(raw.addresses.drawManager, settlementBlock),
+    readCurrent: async () => ethers.provider.getCode(raw.addresses.drawManager),
+  });
+  const vaultCode = await readHistoricalOrCurrent({
+    latestSettledCurrent,
+    readHistorical: async () => ethers.provider.getCode(raw.addresses.vault, settlementBlock),
+    readCurrent: async () => ethers.provider.getCode(raw.addresses.vault),
+  });
   const runtimeBytecodeMatchesManifest =
     raw.contracts.drawManager.verified &&
     raw.contracts.vault.verified &&
@@ -383,7 +536,11 @@ async function main(): Promise<void> {
   const transcript = await loadTranscript(draw, verifierOptions.transcript);
   let finalRevealAcc = `0x${"00".repeat(32)}` as Hex;
   if ((info.strict as boolean) && randomness.length === 1) {
-    finalRevealAcc = (await draw.getFunction("revealAcc").staticCall({ blockTag: randomness[0].blockNumber })) as Hex;
+    finalRevealAcc = (await readHistoricalOrCurrent({
+      latestSettledCurrent,
+      readHistorical: async () => draw.getFunction("revealAcc").staticCall({ blockTag: randomness[0].blockNumber }),
+      readCurrent: async () => draw.getFunction("revealAcc").staticCall(),
+    })) as Hex;
   }
   const creditedParticipants = credited.map((log) => {
     const parsed = draw.interface.parseLog(log);

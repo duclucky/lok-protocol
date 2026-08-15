@@ -11,7 +11,10 @@ only aggregate draw evidence becomes public.
 - **Vercel project:** `lok-protocol-app` (Git-connected; root directory `frontend/`)
 - **Network:** Ethereum Sepolia (`11155111`)
 - **Video:** human recording and public link are required before submission
-- **Evidence status:** 30 seeded participants; draw `#1` settled and passed the independent public verifier
+- **Evidence status:** preserved demo stack has settled draws; latest public verifier target is draw `#2` with a
+  31-participant snapshot
+- **Demo verifier manifest:** `deployments/history/sepolia-2026-08-13-120-30-180-600.json`. The canonical
+  `deployments/sepolia.json` is the later P-S2 minimum-timing evidence stack and is intentionally not seeded.
 
 | Verified contract          | Sepolia address                                                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -236,7 +239,14 @@ The safety selector set must include `settleDraw`; `directCredit` alone is not s
 
 Sepolia deployment, keeper, verifier and benchmark commands require local secret variables described in
 [`docs/11-tooling.md`](docs/11-tooling.md). No private key, mnemonic or provider API key belongs in the repository.
-Deployment evidence and the final settled-draw gate live in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+Deployment evidence and the final settled-draw gate live in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Verify the
+preserved settled demo draw with:
+
+```powershell
+$env:LOK_VERIFY_MANIFEST="deployments/history/sepolia-2026-08-13-120-30-180-600.json"
+$env:LOK_VERIFY_LATEST_SETTLED="1"
+npx --yes node@22 node_modules/hardhat/internal/cli/cli.js run scripts/verify-draw.ts --network sepolia
+```
 
 ## 14. Demo Components
 

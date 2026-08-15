@@ -1,12 +1,17 @@
 import { expect } from "chai";
 import { solidityPackedKeccak256 } from "ethers";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 import {
+  assertVerifierDeploymentManifest,
+  readHistoricalOrCurrent,
   readParticipantSnapshot,
   resolveVerifierOptions,
   verifyDrawEvidence,
   type DrawVerificationEvidence,
 } from "../../scripts/verify-draw";
+import { assertDeploymentManifest } from "../../scripts/deploy";
 
 const entropy = `0x${"12".repeat(32)}` as `0x${string}`;
 const salt = `0x${"34".repeat(32)}` as `0x${string}`;
@@ -58,6 +63,15 @@ function failedChecks(value: DrawVerificationEvidence): string[] {
 }
 
 describe("independent draw verifier", function () {
+  it("accepts the preserved seeded demo manifest without weakening the canonical deploy gate", async function () {
+    const raw: unknown = JSON.parse(
+      await readFile(path.join(process.cwd(), "deployments/history/sepolia-2026-08-13-120-30-180-600.json"), "utf8"),
+    );
+
+    expect(() => assertDeploymentManifest(raw)).to.throw("timing.drawPeriod must be 60");
+    expect(() => assertVerifierDeploymentManifest(raw)).not.to.throw();
+  });
+
   it("uses the retained current snapshot when the latest draw remains settled", async function () {
     const result = await readParticipantSnapshot({
       drawId: 9n,
@@ -69,6 +83,41 @@ describe("independent draw verifier", function () {
     });
 
     expect(result).to.deep.equal({ participantSnapshot: 30, source: "current-settled" });
+  });
+
+  it("accepts numeric enum state from live contract runners when falling back to current snapshot", async function () {
+    const result = await readParticipantSnapshot({
+      drawId: 9n,
+      latestSettled: true,
+      readHistorical: async () => {
+        throw new Error("archive state unavailable");
+      },
+      readCurrent: async () => ({ drawId: 9n, state: 7, participantSnapshot: 30n }),
+    });
+
+    expect(result).to.deep.equal({ participantSnapshot: 30, source: "current-settled" });
+  });
+
+  it("falls back from unavailable historical state only for the current latest settled draw", async function () {
+    expect(
+      await readHistoricalOrCurrent({
+        latestSettledCurrent: true,
+        readHistorical: async () => {
+          throw new Error("historical state unavailable");
+        },
+        readCurrent: async () => "current",
+      }),
+    ).to.equal("current");
+
+    await expect(
+      readHistoricalOrCurrent({
+        latestSettledCurrent: false,
+        readHistorical: async () => {
+          throw new Error("historical state unavailable");
+        },
+        readCurrent: async () => "current",
+      }),
+    ).to.be.rejectedWith("historical state unavailable");
   });
 
   it("preserves the archive requirement for a draw that is no longer current", async function () {
@@ -90,6 +139,7 @@ describe("independent draw verifier", function () {
       drawId: undefined,
       latestSettled: true,
       transcript: undefined,
+      manifest: undefined,
     });
     expect(
       resolveVerifierOptions({ LOK_VERIFY_DRAW_ID: "12", LOK_VERIFY_TRANSCRIPT: "public-txs.json" }),
@@ -97,6 +147,23 @@ describe("independent draw verifier", function () {
       drawId: 12n,
       latestSettled: false,
       transcript: "public-txs.json",
+      manifest: undefined,
+    });
+    expect(
+      resolveVerifierOptions({ LOK_VERIFY_LATEST_SETTLED: "1" }, ["--manifest", "deployments/history/demo.json"]),
+    ).to.deep.equal({
+      drawId: undefined,
+      latestSettled: true,
+      transcript: undefined,
+      manifest: "deployments/history/demo.json",
+    });
+    expect(
+      resolveVerifierOptions({ LOK_VERIFY_DRAW_ID: "1", LOK_VERIFY_MANIFEST: "deployments/history/demo.json" }),
+    ).to.deep.equal({
+      drawId: 1n,
+      latestSettled: false,
+      transcript: undefined,
+      manifest: "deployments/history/demo.json",
     });
     expect(() => resolveVerifierOptions({ LOK_VERIFY_DRAW_ID: "12", LOK_VERIFY_LATEST_SETTLED: "1" })).to.throw(
       "exactly one",
