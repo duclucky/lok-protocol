@@ -88,7 +88,8 @@ describe("DrawPage", () => {
     render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
 
     expect(screen.getByRole("heading", { name: /keeper panel/i })).toBeVisible();
-    expect(screen.getByRole("button", { name: /decrypt totals and submit/i })).toBeVisible();
+    expect(screen.getByRole("button", { name: /manual: decrypt totals and submit/i })).toBeVisible();
+    expect(screen.getByText(/keeper automation handles this for the demo/i)).toBeVisible();
     expect(screen.getByText(/public decryption for aggregate draw totals/i)).toBeVisible();
   });
 
@@ -97,7 +98,7 @@ describe("DrawPage", () => {
     const actions = keeperActions();
     render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={actions} nowMs={1_787_256_624_000} />);
 
-    await user.click(screen.getByRole("button", { name: /decrypt totals and submit/i }));
+    await user.click(screen.getByRole("button", { name: /manual: decrypt totals and submit/i }));
 
     expect(actions.advanceDraw).toHaveBeenCalledWith({
       kind: "submitTotals",

@@ -227,9 +227,13 @@ function KeeperPanel({ decision, keeperAction, message, setMessage }: KeeperPane
         <Play aria-hidden="true" size={22} />
       </div>
       <p>{decision.detail}</p>
-      <button className="button button--primary" type="button" disabled={disabled} onClick={() => void advance()}>
+      <div className="keeper-status" role="note">
+        <strong>Keeper automation handles this for the demo.</strong>
+        <span>The button below is a manual fallback for anyone to advance the same permissionless step if the keeper stalls.</span>
+      </div>
+      <button className="button button--secondary" type="button" disabled={disabled} onClick={() => void advance()}>
         {pending ? <LoaderCircle className="spin" aria-hidden="true" size={18} /> : <Play aria-hidden="true" size={18} />}
-        {decision.label}
+        Manual: {decision.label}
       </button>
       <p className="keeper-note">
         Anyone can run keeper steps. The aggregate public-decrypt step submits only draw totals, never per-user balances

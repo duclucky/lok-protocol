@@ -906,6 +906,20 @@ select {
 .keeper-block .button {
   align-self: flex-start;
 }
+.keeper-status {
+  display: grid;
+  max-width: 720px;
+  gap: 4px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: var(--patina-light);
+  border: 1px solid #9ecdbf;
+  border-radius: var(--radius-sm);
+}
+.keeper-status span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
 .keeper-note {
   margin-top: 0;
   font-size: 0.88rem;
