@@ -1,0 +1,62 @@
+{
+  "all": {
+    "counts": [
+      184,
+      194,
+      201,
+      217,
+      204
+    ],
+    "total": 1000,
+    "shares": [
+      0.184,
+      0.194,
+      0.201,
+      0.217,
+      0.204
+    ],
+    "majorityClass": 3,
+    "majorityShare": 0.217,
+    "missingClasses": []
+  },
+  "train": {
+    "counts": [
+      91,
+      89,
+      104,
+      119,
+      97
+    ],
+    "total": 500,
+    "shares": [
+      0.182,
+      0.178,
+      0.208,
+      0.238,
+      0.194
+    ],
+    "majorityClass": 3,
+    "majorityShare": 0.238,
+    "missingClasses": []
+  },
+  "heldOut": {
+    "counts": [
+      93,
+      105,
+      97,
+      98,
+      107
+    ],
+    "total": 500,
+    "shares": [
+      0.186,
+      0.21,
+      0.194,
+      0.196,
+      0.214
+    ],
+    "majorityClass": 4,
+    "majorityShare": 0.214,
+    "missingClasses": []
+  }
+}

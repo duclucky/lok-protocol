@@ -1,0 +1,14 @@
+[
+  {
+    "observerFamily": "sequence-shape",
+    "permutationPValue": 1
+  },
+  {
+    "observerFamily": "byte-ngram",
+    "permutationPValue": 1
+  },
+  {
+    "observerFamily": "acl-emitter-call-boundary",
+    "permutationPValue": 0.002
+  }
+]

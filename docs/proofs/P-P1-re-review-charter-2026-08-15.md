@@ -3,12 +3,12 @@
 - **Re-review ID:** `P-P1-RR-2026-08-15`
 - **Opened by:** owner approval in the audit thread on 2026-08-15
 - **Scope:** P-P1 only
-- **Status:** `OPENED_NOT_FROZEN`
-- **Authoritative current verdict:** `WEAKER-THAN-CLAIMED`
+- **Status:** `COMPLETED_REFROZEN`
+- **Current verdict:** `MATCHES` under `docs/proofs/P-P1-refreeze-2026-08-15.md`
 
-This charter opens a separate P-P1 re-review round. It does not edit, supersede or satisfy the frozen
-`docs/10-proof-strategy.md` section 3 row. Until this re-review is completed, independently reviewed and explicitly
-re-frozen by the owner, the original P-P1 verdict remains `WEAKER-THAN-CLAIMED`.
+This charter opened a separate P-P1 re-review round. Owner later re-froze P-P1 under the non-derivability criterion in
+`docs/proofs/P-P1-refreeze-2026-08-15.md`. The original byte-identical criterion remains preserved as historical
+provenance.
 
 ## Frozen Row Under Review
 
@@ -232,8 +232,8 @@ Deliver:
 ## Current Status After Opening
 
 ```text
-P-P1 frozen verdict: WEAKER-THAN-CLAIMED
-P-P1 re-review: OPENED_NOT_FROZEN
+P-P1 prior byte-identical verdict: SUPERSEDED
+P-P1 re-review: COMPLETED_REFROZEN
+P-P1 current verdict: MATCHES under non-derivability criterion
 P-S2: MATCHES
 ```
-

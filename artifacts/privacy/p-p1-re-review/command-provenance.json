@@ -1,0 +1,9 @@
+{
+  "command": "npx ts-node scripts/p-p1-re-review.ts --mode full --source hardhat-fhevm-real",
+  "gitCommit": "6896f65c230d8e80e4cfec728168c59b2afee978",
+  "sourceStatusBeforeRun": "",
+  "nodeVersion": "v24.11.1",
+  "hardhatVersion": "2.28.6",
+  "fhevmHardhatPluginVersion": "0.4.2",
+  "fhevmSolidityVersion": "0.11.1"
+}

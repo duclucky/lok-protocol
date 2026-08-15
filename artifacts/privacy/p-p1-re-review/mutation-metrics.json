@@ -1,0 +1,38 @@
+[
+  {
+    "mutationMode": "indexed-topic-bit",
+    "observerFamily": "byte-ngram",
+    "heldOutCorrect": 500,
+    "heldOutSamples": 500,
+    "heldOutAccuracy": 1,
+    "requiredAccuracy": 0.95,
+    "status": "PASS"
+  },
+  {
+    "mutationMode": "data-payload-bit",
+    "observerFamily": "byte-ngram",
+    "heldOutCorrect": 500,
+    "heldOutSamples": 500,
+    "heldOutAccuracy": 1,
+    "requiredAccuracy": 0.95,
+    "status": "PASS"
+  },
+  {
+    "mutationMode": "emitter-call-shape-bit",
+    "observerFamily": "sequence-shape",
+    "heldOutCorrect": 500,
+    "heldOutSamples": 500,
+    "heldOutAccuracy": 1,
+    "requiredAccuracy": 0.95,
+    "status": "PASS"
+  },
+  {
+    "mutationMode": "acl-recipient-asymmetry",
+    "observerFamily": "acl-emitter-call-boundary",
+    "heldOutCorrect": 500,
+    "heldOutSamples": 500,
+    "heldOutAccuracy": 1,
+    "requiredAccuracy": 0.95,
+    "status": "PASS"
+  }
+]

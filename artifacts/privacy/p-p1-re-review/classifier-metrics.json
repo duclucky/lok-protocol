@@ -1,0 +1,38 @@
+[
+  {
+    "observerFamily": "sequence-shape",
+    "trainSamples": 500,
+    "heldOutSamples": 500,
+    "correct": 100,
+    "maxCorrect": 102,
+    "accuracy": 0.2,
+    "wilsonUpper99": 0.24472840609832017,
+    "maxWilsonUpper99": 0.25,
+    "permutationPValue": 1,
+    "status": "PASS"
+  },
+  {
+    "observerFamily": "byte-ngram",
+    "trainSamples": 500,
+    "heldOutSamples": 500,
+    "correct": 30,
+    "maxCorrect": 102,
+    "accuracy": 0.06,
+    "wilsonUpper99": 0.08973391897333256,
+    "maxWilsonUpper99": 0.25,
+    "permutationPValue": 1,
+    "status": "PASS"
+  },
+  {
+    "observerFamily": "acl-emitter-call-boundary",
+    "trainSamples": 500,
+    "heldOutSamples": 500,
+    "correct": 126,
+    "maxCorrect": 102,
+    "accuracy": 0.252,
+    "wilsonUpper99": 0.2996605140982,
+    "maxWilsonUpper99": 0.25,
+    "permutationPValue": 0.002,
+    "status": "FAIL"
+  }
+]

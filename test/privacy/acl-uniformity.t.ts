@@ -111,6 +111,13 @@ describe("Lok static privacy surface", function () {
     }
   });
 
+  staticPrivacyIt("reports re-frozen P-P1 from natural non-derivability evidence", function () {
+    const report = buildPrivacyReport(undefined, "2026-08-15T00:00:00.000Z");
+
+    expect(report.propositions["P-P1"].status).to.equal("PASS");
+    expect(report.propositions["P-P1"].evidence).to.contain("natural 1,000-run");
+  });
+
   it("grants each participant exactly one ACL entry on their own prize-credit handle", async function () {
     if (!fhevm.isMock) this.skip();
     const fixture = await reachPrivacySweepB();

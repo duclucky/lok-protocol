@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-08-13T10:18:27.243Z",
-  "status": "FAIL",
+  "generatedAtUtc": "2026-08-15T01:48:17.536Z",
+  "status": "PASS",
   "buildInfo": [
     "hardhat-artifacts/build-info/d85b5392a845a23408ca28cb85dfe2ab.json"
   ],
@@ -1345,8 +1345,8 @@
     "fragments": {
       "acl-uniformity": {
         "schemaVersion": 2,
-        "generatedAtUtc": "2026-08-13T10:17:46.799Z",
-        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "generatedAtUtc": "2026-08-15T01:46:12.197Z",
+        "gitCommit": "4ca351f59716265cdb83bf7e32c26fbf794ea6c5",
         "sourceStatusBeforeRun": "",
         "command": "npx hardhat test test/privacy/acl-uniformity.t.ts --grep \"grants each participant exactly one ACL entry\"",
         "nodeVersion": "v24.11.1",
@@ -1360,20 +1360,20 @@
         "participants": 5,
         "grantMultisetExact": true,
         "expectedPairs": [
-          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0x1ff8cc3942a28a97c144e0e6887d214da393168749ff0000000000007a690500",
-          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x4d39bd54b8368962ed70b4face4de15c07a590d949ff0000000000007a690500",
-          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x35710b2adbe55501fe2f3474c456cc32f92a59f45bff0000000000007a690500",
-          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0x149b79ad5ade260c1799b437a4447a36e636a4e72bff0000000000007a690500",
-          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xf937729555dcf8ff28e219f568057e93df19503c10ff0000000000007a690500"
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbbce33c0ad3593245eb7e467f2d1c58ea43cdbd9d0ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0xfbe84dd8a03e4f351d801af24898ad1e7500b67712ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x6e63f7567ff70b61d38d5b8be81466f70a4a1dfa0fff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa643a7d6f655d29cfd70a6f9323138a322c4038ed8ff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0x18794a026e17e17c30f64d8942b822743ed3026c57ff0000000000007a690500"
         ],
         "actualPairs": [
-          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0x1ff8cc3942a28a97c144e0e6887d214da393168749ff0000000000007a690500",
-          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0x4d39bd54b8368962ed70b4face4de15c07a590d949ff0000000000007a690500",
-          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x35710b2adbe55501fe2f3474c456cc32f92a59f45bff0000000000007a690500",
-          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0x149b79ad5ade260c1799b437a4447a36e636a4e72bff0000000000007a690500",
-          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0xf937729555dcf8ff28e219f568057e93df19503c10ff0000000000007a690500"
+          "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65:0xbbce33c0ad3593245eb7e467f2d1c58ea43cdbd9d0ff0000000000007a690500",
+          "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc:0xfbe84dd8a03e4f351d801af24898ad1e7500b67712ff0000000000007a690500",
+          "0x70997970c51812dc3a010c7d01b50e0d17dc79c8:0x6e63f7567ff70b61d38d5b8be81466f70a4a1dfa0fff0000000000007a690500",
+          "0x90f79bf6eb2c4f870365e785982e1f101e93b906:0xa643a7d6f655d29cfd70a6f9323138a322c4038ed8ff0000000000007a690500",
+          "0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc:0x18794a026e17e17c30f64d8942b822743ed3026c57ff0000000000007a690500"
         ],
-        "winnerIndex": 1,
+        "winnerIndex": 0,
         "winnerGrantCount": 1,
         "loserGrantCounts": [
           1,
@@ -1384,8 +1384,8 @@
       },
       "log-indistinguishability": {
         "schemaVersion": 2,
-        "generatedAtUtc": "2026-08-13T10:18:03.064Z",
-        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "generatedAtUtc": "2026-08-14T23:59:25.809Z",
+        "gitCommit": "6896f65c230d8e80e4cfec728168c59b2afee978",
         "sourceStatusBeforeRun": "",
         "command": "npx hardhat test test/privacy/log-indistinguishability.t.ts --grep \"compares complete lifecycle\"",
         "nodeVersion": "v24.11.1",
@@ -1525,8 +1525,8 @@
       },
       "gas-indistinguishability": {
         "schemaVersion": 2,
-        "generatedAtUtc": "2026-08-13T10:18:16.011Z",
-        "gitCommit": "db886ac7fc4bf0b6055c71c7291f410749aebbe7",
+        "generatedAtUtc": "2026-08-14T23:59:59.522Z",
+        "gitCommit": "6896f65c230d8e80e4cfec728168c59b2afee978",
         "sourceStatusBeforeRun": "",
         "command": "npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep \"keeps first\"",
         "nodeVersion": "v24.11.1",
@@ -1583,9 +1583,9 @@
             "comparison": {
               "status": "PASS",
               "winnerGas": "806609",
-              "loserGas": "806303",
-              "gasDelta": "306",
-              "gasDeltaBps": 3,
+              "loserGas": "806609",
+              "gasDelta": "0",
+              "gasDeltaBps": 0,
               "winnerGlobalHcu": 4025320,
               "loserGlobalHcu": 4025320,
               "globalHcuDelta": 0,
@@ -1604,8 +1604,8 @@
   },
   "propositions": {
     "P-P1": {
-      "status": "FAIL",
-      "evidence": "complete raw and parsed participant log-field diff plus call-boundary comparison"
+      "status": "PASS",
+      "evidence": "2026-08-15 re-frozen non-derivability criterion; natural 1,000-run full public-transcript/gas campaign: no pre-registered observer beats held-out majority baseline; entry301/FheLe and raw sidecars retained"
     },
     "P-P2": {
       "status": "PASS",

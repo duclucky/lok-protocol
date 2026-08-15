@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "mode": "full",
+  "transcriptSource": "hardhat-fhevm-natural",
+  "forcedWinnerHarness": false,
+  "usesHardhatSetStorageAt": false,
+  "participantCount": 5,
+  "executionCount": 1000,
+  "seed": 20260815,
+  "fullModeDefaultCount": 500,
+  "previousForcedCampaignArtifactRoot": "artifacts/privacy/p-p1-re-review"
+}

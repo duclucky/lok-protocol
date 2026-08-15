@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "reason": "At least one mutation, classifier, or retention gate failed.",
+  "frozenPp1Verdict": "WEAKER-THAN-CLAIMED",
+  "docs10ProofStrategyDiffExpectedEmpty": true,
+  "companionGates": {
+    "pP2UniformAclGrantMultiset": "RUN_SEPARATELY_WITH test/privacy/acl-uniformity.t.ts",
+    "pP5GasHcuSymmetry": "RUN_SEPARATELY_WITH test/privacy/gas-indistinguishability.t.ts",
+    "noWinnerOnlyAbiEventGate": "RUN_SEPARATELY_WITH scripts/privacy-scan.ts",
+    "fullRawTranscriptRetention": "PASS",
+    "privacyScannerFrozenResidualExpected": true
+  }
+}

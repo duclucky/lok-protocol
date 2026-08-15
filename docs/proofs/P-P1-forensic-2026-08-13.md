@@ -1,5 +1,9 @@
 # P-P1 Protocol-Log Forensic Report
 
+- **Current status:** `HISTORICAL_SUPERSEDED`
+- **Superseded by:** `docs/proofs/P-P1-refreeze-2026-08-15.md`
+- **Use:** provenance for the retired byte-identical criterion; not the current P-P1 verdict.
+
 - **Frozen proposition:** Winner is not derivable from the full event log without a private key.
 - **Frozen pass criterion:** No event field differs between winner and any loser.
 - **Code/test commit:** `65ff43262778a1c073d1d2f413a11d9c57cb98a5`

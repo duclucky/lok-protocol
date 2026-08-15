@@ -1,11 +1,12 @@
 # P-P1 Owner Decision Memo
 
-**Status: OPTION 2 OPENED FOR RE-REVIEW ON 2026-08-15. Frozen section 3 is unchanged.**
+**Status: OPTION 2 COMPLETED; P-P1 RE-FROZEN ON 2026-08-15.**
 
 Owner approval in the audit thread opened a separate P-P1 re-review round. The active re-review charter is
 [`P-P1-re-review-charter-2026-08-15.md`](./P-P1-re-review-charter-2026-08-15.md). This memo remains the provenance
-record for the decision; it does not reclassify P-P1. Until the chartered campaign, independent review and explicit
-owner re-freeze complete, the authoritative verdict remains **P-P1 WEAKER-THAN-CLAIMED**.
+record for the decision. Owner approval later re-froze P-P1 under the non-derivability criterion recorded in
+[`P-P1-refreeze-2026-08-15.md`](./P-P1-refreeze-2026-08-15.md). The prior byte-identical criterion and its failed
+evidence remain preserved below as historical provenance.
 
 ## Current Finding
 

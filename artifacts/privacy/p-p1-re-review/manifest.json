@@ -1,0 +1,24 @@
+{
+  "mode": "full",
+  "transcriptSource": "hardhat-fhevm-real",
+  "seed": 20260815,
+  "participantCount": 5,
+  "executionCount": 1000,
+  "executionsPerWinner": 200,
+  "trainCount": 500,
+  "heldOutCount": 500,
+  "maxCorrect": 102,
+  "maxWilsonUpper99": 0.25,
+  "observerFamilies": [
+    "sequence-shape",
+    "byte-ngram",
+    "acl-emitter-call-boundary"
+  ],
+  "mutationModes": [
+    "indexed-topic-bit",
+    "data-payload-bit",
+    "emitter-call-shape-bit",
+    "acl-recipient-asymmetry"
+  ],
+  "splitFrozenBeforeFitting": true
+}

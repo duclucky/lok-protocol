@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "FULL_RUN",
+  "conclusion": "LIKELY_FORCED_HARNESS_ARTIFACT",
+  "runtimeSeconds": 1416.588,
+  "sampleCount": 1000,
+  "runtimeEstimateSeconds": {
+    "fiveHundred": 708.294,
+    "oneThousand": 1416.588
+  },
+  "productionContractsChanged": false,
+  "docs10ProofStrategyChanged": false,
+  "frozenPp1Verdict": "WEAKER-THAN-CLAIMED",
+  "note": "This experiment uses natural local Hardhat/FHEVM randomness and labels the winner only after settlement. It does not claim P-P1 MATCHES."
+}

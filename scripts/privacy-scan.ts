@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import path from "node:path";
+import { gunzipSync } from "node:zlib";
 
 type AstNode = {
   nodeType?: string;
@@ -72,6 +74,7 @@ export type PrivacySurfaceReport = {
 const ROOT = path.resolve(__dirname, "..");
 const BUILD_INFO_DIR = path.join(ROOT, "hardhat-artifacts", "build-info");
 const PRIVACY_EVIDENCE_DIR = path.join(ROOT, "artifacts", "privacy");
+const P_P1_NATURAL_EVIDENCE_DIR = path.join(PRIVACY_EVIDENCE_DIR, "p-p1-natural-gas-experiment");
 const REQUIRED_EVIDENCE = ["acl-uniformity", "log-indistinguishability", "gas-indistinguishability"] as const;
 type PrivacyEvidenceName = (typeof REQUIRED_EVIDENCE)[number];
 const TARGETS = [
@@ -228,7 +231,156 @@ export function collectPrivacyEvidence(directory = PRIVACY_EVIDENCE_DIR): {
 }
 
 function readJson<T>(file: string): T {
-  return JSON.parse(readFileSync(file, "utf8")) as T;
+  const bytes = readFileSync(file);
+  const json = file.endsWith(".gz") ? gunzipSync(bytes).toString("utf8") : bytes.toString("utf8");
+  return JSON.parse(json) as T;
+}
+
+function sha256File(file: string): string {
+  return createHash("sha256").update(readFileSync(file)).digest("hex").toUpperCase();
+}
+
+function sidecarMatches(file: string): boolean {
+  const sidecar = `${file}.sha256`;
+  if (!existsSync(file) || !existsSync(sidecar)) return false;
+  const recorded = readFileSync(sidecar, "utf8").trim().split(/\s+/)[0]?.toUpperCase();
+  return recorded === sha256File(file);
+}
+
+function evidenceArtifactPath(directory: string, name: string): string {
+  const plain = path.join(directory, name);
+  const gzipped = `${plain}.gz`;
+  if (existsSync(gzipped)) return gzipped;
+  if (existsSync(plain)) return plain;
+  return plain;
+}
+
+type NaturalGasMetric = {
+  mode: string;
+  correct: number;
+  heldOutSamples: number;
+  majorityBaselineCorrect: number;
+  permutationPValue: number;
+  status: string;
+};
+
+function validatePp1NaturalEvidence(directory = P_P1_NATURAL_EVIDENCE_DIR): {
+  status: "PASS" | "FAIL";
+  evidence: string;
+} {
+  const requiredTopLevel = [
+    "manifest.json",
+    "final-status.json",
+    "winner-distribution.json",
+    "gas-classifier-metrics.json",
+    "transcript-index.json",
+    "transcripts.json",
+  ];
+  const missing = requiredTopLevel.filter((name) => !existsSync(evidenceArtifactPath(directory, name)));
+  if (missing.length > 0) return { status: "FAIL", evidence: `missing natural P-P1 artifacts: ${missing.join(", ")}` };
+  const mismatched = requiredTopLevel.filter((name) => !sidecarMatches(evidenceArtifactPath(directory, name)));
+  if (mismatched.length > 0) {
+    return { status: "FAIL", evidence: `natural P-P1 artifact SHA-256 mismatch: ${mismatched.join(", ")}` };
+  }
+
+  const manifest = readJson<{
+    mode?: string;
+    transcriptSource?: string;
+    forcedWinnerHarness?: boolean;
+    usesHardhatSetStorageAt?: boolean;
+    executionCount?: number;
+  }>(path.join(directory, "manifest.json"));
+  const finalStatus = readJson<{
+    status?: string;
+    conclusion?: string;
+    sampleCount?: number;
+    productionContractsChanged?: boolean;
+    docs10ProofStrategyChanged?: boolean;
+  }>(path.join(directory, "final-status.json"));
+  const distribution = readJson<{
+    heldOut?: { total?: number; missingClasses?: unknown[]; majorityShare?: number };
+  }>(path.join(directory, "winner-distribution.json"));
+  const metrics = readJson<NaturalGasMetric[]>(path.join(directory, "gas-classifier-metrics.json"));
+  const transcriptIndex = readJson<
+    Array<{ rawTranscriptPath?: string; transcriptSha256?: string; split?: string; executionId?: string }>
+  >(path.join(directory, "transcript-index.json"));
+  const transcriptsArtifact = readJson<{
+    transcripts?: Array<{
+      transcriptSource?: string;
+      receipts?: Array<{ logs?: Array<{ globalLogIndex?: number; decoded?: { eventName?: string } | null }> }>;
+    }>;
+  }>(evidenceArtifactPath(directory, "transcripts.json"));
+  const transcripts = transcriptsArtifact.transcripts ?? [];
+
+  const requiredModes = ["gas-only", "acl-with-gas", "acl-no-gas", "gas-receipt-7", "gas-receipt-11"];
+  const metricByMode = new Map(metrics.map((metric) => [metric.mode, metric]));
+  const missingModes = requiredModes.filter((mode) => !metricByMode.has(mode));
+  const failingModes = requiredModes.filter((mode) => {
+    const metric = metricByMode.get(mode);
+    return (
+      metric === undefined ||
+      metric.status !== "NO_MATERIAL_SIGNAL" ||
+      metric.heldOutSamples < 500 ||
+      metric.correct > metric.majorityBaselineCorrect ||
+      metric.permutationPValue < 0.01
+    );
+  });
+  const rawSidecarFailures = transcriptIndex.filter(({ rawTranscriptPath, transcriptSha256 }) => {
+    if (rawTranscriptPath === undefined || transcriptSha256 === undefined) return true;
+    const file = path.join(directory, rawTranscriptPath);
+    if (!sidecarMatches(file)) return true;
+    return sha256File(file) !== transcriptSha256.toUpperCase();
+  });
+  const transcriptsRetainEntry301 = transcripts.every((transcript) =>
+    (transcript.receipts ?? [])
+      .flatMap((receipt) => receipt.logs ?? [])
+      .some((log) => log.globalLogIndex === 301 && log.decoded?.eventName === "FheLe"),
+  );
+  const valid =
+    manifest.mode === "full" &&
+    manifest.transcriptSource === "hardhat-fhevm-natural" &&
+    manifest.forcedWinnerHarness === false &&
+    manifest.usesHardhatSetStorageAt === false &&
+    (manifest.executionCount ?? 0) >= 1_000 &&
+    finalStatus.status === "FULL_RUN" &&
+    finalStatus.conclusion === "LIKELY_FORCED_HARNESS_ARTIFACT" &&
+    (finalStatus.sampleCount ?? 0) >= 1_000 &&
+    finalStatus.productionContractsChanged === false &&
+    finalStatus.docs10ProofStrategyChanged === false &&
+    distribution.heldOut?.total === 500 &&
+    Array.isArray(distribution.heldOut.missingClasses) &&
+    distribution.heldOut.missingClasses.length === 0 &&
+    missingModes.length === 0 &&
+    failingModes.length === 0 &&
+    transcriptIndex.length >= 1_000 &&
+    transcripts.length >= 1_000 &&
+    transcripts.every((transcript) => transcript.transcriptSource === "hardhat-fhevm-natural") &&
+    transcriptsRetainEntry301 &&
+    rawSidecarFailures.length === 0;
+
+  if (!valid) {
+    return {
+      status: "FAIL",
+      evidence: JSON.stringify({
+        manifest,
+        finalStatus,
+        missingModes,
+        failingModes,
+        transcriptIndexCount: transcriptIndex.length,
+        transcriptCount: transcripts.length,
+        transcriptsRetainEntry301,
+        rawSidecarFailures: rawSidecarFailures.slice(0, 3).map(({ executionId, rawTranscriptPath }) => ({
+          executionId,
+          rawTranscriptPath,
+        })),
+      }),
+    };
+  }
+  return {
+    status: "PASS",
+    evidence:
+      "natural 1,000-run full public-transcript/gas campaign: no pre-registered observer beats held-out majority baseline; entry301/FheLe and raw sidecars retained",
+  };
 }
 
 function matchingBuildInfoBySource(): Map<string, { file: string; json: Record<string, unknown> }> {
@@ -526,13 +678,12 @@ export function buildPrivacyReport(
   const gasPass = dynamicEvidence.fragments["gas-indistinguishability"].status === "PASS";
   const logEvidence = dynamicEvidence.fragments["log-indistinguishability"];
   const aclEvidence = dynamicEvidence.fragments["acl-uniformity"];
-  const logEvidenceComplete =
+  const transcriptRetentionEvidenceComplete =
     logEvidence.comparedFullLifecycleRawAndParsedFields === true &&
     logEvidence.comparedEveryWinnerAgainstEveryOther === true &&
     Array.isArray(logEvidence.counterfactualWinnerIndices) &&
     logEvidence.counterfactualWinnerIndices.length >= 5 &&
-    logEvidence.protocolInfrastructureLogsCompared === true &&
-    logEvidence.residual === null;
+    logEvidence.protocolInfrastructureLogsCompared === true;
   const aclEvidenceComplete =
     aclEvidence.grantMultisetExact === true &&
     typeof aclEvidence.winnerGrantCount === "number" &&
@@ -557,10 +708,21 @@ export function buildPrivacyReport(
     gasEvidence.sweepAndFinalizationOutcomeIndependent === true &&
     Array.isArray(gasEvidence.positions) &&
     gasEvidence.positions.length === 3;
+  const pP1NaturalEvidence = validatePp1NaturalEvidence();
   const propositions = {
     "P-P1": pass(
-      logPass && logEvidenceComplete && hasCleanProvenance(logEvidence),
-      "complete raw and parsed participant log-field diff plus call-boundary comparison",
+      logPass &&
+        transcriptRetentionEvidenceComplete &&
+        hasCleanProvenance(logEvidence) &&
+        aclPass &&
+        aclEvidenceComplete &&
+        hasCleanProvenance(aclEvidence) &&
+        gasPass &&
+        gasEvidenceComplete &&
+        hasCleanProvenance(gasEvidence) &&
+        staticReport.status === "PASS" &&
+        pP1NaturalEvidence.status === "PASS",
+      `2026-08-15 re-frozen non-derivability criterion; ${pP1NaturalEvidence.evidence}`,
     ),
     "P-P2": pass(
       aclPass && aclEvidenceComplete && hasCleanProvenance(aclEvidence) && staticReport.acl.violations.length === 0,

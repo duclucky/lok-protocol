@@ -16,6 +16,9 @@ artifacts/*
 !artifacts/invariants/**
 !artifacts/privacy/
 !artifacts/privacy/**
+artifacts/privacy/p-p1-natural-gas-experiment/collector-natural-transcripts.json
+artifacts/privacy/p-p1-natural-gas-experiment/transcripts.json
+artifacts/privacy/p-p1-re-review/hardhat-transcripts.json
 hardhat-artifacts
 build
 cache
