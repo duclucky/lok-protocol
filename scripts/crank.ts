@@ -1,9 +1,7 @@
-import { BaseContract, Result } from "ethers";
+import { BaseContract, Result, isAddress } from "ethers";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ethers, fhevm, network } from "hardhat";
-
-import { assertDeploymentManifest } from "./deploy";
 
 export enum DrawState {
   IDLE,
@@ -88,6 +86,28 @@ export type CrankCycleOptions = {
 export class StaleStateError extends Error {}
 
 type KeeperEnvironment = Readonly<Record<string, string | undefined>>;
+
+type KeeperManifest = {
+  schemaVersion: 1;
+  network: "sepolia";
+  chainId: 11155111;
+  addresses: {
+    vault: string;
+    drawManager: string;
+  };
+};
+
+function assertKeeperManifest(value: unknown): asserts value is KeeperManifest {
+  if (typeof value !== "object" || value === null) throw new Error("keeper manifest must be an object");
+  const candidate = value as Partial<KeeperManifest>;
+  if (candidate.schemaVersion !== 1) throw new Error("keeper manifest schemaVersion must be 1");
+  if (candidate.network !== "sepolia" || candidate.chainId !== 11155111) {
+    throw new Error("keeper manifest must target Sepolia chain ID 11155111");
+  }
+  if (candidate.addresses === undefined) throw new Error("keeper manifest addresses are required");
+  if (!isAddress(candidate.addresses.vault)) throw new Error("keeper manifest addresses.vault is invalid");
+  if (!isAddress(candidate.addresses.drawManager)) throw new Error("keeper manifest addresses.drawManager is invalid");
+}
 
 function booleanOption(value: string | undefined, label: string): boolean {
   if (value === undefined || value === "0" || value === "false") return false;
@@ -331,8 +351,9 @@ async function main(): Promise<void> {
   if (network.name !== "sepolia") throw new Error("crank.ts only supports Ethereum Sepolia");
   await fhevm.initializeCLIApi();
   if (fhevm.isMock) throw new Error("crank.ts refuses the mock FHEVM backend");
-  const raw: unknown = JSON.parse(await readFile(path.join(process.cwd(), "deployments", "sepolia.json"), "utf8"));
-  assertDeploymentManifest(raw);
+  const manifestPath = process.env.LOK_DEPLOYMENT_MANIFEST ?? path.join("deployments", "sepolia.json");
+  const raw: unknown = JSON.parse(await readFile(path.resolve(process.cwd(), manifestPath), "utf8"));
+  assertKeeperManifest(raw);
   const [keeper] = await ethers.getSigners();
   if (keeper === undefined) throw new Error("A funded keeper signer is required to submit permissionless transactions");
   const draw = await ethers.getContractAt("LokDrawManager", raw.addresses.drawManager, keeper);
