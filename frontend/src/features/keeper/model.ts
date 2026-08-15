@@ -43,11 +43,16 @@ export function keeperDecision(snapshot: LokPublicSnapshot, nowMs = Date.now()):
 
   switch (draw.state) {
     case "IDLE":
-    case "SETTLED":
       return {
         label: "Open next draw",
         detail: "Start a new non-strict draw. This does not choose a winner.",
         action: { kind: "openDraw", strict: false },
+      };
+    case "SETTLED":
+      return {
+        label: "Settled draw ready",
+        detail: "This public demo keeps the completed draw available for review. Owner keepers can start another draw when preparing a fresh demo.",
+        disabledReason: "A completed draw is ready for judges.",
       };
     case "OPEN":
     case "SWEEP_A": {

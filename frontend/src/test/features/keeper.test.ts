@@ -47,6 +47,14 @@ describe("keeperDecision", () => {
     expect(keeperDecision(snapshot()).action).toEqual({ kind: "openDraw", strict: false });
   });
 
+  it("keeps a settled public demo ready instead of opening another draw", () => {
+    const decision = keeperDecision(snapshot({ state: "SETTLED", settled: true }), 300_000);
+
+    expect(decision.action).toBeUndefined();
+    expect(decision.label).toBe("Settled draw ready");
+    expect(decision.disabledReason).toMatch(/ready for judges/i);
+  });
+
   it("waits before tEnd and pre-syncs after tEnd", () => {
     expect(keeperDecision(snapshot({ state: "OPEN" }), 199_000).disabledReason).toMatch(/draw window/i);
     expect(keeperDecision(snapshot({ state: "OPEN" }), 200_000).action).toEqual({ kind: "preSyncA", batch: 4n });
