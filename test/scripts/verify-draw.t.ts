@@ -5,6 +5,7 @@ import path from "node:path";
 
 import {
   assertVerifierDeploymentManifest,
+  collectDrawEventLogs,
   readHistoricalOrCurrent,
   readParticipantSnapshot,
   resolveVerifierOptions,
@@ -15,6 +16,24 @@ import { assertDeploymentManifest } from "../../scripts/deploy";
 
 const entropy = `0x${"12".repeat(32)}` as `0x${string}`;
 const salt = `0x${"34".repeat(32)}` as `0x${string}`;
+
+type MockEventLog = {
+  blockNumber: number;
+  transactionIndex: number;
+  index: number;
+  transactionHash: string;
+  drawId: bigint;
+};
+
+function eventLog(
+  transactionHash: string,
+  index: number,
+  drawId: bigint,
+  blockNumber: number,
+  transactionIndex: number,
+): MockEventLog {
+  return { transactionHash, index, drawId, blockNumber, transactionIndex };
+}
 
 function fixture(): DrawVerificationEvidence {
   return {
@@ -63,6 +82,64 @@ function failedChecks(value: DrawVerificationEvidence): string[] {
 }
 
 describe("independent draw verifier", function () {
+  it("falls back to decoded topic0 logs, deduplicates and orders deterministically", async function () {
+    const earlier = eventLog(`0x${"11".repeat(32)}`, 2, 2n, 10, 1);
+    const duplicateEarlier = { ...earlier };
+    const later = eventLog(`0x${"22".repeat(32)}`, 0, 2n, 11, 0);
+    const wrongDraw = eventLog(`0x${"33".repeat(32)}`, 0, 3n, 9, 0);
+
+    const logs = await collectDrawEventLogs({
+      drawId: 2n,
+      queryExact: async () => [],
+      queryBroad: async () => [later, duplicateEarlier, wrongDraw, earlier],
+      decodeDrawId: (log) => log.drawId,
+    });
+
+    expect(logs.map((log) => `${log.transactionHash}:${log.index}`)).to.deep.equal([
+      `${earlier.transactionHash}:${earlier.index}`,
+      `${later.transactionHash}:${later.index}`,
+    ]);
+  });
+
+  it("rejects an indexed result that decodes to a different draw without broad fallback", async function () {
+    let broadQueried = false;
+    await expect(
+      collectDrawEventLogs({
+        drawId: 2n,
+        queryExact: async () => [eventLog(`0x${"44".repeat(32)}`, 0, 3n, 10, 0)],
+        queryBroad: async () => {
+          broadQueried = true;
+          return [];
+        },
+        decodeDrawId: (log) => log.drawId,
+      }),
+    ).to.be.rejectedWith("Indexed event drawId 3 does not match requested draw 2");
+    expect(broadQueried).to.equal(false);
+  });
+
+  it("retains distinct matching logs and propagates malformed broad-log failures", async function () {
+    const first = eventLog(`0x${"55".repeat(32)}`, 1, 2n, 10, 0);
+    const second = eventLog(first.transactionHash, 2, 2n, 10, 0);
+    const logs = await collectDrawEventLogs({
+      drawId: 2n,
+      queryExact: async () => [second, first],
+      queryBroad: async () => [],
+      decodeDrawId: (log) => log.drawId,
+    });
+    expect(logs.map(({ index }) => index)).to.deep.equal([1, 2]);
+
+    await expect(
+      collectDrawEventLogs({
+        drawId: 2n,
+        queryExact: async () => [],
+        queryBroad: async () => [first],
+        decodeDrawId: () => {
+          throw new Error("malformed broad log");
+        },
+      }),
+    ).to.be.rejectedWith("malformed broad log");
+  });
+
   it("accepts the preserved seeded demo manifest without weakening the canonical deploy gate", async function () {
     const raw: unknown = JSON.parse(
       await readFile(path.join(process.cwd(), "deployments/history/sepolia-2026-08-13-120-30-180-600.json"), "utf8"),

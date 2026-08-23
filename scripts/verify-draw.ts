@@ -392,6 +392,43 @@ function optionValue(name: string, args: readonly string[]): string | undefined 
   return index === -1 ? undefined : args[index + 1];
 }
 
+type OrderedEventLog = {
+  blockNumber: number;
+  transactionIndex: number;
+  index: number;
+  transactionHash: string;
+};
+
+function orderedUniqueEventLogs<T extends OrderedEventLog>(logs: readonly T[]): T[] {
+  return [...new Map(logs.map((log) => [`${log.transactionHash.toLowerCase()}:${log.index}`, log])).values()].sort(
+    (left, right) =>
+      left.blockNumber - right.blockNumber ||
+      left.transactionIndex - right.transactionIndex ||
+      left.index - right.index,
+  );
+}
+
+export async function collectDrawEventLogs<T extends OrderedEventLog>(options: {
+  drawId?: bigint;
+  queryExact(): Promise<readonly T[]>;
+  queryBroad(): Promise<readonly T[]>;
+  decodeDrawId(log: T): bigint;
+}): Promise<T[]> {
+  const direct = await options.queryExact();
+  if (options.drawId === undefined) return orderedUniqueEventLogs(direct);
+  if (direct.length > 0) {
+    for (const log of direct) {
+      const decodedDrawId = options.decodeDrawId(log);
+      if (decodedDrawId !== options.drawId) {
+        throw new Error(`Indexed event drawId ${decodedDrawId} does not match requested draw ${options.drawId}`);
+      }
+    }
+    return orderedUniqueEventLogs(direct);
+  }
+  const broad = await options.queryBroad();
+  return orderedUniqueEventLogs(broad.filter((log) => options.decodeDrawId(log) === options.drawId));
+}
+
 async function eventBlock(logs: readonly { blockNumber: number }[], label: string): Promise<number> {
   if (logs.length !== 1) throw new Error(`Expected exactly one ${label} event`);
   return logs[0].blockNumber;
@@ -412,20 +449,23 @@ async function queryEventLogs(
   for (let start = fromBlock; start <= latest; start += 5_000) {
     const address = await contract.getAddress();
     const toBlock = Math.min(start + 4_999, latest);
-    const direct = await ethers.provider.getLogs({ address, topics, fromBlock: start, toBlock });
-    if (drawId === undefined || direct.length > 0) {
-      logs.push(...direct);
-      continue;
-    }
-    const broad = await ethers.provider.getLogs({ address, topics: [eventTopic], fromBlock: start, toBlock });
-    logs.push(
-      ...broad.filter((log) => {
-        const parsed = contract.interface.parseLog(log);
-        return parsed !== null && BigInt(parsed.args.drawId as bigint | number) === drawId;
-      }),
-    );
+    const chunk = await collectDrawEventLogs({
+      drawId,
+      queryExact: async () => ethers.provider.getLogs({ address, topics, fromBlock: start, toBlock }),
+      queryBroad: async () => ethers.provider.getLogs({ address, topics: [eventTopic], fromBlock: start, toBlock }),
+      decodeDrawId: (log) => {
+        try {
+          const parsed = contract.interface.parseLog(log);
+          if (parsed === null) throw new Error("ABI decoder returned null");
+          return BigInt(parsed.args.drawId as bigint | number);
+        } catch (error) {
+          throw new Error(`Unable to decode ${eventName} log ${log.transactionHash}`, { cause: error });
+        }
+      },
+    });
+    logs.push(...chunk);
   }
-  return logs;
+  return orderedUniqueEventLogs(logs);
 }
 
 async function isCurrentSettledDraw(draw: BaseContract, drawId: bigint, latestSettled: boolean): Promise<boolean> {
