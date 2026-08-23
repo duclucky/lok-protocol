@@ -110,6 +110,28 @@ const PUBLIC_DECRYPT_ALLOWLIST: Record<string, { classification: string; functio
   },
 };
 
+export function canonicalPrivacyEvidenceDirectory(): string {
+  return PRIVACY_EVIDENCE_DIR;
+}
+
+export function resolvePrivacyEvidenceDirectory(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): string {
+  const configured = environment.LOK_PRIVACY_EVIDENCE_DIR;
+  if (configured !== undefined && configured.trim() !== "") return path.resolve(configured);
+  if (environment.NODE_ENV === "test") {
+    throw new Error("LOK_PRIVACY_EVIDENCE_DIR is required while NODE_ENV=test");
+  }
+  return PRIVACY_EVIDENCE_DIR;
+}
+
+export function resolvePrivacyReportOutput(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): string | undefined {
+  const configured = environment.LOK_PRIVACY_OUTPUT;
+  return configured === undefined || configured.trim() === "" ? undefined : path.resolve(configured);
+}
+
 export function opaqueLogShape(
   logs: readonly { address: string; topics: readonly string[]; data: string }[],
 ): string[] {
@@ -169,7 +191,7 @@ export function comparePrivacyCost(
 export function writePrivacyEvidence(
   name: PrivacyEvidenceName,
   fragment: Record<string, unknown> & { status: "PASS" | "FAIL" },
-  directory = PRIVACY_EVIDENCE_DIR,
+  directory: string,
 ): void {
   mkdirSync(directory, { recursive: true });
   const gitCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
@@ -776,9 +798,11 @@ export function buildPrivacyReport(
 
 if (require.main === module) {
   const report = buildPrivacyReport();
-  const output = path.resolve(process.env.LOK_PRIVACY_OUTPUT ?? path.join(ROOT, "artifacts", "privacy-report.json"));
-  mkdirSync(path.dirname(output), { recursive: true });
-  writeFileSync(output, `${JSON.stringify(report, null, 2)}\n`);
-  console.log(`Privacy scan ${report.status}: ${output}`);
+  const output = resolvePrivacyReportOutput();
+  if (output !== undefined) {
+    mkdirSync(path.dirname(output), { recursive: true });
+    writeFileSync(output, `${JSON.stringify(report, null, 2)}\n`);
+  }
+  console.log(`Privacy scan ${report.status}${output === undefined ? " (read-only)" : `: ${output}`}`);
   if (report.status !== "PASS") process.exitCode = 1;
 }

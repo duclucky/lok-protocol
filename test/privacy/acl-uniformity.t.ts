@@ -32,6 +32,15 @@ function allowedLogs(receipts: ContractTransactionReceipt[]) {
 
 describe("Lok static privacy surface", function () {
   const staticPrivacyIt = process.env.SOLIDITY_COVERAGE === "true" ? it.skip : it;
+  let testEvidenceDirectory: string;
+
+  before(function () {
+    testEvidenceDirectory = mkdtempSync(path.join(tmpdir(), "lok-privacy-acl-"));
+  });
+
+  after(function () {
+    rmSync(testEvidenceDirectory, { recursive: true, force: true });
+  });
 
   staticPrivacyIt("allowlists every public-decryption call and rejects winner-only ABI or amount events", function () {
     const report = scanPrivacySurface();
@@ -166,21 +175,25 @@ describe("Lok static privacy surface", function () {
       .map((user) => grantCountsByUser.get(user.address.toLowerCase()) ?? 0);
     expect(loserGrantCounts.every((count) => count === winnerGrantCount)).to.equal(true);
 
-    writePrivacyEvidence("acl-uniformity", {
-      status: "PASS",
-      proposition: "P-P2",
-      sourceTestIdentifiers: [
-        "test/privacy/acl-uniformity.t.ts:grants each participant exactly one ACL entry on their own prize-credit handle",
-      ],
-      command:
-        'npx hardhat test test/privacy/acl-uniformity.t.ts --grep "grants each participant exactly one ACL entry"',
-      participants: fixture.participants.length,
-      grantMultisetExact: true,
-      expectedPairs,
-      actualPairs,
-      winnerIndex,
-      winnerGrantCount,
-      loserGrantCounts,
-    });
+    writePrivacyEvidence(
+      "acl-uniformity",
+      {
+        status: "PASS",
+        proposition: "P-P2",
+        sourceTestIdentifiers: [
+          "test/privacy/acl-uniformity.t.ts:grants each participant exactly one ACL entry on their own prize-credit handle",
+        ],
+        command:
+          'npx hardhat test test/privacy/acl-uniformity.t.ts --grep "grants each participant exactly one ACL entry"',
+        participants: fixture.participants.length,
+        grantMultisetExact: true,
+        expectedPairs,
+        actualPairs,
+        winnerIndex,
+        winnerGrantCount,
+        loserGrantCounts,
+      },
+      testEvidenceDirectory,
+    );
   });
 });

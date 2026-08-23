@@ -1,6 +1,9 @@
 import { expect } from "chai";
 import { ContractTransactionReceipt } from "ethers";
 import { ethers, fhevm, network } from "hardhat";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
 import { comparePrivacyCost, opcodeShape, writePrivacyEvidence } from "../../scripts/privacy-scan";
 import { read } from "../draw/helpers";
@@ -44,6 +47,16 @@ async function measurePositionOutcome(position: Position, outcome: "winner" | "l
 }
 
 describe("Lok winner gas and HCU indistinguishability", function () {
+  let testEvidenceDirectory: string;
+
+  before(function () {
+    testEvidenceDirectory = mkdtempSync(path.join(tmpdir(), "lok-privacy-gas-"));
+  });
+
+  after(function () {
+    rmSync(testEvidenceDirectory, { recursive: true, force: true });
+  });
+
   beforeEach(function () {
     if (!fhevm.isMock) this.skip();
   });
@@ -71,18 +84,22 @@ describe("Lok winner gas and HCU indistinguishability", function () {
       evidence.push({ position: position.label, index: position.index, comparison, opcodeShapeEqual: true });
     }
 
-    writePrivacyEvidence("gas-indistinguishability", {
-      status: "PASS",
-      proposition: "P-P5",
-      sourceTestIdentifiers: [
-        "test/privacy/gas-indistinguishability.t.ts:keeps first, interior, and final winner/loser work within the frozen thresholds",
-      ],
-      command: 'npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep "keeps first"',
-      fixedGasThresholdBps: 100,
-      positions: evidence,
-      allPositionsMeasured: true,
-      sweepAndFinalizationOutcomeIndependent: true,
-    });
+    writePrivacyEvidence(
+      "gas-indistinguishability",
+      {
+        status: "PASS",
+        proposition: "P-P5",
+        sourceTestIdentifiers: [
+          "test/privacy/gas-indistinguishability.t.ts:keeps first, interior, and final winner/loser work within the frozen thresholds",
+        ],
+        command: 'npx hardhat test test/privacy/gas-indistinguishability.t.ts --grep "keeps first"',
+        fixedGasThresholdBps: 100,
+        positions: evidence,
+        allPositionsMeasured: true,
+        sweepAndFinalizationOutcomeIndependent: true,
+      },
+      testEvidenceDirectory,
+    );
   });
 
   it("rejects winner-only gas and HCU mutations", function () {

@@ -9,7 +9,8 @@ import {
   zeroPadValue,
 } from "ethers";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { ethers, fhevm, network } from "hardhat";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
@@ -279,6 +280,16 @@ async function restoreAfterMockCoprocessor(snapshotId: string, previousHighBlock
 }
 
 describe("Lok winner log indistinguishability", function () {
+  let testEvidenceDirectory: string;
+
+  before(function () {
+    testEvidenceDirectory = mkdtempSync(path.join(tmpdir(), "lok-privacy-log-"));
+  });
+
+  after(function () {
+    rmSync(testEvidenceDirectory, { recursive: true, force: true });
+  });
+
   beforeEach(function () {
     if (!fhevm.isMock) this.skip();
   });
@@ -337,23 +348,27 @@ describe("Lok winner log indistinguishability", function () {
       firstDifference: -1,
       window: [],
     });
-    writePrivacyEvidence("log-indistinguishability", {
-      status: "PASS",
-      propositions: ["P-P1", "P-P7", "P-P9-ABI"],
-      participants: fixture.participants.length,
-      winnerIndex,
-      comparedLoserIndex: comparableLoserIndex,
-      comparedLoserIndices,
-      comparedRawAndParsedPrizeCreditedFields: true,
-      applicationCallBoundaryShapeEqual: true,
-      note: "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal.",
-    });
+    writePrivacyEvidence(
+      "log-indistinguishability",
+      {
+        status: "PASS",
+        propositions: ["P-P1", "P-P7", "P-P9-ABI"],
+        participants: fixture.participants.length,
+        winnerIndex,
+        comparedLoserIndex: comparableLoserIndex,
+        comparedLoserIndices,
+        comparedRawAndParsedPrizeCreditedFields: true,
+        applicationCallBoundaryShapeEqual: true,
+        note: "Depth-3 mock-host internals are excluded; Lok call boundaries at depths 1-2 are equal.",
+      },
+      testEvidenceDirectory,
+    );
   });
 
   it("compares complete lifecycle transcripts for every forced winner without payload normalization", async function () {
     const participantCount = 5;
-    const evidenceDirectory = path.resolve("artifacts/privacy/counterfactual-p-p1");
-    mkdirSync(evidenceDirectory, { recursive: true });
+    const counterfactualDirectory = path.join(testEvidenceDirectory, "counterfactual-p-p1");
+    mkdirSync(counterfactualDirectory, { recursive: true });
     const base = await reachCounterfactualBase(participantCount);
     let snapshotId = (await network.provider.send("evm_snapshot")) as string;
     let previousHighBlock = await ethers.provider.getBlockNumber();
@@ -361,7 +376,7 @@ describe("Lok winner log indistinguishability", function () {
     const allReceiptTranscripts: FullTranscriptEntry[][] = [];
     for (let winnerIndex = 0; winnerIndex < participantCount; winnerIndex += 1) {
       if (winnerIndex !== 0) snapshotId = await restoreAfterMockCoprocessor(snapshotId, previousHighBlock);
-      const outputPath = path.join(evidenceDirectory, `winner-${winnerIndex}.json`);
+      const outputPath = path.join(counterfactualDirectory, `winner-${winnerIndex}.json`);
       const transcript = await counterfactualTranscript(base, winnerIndex);
       writeFileSync(outputPath, `${JSON.stringify(transcript, null, 2)}\n`);
       transcripts.push(transcript.application);
@@ -386,26 +401,30 @@ describe("Lok winner log indistinguishability", function () {
       return { winnerIndex: offset + 1, firstDifference };
     });
     expect(protocolDifferences.every(({ firstDifference }) => firstDifference >= 0)).to.equal(true);
-    writePrivacyEvidence("log-indistinguishability", {
-      status: "PASS",
-      propositions: ["P-P1", "P-P7", "P-P9-ABI"],
-      sourceTestIdentifiers: [
-        "test/privacy/log-indistinguishability.t.ts:compares complete lifecycle transcripts for every forced winner without payload normalization",
-      ],
-      command: 'npx hardhat test test/privacy/log-indistinguishability.t.ts --grep "compares complete lifecycle"',
-      participants: participantCount,
-      counterfactualWinnerIndices: [0, 1, 2, 3, 4],
-      comparedEveryWinnerAgainstEveryOther: true,
-      pairwiseComparisons,
-      comparedFullLifecycleRawAndParsedFields: true,
-      normalizationAllowlist: [],
-      eventTransactionsIncluded: ["openDraw", "preSyncA", "crankA", "submitTotals", "openRandom", "crankB"],
-      transcriptEntries: transcripts[0].length,
-      protocolInfrastructureLogsCompared: true,
-      protocolDifferences,
-      residual:
-        "FHEVM executor/ACL raw log bytes differ across forced winners even though every application log is byte-identical; frozen P-P1 full-log criterion is not met.",
-    });
+    writePrivacyEvidence(
+      "log-indistinguishability",
+      {
+        status: "PASS",
+        propositions: ["P-P1", "P-P7", "P-P9-ABI"],
+        sourceTestIdentifiers: [
+          "test/privacy/log-indistinguishability.t.ts:compares complete lifecycle transcripts for every forced winner without payload normalization",
+        ],
+        command: 'npx hardhat test test/privacy/log-indistinguishability.t.ts --grep "compares complete lifecycle"',
+        participants: participantCount,
+        counterfactualWinnerIndices: [0, 1, 2, 3, 4],
+        comparedEveryWinnerAgainstEveryOther: true,
+        pairwiseComparisons,
+        comparedFullLifecycleRawAndParsedFields: true,
+        normalizationAllowlist: [],
+        eventTransactionsIncluded: ["openDraw", "preSyncA", "crankA", "submitTotals", "openRandom", "crankB"],
+        transcriptEntries: transcripts[0].length,
+        protocolInfrastructureLogsCompared: true,
+        protocolDifferences,
+        residual:
+          "FHEVM executor/ACL raw log bytes differ across forced winners even though every application log is byte-identical; frozen P-P1 full-log criterion is not met.",
+      },
+      testEvidenceDirectory,
+    );
   });
 
   it("forensically separates entry 301 handle bytes from public transcript structure", async function () {
