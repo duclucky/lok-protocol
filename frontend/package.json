@@ -7,7 +7,8 @@
     "node": ">=22 <24"
   },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && npm run build:assert",
+    "build:assert": "node scripts/assert-build.mjs",
     "dev": "vite",
     "e2e": "npx --yes node@22 node_modules/@playwright/test/cli.js test",
     "test": "vitest run",

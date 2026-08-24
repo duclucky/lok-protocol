@@ -549,6 +549,13 @@ select {
 .main-content {
   min-height: calc(100dvh - 56px);
 }
+.route-loading {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 24px;
+  color: var(--muted);
+}
 .page {
   width: min(1160px, calc(100% - 64px));
 }
@@ -2148,6 +2155,12 @@ select {
   }
   .main-content {
     padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  html {
+    scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    scroll-margin-bottom: calc(88px + env(safe-area-inset-bottom));
   }
   .app-footer {
     margin-bottom: 72px;
