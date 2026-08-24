@@ -1001,7 +1001,56 @@ select {
   gap: 16px;
 }
 .user-draw-block {
-  grid-column: 1 / -1;
+  display: grid;
+  max-width: 880px;
+  gap: 22px;
+  padding: 30px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.user-draw-block .section-heading {
+  margin-bottom: 0;
+}
+.user-draw-block h2 {
+  margin-top: 7px;
+  font-size: 1.9rem;
+}
+.user-draw-block__summary {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+.user-draw-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.user-draw-facts > div {
+  min-width: 0;
+  padding: 18px 20px 18px 0;
+}
+.user-draw-facts > div + div {
+  padding-left: 20px;
+  border-left: 1px solid var(--border);
+}
+.user-draw-facts dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.user-draw-facts dd {
+  margin: 7px 0 0;
+  font-weight: 650;
+}
+.user-draw-block__note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.user-draw-block .button {
+  justify-self: start;
 }
 .keeper-block .button {
   align-self: flex-start;
@@ -1040,7 +1089,7 @@ select {
 }
 .execution-log-list li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 16px;
   padding: 12px 0;
@@ -1052,6 +1101,17 @@ select {
 .execution-log-list span {
   min-width: 0;
   font-weight: 650;
+}
+.execution-status {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: capitalize;
+}
+.execution-status--confirmed {
+  color: var(--patina);
+}
+.execution-status--failed {
+  color: var(--danger);
 }
 .execution-log-list a {
   color: var(--patina);
@@ -2234,6 +2294,20 @@ select {
   .risk-option {
     min-height: 58px;
     font-size: 0.8rem;
+  }
+  .user-draw-block {
+    padding: 24px 0;
+  }
+  .user-draw-facts {
+    grid-template-columns: 1fr;
+  }
+  .user-draw-facts > div {
+    padding: 16px 0;
+  }
+  .user-draw-facts > div + div {
+    padding-left: 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
   }
   .draw-console {
     padding: 22px;

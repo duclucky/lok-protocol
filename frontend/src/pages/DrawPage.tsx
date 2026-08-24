@@ -3,20 +3,14 @@ import { useState } from "react";
 import type { Hex } from "viem";
 
 import { PageHeader } from "../components/PageHeader";
-import { DRAW_STATES, drawStateDetails } from "../features/draw/model";
-import { keeperDecision } from "../features/keeper/model";
+import { DRAW_STATES, drawStateDetails, type DrawState, userDrawDetails } from "../features/draw/model";
+import { keeperDecision, keeperExecutionKey, type KeeperExecutionLogEntry } from "../features/keeper/model";
 import { formatUtc, type LokPublicData, ZERO_BYTES32 } from "../features/public-data/model";
 import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
 
 export { DRAW_STATES };
 
 type DrawViewMode = "user" | "demo";
-
-type KeeperExecutionLogEntry = Readonly<{
-  id: number;
-  label: string;
-  hash: Hex;
-}>;
 
 type DrawPageProps = {
   publicData: LokPublicData;
@@ -49,16 +43,31 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
     return (
       <div className="page page--draw">
         <PageHeader title="Current draw" description="Live public state, sealed participant outcomes." />
-        <section className="section-block data-message" role="status">
-          No draw has opened on this deployment yet.
-        </section>
-        <KeeperPanel
-          decision={keeper}
-          keeperAction={keeperAction}
-          message={keeperMessage}
-          setMessage={setKeeperMessage}
-          onConfirmed={recordKeeperConfirmation}
-        />
+        <DrawViewSwitch viewMode={viewMode} setViewMode={setViewMode} />
+        {viewMode === "demo" ? (
+          <div className="draw-grid">
+            <KeeperPanel
+              decision={keeper}
+              keeperAction={keeperAction}
+              message={keeperMessage}
+              setMessage={setKeeperMessage}
+              onConfirmed={recordKeeperConfirmation}
+            />
+            <ExecutionLogPanel entries={executionLog} />
+          </div>
+        ) : (
+          <section className="user-draw-block" aria-labelledby="no-draw-title">
+            <div className="section-heading">
+              <div>
+                <p className="section-label">Current state</p>
+                <h2 id="no-draw-title">No draw has opened on this deployment yet</h2>
+              </div>
+              <ShieldCheck aria-hidden="true" size={22} />
+            </div>
+            <p className="user-draw-block__summary">Deposits and withdrawals remain available.</p>
+            <p className="user-draw-block__note">No action is required from depositors.</p>
+          </section>
+        )}
       </div>
     );
   }
@@ -76,7 +85,8 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
   }
 
   function recordKeeperConfirmation(label: string, hash: Hex) {
-    setExecutionLog((entries) => [{ id: Date.now(), label, hash }, ...entries].slice(0, 12));
+    const entry: KeeperExecutionLogEntry = { step: label, hash, status: "confirmed" };
+    setExecutionLog((entries) => [entry, ...entries].slice(0, 12));
   }
 
   return (
@@ -92,115 +102,111 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
         }
       />
 
-      <div className="draw-view-switch" aria-label="Draw page view">
-        <button type="button" aria-pressed={viewMode === "user"} onClick={() => setViewMode("user")}>
-          User view
-        </button>
-        <button type="button" aria-pressed={viewMode === "demo"} onClick={() => setViewMode("demo")}>
-          Demo progress
-        </button>
-      </div>
+      <DrawViewSwitch viewMode={viewMode} setViewMode={setViewMode} />
 
-      <section className="draw-console" aria-labelledby="draw-state-heading">
-        <div className="draw-console__state">
-          <p className="section-label">Current state</p>
-          <h2 id="draw-state-heading" aria-label={state}>
-            {state}
-          </h2>
-          <strong>{detail.label}</strong>
-          <p>{detail.detail}</p>
-        </div>
-        <div className="draw-progress">
-          <div className="progress-heading">
-            <span>Draw progress</span>
-            <strong>{detail.progress}%</strong>
-          </div>
-          <progress aria-label="Draw progress" value={detail.progress} max={100} />
-          <ol className="state-rail" aria-label="Draw state sequence">
-            {DRAW_STATES.map((item) => (
-              <li key={item} className={DRAW_STATES.indexOf(item) <= DRAW_STATES.indexOf(state) ? "is-complete" : ""}>
-                <span />
-                {item}
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <div className="draw-grid">
-        <section className="section-block sweep-block" aria-labelledby="sweep-title">
-          <div className="section-heading">
-            <div>
-              <p className="section-label">Paginated accounting</p>
-              <h2 id="sweep-title">Sweep progress</h2>
-            </div>
-            <Dices aria-hidden="true" size={22} />
-          </div>
-          <div className="cursor-figure">
-            <strong>{state === "IDLE" ? "0" : cursor.toString()}</strong>
-            <span>/ {draw.participantSnapshot.toString()} participants</span>
-          </div>
-          <progress
-            aria-label="Participant sweep progress"
-            value={state === "IDLE" ? 0 : Number(cursor)}
-            max={Number(draw.participantSnapshot)}
-          />
-          {executionLog.length > 0 && (
-            <p className="sweep-tx-summary">
-              This browser confirmed {executionLog.length.toString()} keeper{" "}
-              {executionLog.length === 1 ? "transaction" : "transactions"}.
-            </p>
-          )}
-          <p>Small batches keep each encrypted transaction within the measured Sepolia compute cap.</p>
-        </section>
-
-        <section className="section-block commitment-block" aria-labelledby="commitment-title">
-          <div className="section-heading">
-            <div>
-              <p className="section-label">Randomness sequencing</p>
-              <h2 id="commitment-title">
-                {state === "REVEAL"
-                  ? "Random material remains unavailable until the reveal window closes"
-                  : randomMaterialReady
-                    ? "Random material fixed before winner assignment"
-                    : "Random material not generated yet"}
+      {isDemoView ? (
+        <>
+          <section className="draw-console" aria-labelledby="draw-state-heading">
+            <div className="draw-console__state">
+              <p className="section-label">Current state</p>
+              <h2 id="draw-state-heading" aria-label={state}>
+                {state}
               </h2>
+              <strong>{detail.label}</strong>
+              <p>{detail.detail}</p>
             </div>
-            <ShieldCheck aria-hidden="true" size={22} />
-          </div>
-          <p>
-            {randomMaterialReady
-              ? "The encrypted handle is public; its value stays unreadable until the approved aggregate decryption."
-              : "No code path exposes or evaluates the random material before its permitted state transition."}
-          </p>
-          {randomMaterialReady && (
-            <div className="handle-row">
-              <code>{randomHandle}</code>
-              <button
-                className="icon-button"
-                type="button"
-                aria-label={copied ? "Random handle copied" : "Copy random handle"}
-                title={copied ? "Copied" : "Copy random handle"}
-                onClick={() => void copyRandomHandle()}
-              >
-                <Copy aria-hidden="true" size={17} />
-              </button>
+            <div className="draw-progress">
+              <div className="progress-heading">
+                <span>Draw progress</span>
+                <strong>{detail.progress}%</strong>
+              </div>
+              <progress aria-label="Draw progress" value={detail.progress} max={100} />
+              <ol className="state-rail" aria-label="Draw state sequence">
+                {DRAW_STATES.map((item) => (
+                  <li
+                    key={item}
+                    className={DRAW_STATES.indexOf(item) <= DRAW_STATES.indexOf(state) ? "is-complete" : ""}
+                  >
+                    <span />
+                    {item}
+                  </li>
+                ))}
+              </ol>
             </div>
-          )}
-          <dl className="detail-list">
-            <div>
-              <dt>Draw closes</dt>
-              <dd className="mono">{formatUtc(draw.tEnd)}</dd>
-            </div>
-            <div>
-              <dt>Reveal closes</dt>
-              <dd className="mono">{formatUtc(draw.revealDeadline)}</dd>
-            </div>
-          </dl>
-        </section>
+          </section>
 
-        {isDemoView ? (
-          <>
+          <div className="draw-grid">
+            <section className="section-block sweep-block" aria-labelledby="sweep-title">
+              <div className="section-heading">
+                <div>
+                  <p className="section-label">Paginated accounting</p>
+                  <h2 id="sweep-title">Sweep progress</h2>
+                </div>
+                <Dices aria-hidden="true" size={22} />
+              </div>
+              <div className="cursor-figure">
+                <strong>{state === "IDLE" ? "0" : cursor.toString()}</strong>
+                <span>/ {draw.participantSnapshot.toString()} participants</span>
+              </div>
+              <progress
+                aria-label="Participant sweep progress"
+                value={state === "IDLE" ? 0 : Number(cursor)}
+                max={Number(draw.participantSnapshot)}
+              />
+              {executionLog.length > 0 && (
+                <p className="sweep-tx-summary">
+                  This browser confirmed {executionLog.length.toString()} keeper{" "}
+                  {executionLog.length === 1 ? "transaction" : "transactions"}.
+                </p>
+              )}
+              <p>Small batches keep each encrypted transaction within the measured Sepolia compute cap.</p>
+            </section>
+
+            <section className="section-block commitment-block" aria-labelledby="commitment-title">
+              <div className="section-heading">
+                <div>
+                  <p className="section-label">Randomness sequencing</p>
+                  <h2 id="commitment-title">
+                    {state === "REVEAL"
+                      ? "Random material remains unavailable until the reveal window closes"
+                      : randomMaterialReady
+                        ? "Random material fixed before winner assignment"
+                        : "Random material not generated yet"}
+                  </h2>
+                </div>
+                <ShieldCheck aria-hidden="true" size={22} />
+              </div>
+              <p>
+                {randomMaterialReady
+                  ? "The encrypted handle is public; its value stays unreadable until the approved aggregate decryption."
+                  : "No code path exposes or evaluates the random material before its permitted state transition."}
+              </p>
+              {randomMaterialReady && (
+                <div className="handle-row">
+                  <code>{randomHandle}</code>
+                  <button
+                    className="icon-button"
+                    type="button"
+                    aria-label={copied ? "Random handle copied" : "Copy random handle"}
+                    title={copied ? "Copied" : "Copy random handle"}
+                    onClick={() => void copyRandomHandle()}
+                  >
+                    <Copy aria-hidden="true" size={17} />
+                  </button>
+                </div>
+              )}
+              <dl className="detail-list">
+                <div>
+                  <dt>Draw closes</dt>
+                  <dd className="mono">{formatUtc(draw.tEnd)}</dd>
+                </div>
+                <div>
+                  <dt>Reveal closes</dt>
+                  <dd className="mono">{formatUtc(draw.revealDeadline)}</dd>
+                </div>
+              </dl>
+            </section>
+
             <KeeperPanel
               decision={keeper}
               keeperAction={keeperAction}
@@ -209,34 +215,50 @@ export function DrawPage({ publicData, keeperAction, nowMs }: DrawPageProps) {
               onConfirmed={recordKeeperConfirmation}
             />
             <ExecutionLogPanel entries={executionLog} />
-          </>
-        ) : (
-          <UserDrawPanel state={state} settled={draw.settled} />
-        )}
-      </div>
-
-      {state === "SETTLED" && (
-        <section className="settled-band" aria-labelledby="settled-title">
-          <div>
-            <p className="section-label">Settlement facts</p>
-            <h2 id="settled-title">Independent check ready</h2>
           </div>
-          <dl>
-            <div>
-              <dt>Revealed r</dt>
-              <dd className="mono">Public decryption pending</dd>
-            </div>
-            <div>
-              <dt>Total ticket space</dt>
-              <dd className="mono">{draw.totalTickets.toLocaleString("en-US")}</dd>
-            </div>
-          </dl>
-          <p className="verification-note">
-            Use the external verifier to reproduce the complete settlement checks. This interface does not simulate
-            verification.
-          </p>
-        </section>
+
+          {state === "SETTLED" && (
+            <section className="settled-band" aria-labelledby="settled-title">
+              <div>
+                <p className="section-label">Settlement facts</p>
+                <h2 id="settled-title">Independent check ready</h2>
+              </div>
+              <dl>
+                <div>
+                  <dt>Revealed r</dt>
+                  <dd className="mono">Public decryption pending</dd>
+                </div>
+                <div>
+                  <dt>Total ticket space</dt>
+                  <dd className="mono">{draw.totalTickets.toLocaleString("en-US")}</dd>
+                </div>
+              </dl>
+              <p className="verification-note">
+                Use the external verifier to reproduce the complete settlement checks. This interface does not simulate
+                verification.
+              </p>
+            </section>
+          )}
+        </>
+      ) : (
+        <UserDrawPanel state={state} />
       )}
+    </div>
+  );
+}
+
+function DrawViewSwitch({
+  viewMode,
+  setViewMode,
+}: Readonly<{ viewMode: DrawViewMode; setViewMode(mode: DrawViewMode): void }>) {
+  return (
+    <div className="draw-view-switch" aria-label="Draw page view">
+      <button type="button" aria-pressed={viewMode === "user"} onClick={() => setViewMode("user")}>
+        User view
+      </button>
+      <button type="button" aria-pressed={viewMode === "demo"} onClick={() => setViewMode("demo")}>
+        Demo progress
+      </button>
     </div>
   );
 }
@@ -250,22 +272,26 @@ type KeeperPanelProps = Readonly<{
 }>;
 
 function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed }: KeeperPanelProps) {
-  const disabled = keeperAction === undefined || keeperAction.pending || decision.action === undefined;
-  const pending = keeperAction?.pending === true;
+  const [submitting, setSubmitting] = useState(false);
+  const pending = keeperAction?.pending === true || submitting;
+  const disabled = keeperAction === undefined || pending || decision.action === undefined;
 
   async function advance() {
     if (keeperAction === undefined || decision.action === undefined) return;
     setMessage(
       decision.action.kind === "submitTotals"
-        ? "Requesting public aggregate decryption, then submitting the proof."
+        ? "Requesting public decryption of draw totals"
         : "Submitting keeper transaction.",
     );
+    setSubmitting(true);
     try {
       const hash = await keeperAction.advanceDraw(decision.action);
       setMessage(`Confirmed ${hash}`);
       onConfirmed(decision.label, hash);
     } catch (error) {
       setMessage(transactionMessage(error));
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -280,9 +306,9 @@ function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed 
       </div>
       <p>{decision.detail}</p>
       <div className="keeper-status" role="note">
-        <strong>Keeper automation handles this for the demo.</strong>
+        <strong>Keeper automation is advancing this draw</strong>
         <span>
-          The button below is a manual fallback for anyone to advance the same permissionless step if the keeper stalls.
+          No action is required from depositors. The control below is a permissionless fallback if automation stalls.
         </span>
       </div>
       <button className="button button--secondary" type="button" disabled={disabled} onClick={() => void advance()}>
@@ -291,7 +317,7 @@ function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed 
         ) : (
           <Play aria-hidden="true" size={18} />
         )}
-        Manual: {decision.label}
+        Run next step manually: {decision.label}
       </button>
       <p className="keeper-note">
         Anyone can run keeper steps. The aggregate public-decrypt step submits only draw totals, never per-user balances
@@ -306,27 +332,37 @@ function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed 
   );
 }
 
-function UserDrawPanel({ state, settled }: Readonly<{ state: string; settled: boolean }>) {
-  const status = settled
-    ? "This draw is settled. Check your private result from the Proof page."
-    : state === "OPEN"
-      ? "This draw is open. You can deposit or withdraw without operating the keeper."
-      : "Draw automation is running. No action is needed from depositors.";
+function UserDrawPanel({ state }: Readonly<{ state: DrawState }>) {
+  const detail = userDrawDetails[state];
 
   return (
-    <section className="section-block user-draw-block" aria-labelledby="user-draw-title">
+    <section className="user-draw-block" aria-labelledby="user-draw-title">
       <div className="section-heading">
         <div>
-          <p className="section-label">User view</p>
-          <h2 id="user-draw-title">What you need to do</h2>
+          <p className="section-label">Current state</p>
+          <h2 id="user-draw-title" aria-label={state}>
+            {detail.title}
+          </h2>
         </div>
         <ShieldCheck aria-hidden="true" size={22} />
       </div>
-      <p>{status}</p>
-      <p>
-        Keeper transactions are protocol operations. They are visible in Demo progress mode for review, but ordinary
-        users only need deposit, check result, claim, and withdraw actions.
-      </p>
+      <p className="user-draw-block__summary">{detail.summary}</p>
+      <dl className="user-draw-facts">
+        <div>
+          <dt>Your action</dt>
+          <dd>{detail.actionRequired ? "Check your private result" : "No action is required from depositors"}</dd>
+        </div>
+        <div>
+          <dt>Next protocol step</dt>
+          <dd>{detail.nextStep}</dd>
+        </div>
+      </dl>
+      <p className="user-draw-block__note">Draw automation is running through permissionless onchain keeper steps.</p>
+      {state === "SETTLED" && (
+        <a className="button button--primary" href="/proof">
+          Check private result
+        </a>
+      )}
     </section>
   );
 }
@@ -349,8 +385,11 @@ function ExecutionLogPanel({ entries }: Readonly<{ entries: readonly KeeperExecu
       ) : (
         <ol className="execution-log-list">
           {entries.map((entry) => (
-            <li key={entry.id}>
-              <span>{entry.label}</span>
+            <li key={keeperExecutionKey(entry)}>
+              <span>{entry.step}</span>
+              <strong className={`execution-status execution-status--${entry.status}`}>
+                {entry.status === "confirmed" ? "Confirmed" : entry.status === "submitted" ? "Submitted" : "Failed"}
+              </strong>
               <a
                 className="mono"
                 href={`https://sepolia.etherscan.io/tx/${entry.hash}`}

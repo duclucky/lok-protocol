@@ -22,6 +22,16 @@ export type KeeperDecision = Readonly<{
   disabledReason?: string;
 }>;
 
+export type KeeperExecutionLogEntry = Readonly<{
+  step: string;
+  hash: Hex;
+  status: "submitted" | "confirmed" | "failed";
+}>;
+
+export function keeperExecutionKey(entry: KeeperExecutionLogEntry): string {
+  return `${entry.step}:${entry.hash}`;
+}
+
 function batch(remaining: bigint, cap: bigint): bigint {
   if (remaining <= 0n) return 1n;
   return remaining < cap ? remaining : cap;

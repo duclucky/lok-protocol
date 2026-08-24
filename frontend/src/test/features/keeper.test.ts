@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { keeperDecision } from "../../features/keeper/model";
+import { keeperDecision, keeperExecutionKey, type KeeperExecutionLogEntry } from "../../features/keeper/model";
 import type { LokPublicSnapshot, PublicDrawSnapshot } from "../../features/public-data/model";
 
 function draw(overrides: Partial<PublicDrawSnapshot> = {}): PublicDrawSnapshot {
@@ -43,6 +43,16 @@ function snapshot(drawOverride?: Partial<PublicDrawSnapshot>): LokPublicSnapshot
 }
 
 describe("keeperDecision", () => {
+  it("uses a deterministic execution key derived from the public step and transaction hash", () => {
+    const entry: KeeperExecutionLogEntry = {
+      step: "Crank PASS A 3",
+      hash: `0x${"44".repeat(32)}`,
+      status: "confirmed",
+    };
+
+    expect(keeperExecutionKey(entry)).toBe(`Crank PASS A 3:0x${"44".repeat(32)}`);
+  });
+
   it("opens a non-strict draw when no draw exists", () => {
     expect(keeperDecision(snapshot()).action).toEqual({ kind: "openDraw", strict: false });
   });

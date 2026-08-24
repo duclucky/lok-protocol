@@ -11,6 +11,13 @@ export const DRAW_STATES = [
 
 export type DrawState = (typeof DRAW_STATES)[number];
 
+export type UserDrawDetail = Readonly<{
+  title: string;
+  summary: string;
+  nextStep: string;
+  actionRequired: boolean;
+}>;
+
 export const drawStateDetails: Record<DrawState, { label: string; detail: string; progress: number }> = {
   IDLE: {
     label: "Waiting for the next draw",
@@ -51,6 +58,57 @@ export const drawStateDetails: Record<DrawState, { label: string; detail: string
     label: "Draw settled",
     detail: "Public aggregates are ready for independent verification.",
     progress: 100,
+  },
+};
+
+export const userDrawDetails: Record<DrawState, UserDrawDetail> = {
+  IDLE: {
+    title: "Waiting for the next draw",
+    summary: "Your principal remains available while the next draw is prepared.",
+    nextStep: "Keeper automation opens the next draw.",
+    actionRequired: false,
+  },
+  OPEN: {
+    title: "This draw is open",
+    summary: "You can deposit or withdraw while sealed weights accumulate.",
+    nextStep: "After the draw closes, keeper automation counts sealed entries.",
+    actionRequired: false,
+  },
+  SWEEP_A: {
+    title: "Encrypted entries are being counted",
+    summary: "The draw is advancing in bounded onchain batches.",
+    nextStep: "Keeper automation completes the aggregate count.",
+    actionRequired: false,
+  },
+  AWAIT_TOTAL: {
+    title: "The aggregate is being checked",
+    summary: "Only draw totals are requested for public decryption.",
+    nextStep: "Keeper automation submits the verified aggregate totals.",
+    actionRequired: false,
+  },
+  REVEAL: {
+    title: "The reveal window is open",
+    summary: "Committed entropy can be revealed without exposing participant balances.",
+    nextStep: "Randomness is generated only after the reveal window closes.",
+    actionRequired: false,
+  },
+  RANDOM_SET: {
+    title: "Randomness is fixed",
+    summary: "The encrypted random material cannot be changed before assignment.",
+    nextStep: "Keeper automation begins encrypted winner assignment.",
+    actionRequired: false,
+  },
+  SWEEP_B: {
+    title: "Encrypted prizes are being assigned",
+    summary: "Every participant receives the same encrypted-credit update pattern.",
+    nextStep: "Keeper automation completes settlement.",
+    actionRequired: false,
+  },
+  SETTLED: {
+    title: "This draw is settled",
+    summary: "Your private result is ready to check with your connected wallet.",
+    nextStep: "Check your private result on the Proof page.",
+    actionRequired: true,
   },
 };
 
