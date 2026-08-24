@@ -13,8 +13,9 @@ const primaryNavigation = [
   { to: "/proof", label: "Proof", Icon: BadgeCheck },
 ] as const;
 
-const FHEVM_SDK_VERSION = "3.4.0";
-const sourceCommit = (import.meta.env.VITE_SOURCE_COMMIT ?? "local").slice(0, 7);
+const FHEVM_SDK_VERSION = import.meta.env.VITE_FHEVM_SDK_VERSION ?? "unbound";
+const sourceCommitValue = import.meta.env.VITE_SOURCE_COMMIT ?? "unbound-local-build";
+const sourceCommit = sourceCommitValue === "unbound-local-build" ? sourceCommitValue : sourceCommitValue.slice(0, 7);
 
 function shortAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -96,8 +97,8 @@ export function AppShell() {
           <span className="app-footer__status">
             <span className="network-dot" aria-hidden="true" /> Ethereum Sepolia
           </span>
-          <span>FHEVM SDK {FHEVM_SDK_VERSION}</span>
-          <span className="app-footer__label">Source {sourceCommit}</span>
+          <span className="app-footer__build">FHEVM SDK {FHEVM_SDK_VERSION}</span>
+          <span className="app-footer__build app-footer__label">Source {sourceCommit}</span>
           <a
             href={`https://sepolia.etherscan.io/address/${sepoliaDeploymentAddresses.vault}`}
             target="_blank"

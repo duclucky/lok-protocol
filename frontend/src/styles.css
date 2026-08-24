@@ -368,6 +368,13 @@ select {
 .app-footer__label {
   color: var(--ink);
 }
+.app-footer__build {
+  max-width: 22ch;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .mobile-nav {
   display: none;
 }

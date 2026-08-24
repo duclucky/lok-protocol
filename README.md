@@ -6,12 +6,10 @@ only aggregate draw evidence becomes public.
 ## 1. Live Demo And Sepolia Deployment
 
 - **Live demo:** [lok-protocol.vercel.app](https://lok-protocol.vercel.app)
-- **Source repository:** [github.com/duclucky/lok-protocol](https://github.com/duclucky/lok-protocol) (private until
-  submission publication)
+- **Public source repository:** [github.com/duclucky/lok-protocol](https://github.com/duclucky/lok-protocol)
 - **Vercel project:** `lok-protocol-app` (Git-connected; root directory `frontend/`)
 - **Network:** Ethereum Sepolia (`11155111`)
-- **Video:** human recording and public link are required before submission
-- **Evidence status:** preserved demo stack has settled draws; latest public verifier target is draw `#2` with a
+- **Evidence status:** preserved demo stack has settled draws; latest public verifier target is draw `#4` with a
   31-participant snapshot
 - **Demo verifier manifest:** `deployments/history/sepolia-2026-08-13-120-30-180-600.json`. The canonical
   `deployments/sepolia.json` is the later P-S2 minimum-timing evidence stack and is intentionally not seeded.
@@ -106,11 +104,18 @@ allowlisted totals. The resulting plaintext denominator permits reduction of enc
 encrypted prefix across bounded transactions, tests half-open intervals with `FHE.select`, and credits every participant
 uniformly.
 
-The live UI includes a Keeper panel on the draw page. It reads the current draw state, proposes the next permissionless
-action, and can advance `openDraw`, `preSyncA`, `crankA`, aggregate `decryptPublicValues` plus `submitTotals`,
-`openRandom`, and `crankB`. The public-decrypt step uses only the three allowlisted aggregate handles
-`cumRunning`, `cumBaseRiskRunning`, and `cumYieldRunning`; it never requests per-user balances, weights, ranges, or prize
-credits.
+The recurring operator flow uses `scripts/crank.ts` to read the live state and submit the next bounded permissionless
+action. Depositors are not expected to sign keeper transactions. The Draw page defaults to a user view and exposes a
+separate Demo progress view with the state machine, confirmed transactions and the same state-derived action as a manual
+fallback if automation stalls. The sequence is `openDraw`, `preSyncA`, bounded `crankA`, aggregate `decryptPublicValues`
+plus `submitTotals`, `openRandom`, then bounded `crankB`. The public-decrypt step uses only the three allowlisted
+aggregate handles `cumRunning`, `cumBaseRiskRunning`, and `cumYieldRunning`; it never requests per-user balances,
+weights, ranges, or prize credits.
+
+Settlement writes an encrypted prize credit for every participant; there is no winner-only claim transaction. The shared
+**Claim / check prize** control performs an EIP-712 private read of only the connected wallet's credit. A winner then
+withdraws principal and credited winnings through the same confidential cUSDC withdrawal path; a loser keeps full
+principal and can withdraw or remain in the pool.
 
 The naive algorithm fails three ways: a sequential encrypted sum hits transaction depth at roughly 30 participants;
 encrypted divisors make `r mod encryptedTotal` unavailable; and encrypted comparisons cannot control Solidity branches.
@@ -209,7 +214,9 @@ not publish the numeric assets/liabilities and does not block principal recovery
 
 ## 13. Run It Locally
 
-Prerequisites: Node.js 22, npm, and Java 21 only when re-running TLC. From a clean clone:
+The release matrix is tested with Node.js 22, Hardhat 2.28.6, `@fhevm/solidity` 0.11.1, `@fhevm/hardhat-plugin` 0.4.2,
+`@openzeppelin/confidential-contracts` 0.5.2, and Zama React/TypeScript SDK 3.4.0. Java 21 is needed only when
+re-running TLC. From a clean clone:
 
 ```bash
 npm ci

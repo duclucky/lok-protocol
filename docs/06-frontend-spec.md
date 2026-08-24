@@ -19,7 +19,7 @@ Two facts govern every decision in this document:
 | Bundler   | **Vite**                                 | Never Webpack. The FHE WASM binary is a known Webpack failure mode: the SDK silently degrades to a non-encrypting "demo mode" while the wallet still shows as connected. |
 | Framework | React + TypeScript                       |                                                                                                                                                                          |
 | Wallet    | `wagmi` + `viem`                         | The Zama SDK ships `viem` and `ethers` adapters.                                                                                                                         |
-| FHE       | Zama SDK v3 with the React bindings      | Use the provided hooks; do not hand-roll encryption.                                                                                                                     |
+| FHE       | Zama SDK v3.4.0 with the React bindings  | Use the provided hooks; do not hand-roll encryption.                                                                                                                     |
 | State     | React Query (bundled with the SDK hooks) | Decryption results are cache entries with staleness, which is exactly React Query's model.                                                                               |
 | Styling   | Tailwind, with the token system in §7    |                                                                                                                                                                          |
 | Host      | Any static host                          | Must be a public URL before submission.                                                                                                                                  |
@@ -37,19 +37,19 @@ testnet; a key is only needed for the hosted mainnet relayer.
 Use these hooks rather than reimplementing them. **[VERIFY]** exact names and signatures against the SDK reference and
 record in `docs/API-VERIFIED.md`:
 
-| Purpose                                    | Hook                         |
-| ------------------------------------------ | ---------------------------- |
-| Read a confidential balance                | `useConfidentialBalance`     |
-| Read several balances at once              | `useConfidentialBalances`    |
-| Confidential transfer                      | `useConfidentialTransfer`    |
-| Public ERC-20 → confidential               | `useShield`                  |
-| Confidential → public ERC-20               | `useUnshield`                |
-| Operator approval for the vault            | `useConfidentialSetOperator` |
-| Sign the EIP-712 decryption permit         | `useGrantPermit`             |
-| Check whether a permit is cached           | `useHasPermit`               |
+| Purpose                                    | Hook                                                                                 |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Read a confidential balance                | `useConfidentialBalance`                                                             |
+| Read several balances at once              | `useConfidentialBalances`                                                            |
+| Confidential transfer                      | `useConfidentialTransfer`                                                            |
+| Public ERC-20 → confidential               | `useShield`                                                                          |
+| Confidential → public ERC-20               | `useUnshield`                                                                        |
+| Operator approval for the vault            | `useConfidentialSetOperator`                                                         |
+| Sign the EIP-712 decryption permit         | `useGrantPermit`                                                                     |
+| Check whether a permit is cached           | `useHasPermit`                                                                       |
 | Decrypt arbitrary handles (our credits, θ) | `useDecryptValues` or the SDK decryption client, after refetching the current handle |
-| Encrypt a plaintext input                  | `useEncrypt`                 |
-| Find the cUSDC wrapper for USDC            | `useWrapperDiscovery`        |
+| Encrypt a plaintext input                  | `useEncrypt`                                                                         |
+| Find the cUSDC wrapper for USDC            | `useWrapperDiscovery`                                                                |
 
 ### The permit model
 
@@ -68,7 +68,7 @@ Persist permits so a page refresh does not re-prompt.
 
 ## 3. Screens
 
-Five screens. Resist adding more.
+Six routes: Vault, Deposit, Risk, Draw, Proof and Why Encrypted. Resist adding more.
 
 ### Vault (home)
 
@@ -112,8 +112,8 @@ Copy for each position, written from the user's side:
 | 25%     | Mostly savings | Your yield mostly accrues; a small share buys chances.                 |
 | 0%      | Savings only   | Your yield accrues to your balance. You do not enter draws.            |
 
-Beneath the control: _"Your saved setting is encrypted on-chain. Reveal it only through an explicit wallet permit."_
-Do not claim that infrastructure can observe nothing; public transactions, membership and ciphertext transcripts remain
+Beneath the control: _"Your saved setting is encrypted on-chain. Reveal it only through an explicit wallet permit."_ Do
+not claim that infrastructure can observe nothing; public transactions, membership and ciphertext transcripts remain
 observable even when the underlying value is encrypted.
 
 Do **not** display estimated odds. It is technically impossible (the numerator is encrypted and must stay so, per
@@ -122,7 +122,8 @@ the answer is that showing them is the bug. Put that answer in the FAQ.
 
 ### Draw
 
-Live view of the state machine. Reviewers judge sophistication here, so make the machinery legible:
+The default user view states what is happening, whether the depositor must act, and what happens next. It does not ask
+depositors to operate the draw. A separate **Demo progress** mode makes the full state machine legible:
 
 - Current state with a short plain-language explanation.
 - Sweep progress: `cursor / participants` for each pass, with a progress bar. This is where the paginated architecture
@@ -131,19 +132,24 @@ Live view of the state machine. Reviewers judge sophistication here, so make the
   Nobody can read this value, including us."_
 - After settlement: the revealed `r`, the total ticket space, and a link to the external verification evidence. The app
   must not simulate a verifier or display a local success state unless the complete verifier actually ran.
-- **Keeper panel:** clearly labelled `DEMO CONTROL`, reads the live draw state, and proposes exactly one next
-  permissionless action. In `AWAIT_TOTAL`, it may request public decryption only for the three aggregate handles
-  `cumRunning`, `cumBaseRiskRunning`, and `cumYieldRunning`, then submit the returned proof. It must never request
-  per-user balances, ranges, weights or prize credits.
+- **Keeper automation and fallback:** the recurring operator runs `scripts/crank.ts`. The UI reads the same live state
+  and proposes exactly one next permissionless action as a manual fallback if automation stalls. In `AWAIT_TOTAL`, it
+  may request public decryption only for the three aggregate handles `cumRunning`, `cumBaseRiskRunning`, and
+  `cumYieldRunning`, then submit the returned proof. It must never request per-user balances, ranges, weights or prize
+  credits. Display confirmed transaction hashes from the current browser session without implying that the browser
+  observed every operator transaction.
 - **Your result:** _"Claim / check prize"_ → decrypt your own credit for the draw through the same EIP-712 user-decrypt
   path every participant uses. Two outcomes only: _"No prize this draw"_ or the celebratory reveal. This is a
   device-local private read and must not imply that a public proof was published or that a winner-only claim transaction
   exists.
+- **Settlement semantics:** PASS B already credits encrypted prize-or-zero uniformly. A winning result links to the
+  ordinary confidential withdrawal flow, which moves principal plus credited winnings as cUSDC. A losing result leaves
+  principal untouched and offers deposit-next-draw or withdrawal actions.
 
 ### Proof of win
 
-Only reachable after a user decrypts a non-zero credit. It explains what the private result establishes and links to
-the public draw evidence. Public proof publication is not currently supported. If added later, it requires a separately
+Only reachable after a user decrypts a non-zero credit. It explains what the private result establishes and links to the
+public draw evidence. Public proof publication is not currently supported. If added later, it requires a separately
 specified and audited public-decryption flow; the frontend must never imitate that flow with a local status message.
 
 ---
@@ -198,14 +204,14 @@ this stack. It is also what an inattentive submission will ship.
 The reviewer arrives with an empty wallet and no patience. Every item here is required; see also
 `docs/09-delivery-checklist.md`.
 
-| Problem                                       | Required affordance                                                                                                            |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| No cUSDC on Sepolia                           | **"Get test tokens"** — mints mock USDC and shields it in one guided flow                                                      |
-| Empty pool makes a draw meaningless           | Pre-seeded participants via `scripts/seed-demo.ts` — 30 to 50 addresses with varied balances and θ, so pagination visibly runs |
-| Nobody waits a week for a draw                | **Keeper panel** — clearly labelled `DEMO CONTROL`, auto-detects draw state and runs the next permissionless step              |
-| Relayer slow or rate-limited                  | Everything in §4                                                                                                               |
-| Reviewer cannot tell what is real             | Verified Sepolia deployment addresses linking to Etherscan, plus an explicit network label; never hard-code a stale commit or SDK version |
-| Reviewer wants the argument, not just the app | A one-screen **"Why encrypted?"** page carrying the thesis with its numbers                                                    |
+| Problem                                       | Required affordance                                                                                                                                                               |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No cUSDC on Sepolia                           | **"Get test tokens"** — mints mock USDC and shields it in one guided flow                                                                                                         |
+| Empty pool makes a draw meaningless           | Pre-seeded participants via `scripts/seed-demo.ts` — 30 to 50 addresses with varied balances and θ, so pagination visibly runs                                                    |
+| Nobody waits a week for a draw                | **Keeper panel** — clearly labelled `DEMO CONTROL`, auto-detects draw state and runs the next permissionless step                                                                 |
+| Relayer slow or rate-limited                  | Everything in §4                                                                                                                                                                  |
+| Reviewer cannot tell what is real             | Verified Sepolia deployment addresses linking to Etherscan, plus an explicit network label; bind SDK version from the installed package and source SHA from the build environment |
+| Reviewer wants the argument, not just the app | A one-screen **"Why encrypted?"** page carrying the thesis with its numbers                                                                                                       |
 
 ---
 
@@ -236,17 +242,22 @@ display font.
 
 **Layout:** on desktop, use a floating rounded sidebar and a single bounded content column. On mobile, reduce this to a
 compact top bar plus a fixed bottom navigation bar, while preserving enough bottom padding that controls and content are
-never obscured. Cards use a 16px family radius; small controls use 4–8px radii; wallet and primary actions may use pills.
+never obscured. Cards use a 16px family radius; small controls use 4–8px radii; wallet and primary actions may use
+pills.
 
 **The signature element** remains the **sealed-value treatment**. An encrypted figure must look intentionally covered,
 using a quiet repeating slash or security-line pattern beneath a veil—never a loading skeleton. Revealing it may use one
 brief transition; the rest of the interface stays calm.
 
-**Motion:** use motion only for state changes such as reveal, navigation and progress. Respect
-`prefers-reduced-motion`; do not add ambient animation.
+**Motion:** use motion only for state changes such as reveal, navigation and progress. Respect `prefers-reduced-motion`;
+do not add ambient animation.
 
 **Quality floor, unannounced:** responsive to mobile, visible keyboard focus, adequate contrast, correct labels on every
 control.
+
+**Release binding:** Vercel provides `VERCEL_GIT_COMMIT_SHA`; Vite exposes it as `VITE_SOURCE_COMMIT`, while local
+builds without a source binding render `unbound-local-build`. The footer renders a bounded short SHA and the installed
+Zama React SDK version. A production smoke must confirm the footer SHA equals the exact green GitHub workflow commit.
 
 **Copy discipline:** active voice; a control names exactly what happens; the same verb persists through the flow
 ("Deposit" → "Deposited"); errors explain what went wrong and how to fix it without apologising; empty states invite an

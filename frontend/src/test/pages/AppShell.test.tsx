@@ -45,7 +45,7 @@ describe("AppShell", () => {
     const footer = screen.getByRole("contentinfo");
     expect(within(footer).getByText("Ethereum Sepolia")).toBeVisible();
     expect(within(footer).getByText("FHEVM SDK 3.4.0")).toBeVisible();
-    expect(within(footer).getByText(/^Source /)).toBeVisible();
+    expect(within(footer).getByText("Source unbound-local-build")).toBeVisible();
     expect(screen.getByRole("link", { name: /Vault 0xAA7B/i })).toHaveAttribute(
       "href",
       `https://sepolia.etherscan.io/address/${sepoliaDeploymentAddresses.vault}`,

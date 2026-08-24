@@ -2,9 +2,8 @@
 
 **Status:** CURRENT CANONICAL MANIFEST IS P-S2 EVIDENCE - `deployments/sepolia.json` points at the 2026-08-14
 minimum-timing evidence stack. The 2026-08-12 seeded demo stack is deployed, verified, settled and preserved as
-historical evidence.
-**Network:** Ethereum Sepolia (`chainId = 11155111`)
-**Historical deployment:** 2026-08-12 **Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
+historical evidence. **Network:** Ethereum Sepolia (`chainId = 11155111`) **Historical deployment:** 2026-08-12
+**Operator:** `0x8e7939E23a012143e5182d7173DAD42B2006c2b8`
 
 ## Historical Demo Contracts
 
@@ -75,7 +74,7 @@ The draw settled 13 minutes 12 seconds after opening. The superseded draw-period
 honored; the remaining time was real Sepolia pagination and receipt latency for 8 pre-sync, 10 PASS A, aggregate proof,
 randomness, and 15 PASS B transactions.
 
-The latest settled verifier target on this preserved demo stack is draw `#2`:
+The detailed draw `#2` record on this preserved demo stack is:
 
 | Fact                        | Value                                                                |
 | --------------------------- | -------------------------------------------------------------------- |
@@ -87,6 +86,10 @@ The latest settled verifier target on this preserved demo stack is draw `#2`:
 | Settlement block / time     | `11480575 / 2026-08-13 13:47:48 UTC`                                 |
 | Effective/base/yield totals | `151 / 151 / 158`                                                    |
 | Realised yield / prize      | `5,000,000 / 4,778,481` base units                                   |
+
+The read-only release verifier was rerun on 2026-08-24 against the latest settled draw, draw `#4`. It passed all six
+checks at settlement block `11493487` and used the retained 31-participant current settled snapshot. The command output
+and release-matrix context are recorded in `docs/release/2026-08-24-submission-closure.md`.
 
 `scripts/verify-draw.ts` passed all six public checks: event completeness, aggregate proof binding, range partition,
 randomness commitment, mode-appropriate reveal transcript, and prize conservation. Because `deployments/sepolia.json`
@@ -123,15 +126,20 @@ Fresh Gate 3 evidence from 2026-08-12 is in `artifacts/hcu-benchmark.json` and `
 - Canonical URL: [https://lok-protocol.vercel.app](https://lok-protocol.vercel.app)
 - Legacy alias: [https://frontend-xi-tawny-54.vercel.app](https://frontend-xi-tawny-54.vercel.app)
 - Vercel project: `lok-protocol-app`; Git root directory: `frontend/`; runtime: Node.js `22.x`.
-- GitHub source: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol), private pending submission
-  publication.
+- Public GitHub source: [duclucky/lok-protocol](https://github.com/duclucky/lok-protocol).
 - Git production deployment: `dpl_9pjjjVU6E8AyYNnWEYztHQHL7xQs`, built from `main` commit
   `c7ad99b0b4b713f4cbe19e3219e1192f696c8cbb`.
 - Immutable deployment URL:
   [https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app](https://lok-protocol-iim3seyew-duckys-projects-bc83c6a0.vercel.app)
 - `frontend/.env.production` and `frontend/src/contracts/addresses.ts` contain the canonical addresses above.
-- Local Node 22 evidence: 58/58 frontend tests and a successful TypeScript/Vite production build.
-- Private reads remain permit-gated and user-triggered; the winner and loser use the same result-check flow.
+- The frontend release uses Zama React/TypeScript SDK `3.4.0`; the root toolchain uses Hardhat `2.28.6`,
+  `@fhevm/solidity` `0.11.1`, `@fhevm/hardhat-plugin` `0.4.2`, and `@openzeppelin/confidential-contracts` `0.5.2` on
+  Node.js `22.x`.
+- Settlement credits every participant automatically with encrypted prize-or-zero. The common **Claim / check prize**
+  action privately decrypts only the connected wallet's credit through EIP-712. A winning credit is recovered together
+  with principal through confidential withdrawal; no winner-only claim transaction exists.
+- The recurring operator uses `scripts/crank.ts`. The Draw page's Demo progress mode shows the live bounded batches and
+  provides a permissionless manual fallback without making depositors responsible for routine keeper work.
 
 Post-publish smoke on 2026-08-12 passed:
 
@@ -144,7 +152,8 @@ Post-publish smoke on 2026-08-12 passed:
 - The TFHE asset is served as `application/wasm`.
 
 The Git-connected deployment was smoke-tested again on 2026-08-13 with the same results. Vercel metadata binds it to the
-private GitHub repository, `main` branch, and exact commit above.
+public GitHub repository, `main` branch, and exact commit above. Every new production publish must expose that
+deployment's source SHA in the footer; an unbound local build is labelled `unbound-local-build`.
 
 ## Operational Notes
 

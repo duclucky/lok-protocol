@@ -10,6 +10,12 @@ const crossOriginHeaders = {
   "Cross-Origin-Opener-Policy": "same-origin",
 };
 
+const frontendPackage = JSON.parse(readFileSync(resolve(import.meta.dirname, "package.json"), "utf8")) as {
+  dependencies: Record<string, string>;
+};
+const sourceCommit = process.env.VITE_SOURCE_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "unbound-local-build";
+const fhevmSdkVersion = frontendPackage.dependencies["@zama-fhe/react-sdk"] ?? "unbound";
+
 const fhevmAssets = [
   ["@fhevm/sdk/wasm/tfhe/v1.5.3/tfhe_bg.wasm", "tfhe_bg.v1.5.3.wasm"],
   ["@fhevm/sdk/wasm/tfhe/v1.5.3/tfhe-worker.mjs", "tfhe-worker.v1.5.3.mjs"],
@@ -36,6 +42,10 @@ function emitFhevmAssets(): Plugin {
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), emitFhevmAssets()],
+  define: {
+    "import.meta.env.VITE_FHEVM_SDK_VERSION": JSON.stringify(fhevmSdkVersion),
+    "import.meta.env.VITE_SOURCE_COMMIT": JSON.stringify(sourceCommit),
+  },
   server: { headers: crossOriginHeaders },
   preview: { headers: crossOriginHeaders },
   test: {
