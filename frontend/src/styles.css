@@ -1099,6 +1099,63 @@ select {
   color: var(--ink);
 }
 
+.async-action-status {
+  display: grid;
+  min-height: 84px;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 16px 0;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.async-action-status > svg {
+  margin-top: 2px;
+  color: var(--action);
+}
+.async-action-status--failed > svg {
+  color: var(--danger);
+}
+.async-action-status__body {
+  min-width: 0;
+}
+.async-action-status__body strong {
+  display: block;
+  color: var(--text-primary);
+}
+.async-action-status__body p {
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+.async-action-status__transaction {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--action);
+  font-size: 0.82rem;
+}
+.async-action-status__details {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.async-action-status__details summary {
+  width: fit-content;
+  min-height: 32px;
+  padding-top: 5px;
+  cursor: pointer;
+}
+.async-action-status__details code {
+  display: block;
+  max-width: 68ch;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
 .deposit-layout {
   display: grid;
   grid-template-columns: minmax(260px, 0.82fr) minmax(360px, 1.35fr);

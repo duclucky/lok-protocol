@@ -13,6 +13,7 @@ describe("ActionStatus", () => {
     expect(screen.queryByText(/clamped or made no change/i)).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /reveal transaction status/i }));
     expect(await screen.findByText(/clamped or made no change/i)).toBeVisible();
+    expect(screen.queryByText(/insufficient balance|rate cap|zero amount/i)).not.toBeInTheDocument();
     expect(reveal).toHaveBeenCalledOnce();
   });
 

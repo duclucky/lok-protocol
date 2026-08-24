@@ -14,6 +14,23 @@ export type DecryptionState<T> =
   | { status: "REVEALED"; value: T }
   | { status: "FAILED"; message: string; retryAfterMs: number; cause: unknown };
 
+export function decryptionStateMessage<T>(state: DecryptionState<T>): string {
+  switch (state.status) {
+    case "SEALED":
+      return "Private value sealed.";
+    case "REQUESTING_PERMIT":
+      return "Confirm the private-read request in your wallet.";
+    case "DECLINED":
+      return "You declined the private-read request. No on-chain state changed.";
+    case "DECRYPTING":
+      return "Decrypting for this wallet only.";
+    case "REVEALED":
+      return "Private value revealed.";
+    case "FAILED":
+      return state.message;
+  }
+}
+
 export type DecryptionCache<T> = Pick<Map<string, T>, "get" | "has" | "set">;
 
 export interface DecryptionMachineOptions<T> {
