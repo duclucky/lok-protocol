@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ContractTransactionReceipt } from "ethers";
-import { ethers, fhevm, network } from "hardhat";
+import { ethers, fhevm } from "hardhat";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";

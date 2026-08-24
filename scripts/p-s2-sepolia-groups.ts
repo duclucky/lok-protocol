@@ -11,7 +11,7 @@ import {
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { artifacts, ethers, fhevm, network } from "hardhat";
+import { ethers, fhevm, network } from "hardhat";
 
 import { assertDeploymentManifest, canReuseDeployment, SepoliaDeploymentManifest } from "./deploy";
 
@@ -221,10 +221,6 @@ function normalizeHandle(value: bigint | string): Hex {
   if (typeof value === "bigint") return `0x${value.toString(16).padStart(64, "0")}` as Hex;
   if (!isHexString(value, 32)) throw new Error(`Invalid encrypted handle ${value}`);
   return value as Hex;
-}
-
-function asNumber(value: bigint | number): number {
-  return typeof value === "number" ? value : Number(value);
 }
 
 function hasStep(ledger: Ledger, id: string): boolean {
