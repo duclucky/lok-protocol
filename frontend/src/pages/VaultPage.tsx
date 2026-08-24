@@ -4,16 +4,23 @@ import { Link } from "react-router-dom";
 
 import { PageHeader } from "../components/PageHeader";
 import { ActionStatus } from "../components/ActionStatus";
+import { AsyncActionStatus } from "../components/AsyncActionStatus";
 import { SealedValue } from "../components/SealedValue";
 import { SolvencyStatus } from "../components/SolvencyStatus";
 import { currentPrizeLabel, formatCountdown, formatUtc, type LokPublicData } from "../features/public-data/model";
-import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
+import {
+  awaitingWallet,
+  confirmed,
+  failedAction,
+  type AsyncActionState,
+  type LokTransactionActions,
+} from "../features/transactions/model";
 
 type VaultPageProps = {
   publicData: LokPublicData;
   nowMs?: number;
   revealBalance?: () => Promise<string>;
-  withdrawAction?: Pick<LokTransactionActions, "pending" | "withdraw">;
+  withdrawAction?: Pick<LokTransactionActions, "emergencyWithdraw" | "pending" | "withdraw" | "withdrawAll">;
   revealActionStatus?: () => Promise<boolean>;
 };
 
@@ -26,25 +33,45 @@ export function VaultPage({
 }: VaultPageProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [withdrawMessage, setWithdrawMessage] = useState<string | undefined>();
-  const [withdrawConfirmed, setWithdrawConfirmed] = useState(false);
+  const [withdrawState, setWithdrawState] = useState<AsyncActionState>({ phase: "idle" });
+  const [lastWithdrawal, setLastWithdrawal] = useState<"amount" | "all" | "emergency">("amount");
+
+  async function runWithdrawal(kind: "amount" | "all" | "emergency") {
+    setLastWithdrawal(kind);
+    if (withdrawAction === undefined) {
+      setWithdrawState({
+        phase: "failed",
+        message: "Connect a Sepolia wallet to submit this confidential withdrawal.",
+        retryable: false,
+      });
+      return;
+    }
+    setWithdrawState(
+      awaitingWallet(
+        kind === "amount"
+          ? "Confirm the encrypted withdrawal in your wallet."
+          : "Confirm the full confidential withdrawal in your wallet.",
+      ),
+    );
+    try {
+      const hash =
+        kind === "amount"
+          ? await withdrawAction.withdraw(withdrawAmount)
+          : kind === "all"
+            ? await withdrawAction.withdrawAll()
+            : await withdrawAction.emergencyWithdraw();
+      setWithdrawState(
+        confirmed(hash, kind === "emergency" ? "Emergency recovery confirmed." : "Withdrawal confirmed."),
+      );
+      if (kind === "amount") setWithdrawAmount("");
+    } catch (error) {
+      setWithdrawState(failedAction(error));
+    }
+  }
 
   async function submitWithdrawal(event: FormEvent) {
     event.preventDefault();
-    if (withdrawAction === undefined) {
-      setWithdrawMessage("Connect a Sepolia wallet to encrypt and submit this withdrawal.");
-      return;
-    }
-    setWithdrawMessage("Encrypting the withdrawal request for LokVault.");
-    setWithdrawConfirmed(false);
-    try {
-      const hash = await withdrawAction.withdraw(withdrawAmount);
-      setWithdrawMessage(`Transaction confirmed. Reveal the encrypted result (${hash.slice(0, 10)}...).`);
-      setWithdrawConfirmed(true);
-      setWithdrawAmount("");
-    } catch (error) {
-      setWithdrawMessage(transactionMessage(error));
-    }
+    await runWithdrawal("amount");
   }
 
   const snapshot = publicData.status === "ready" ? publicData.snapshot : undefined;
@@ -125,12 +152,32 @@ export function VaultPage({
               Submit withdrawal
             </button>
           </div>
-          {withdrawMessage !== undefined && (
-            <p className="form-message" role="status">
-              {withdrawMessage}
-            </p>
+          <details className="recovery-options">
+            <summary>Recovery options</summary>
+            <p>Exceptional recovery remains available regardless of draw state.</p>
+            <div>
+              <button
+                className="button button--secondary"
+                type="button"
+                disabled={withdrawAction?.pending === true}
+                onClick={() => void runWithdrawal("all")}
+              >
+                Withdraw all
+              </button>
+              <button
+                className="button button--secondary button--danger"
+                type="button"
+                disabled={withdrawAction?.pending === true}
+                onClick={() => void runWithdrawal("emergency")}
+              >
+                Emergency recovery
+              </button>
+            </div>
+          </details>
+          {withdrawState.phase !== "idle" && (
+            <AsyncActionStatus state={withdrawState} onRetry={() => void runWithdrawal(lastWithdrawal)} />
           )}
-          {withdrawConfirmed && revealActionStatus !== undefined && (
+          {withdrawState.phase === "confirmed" && revealActionStatus !== undefined && (
             <ActionStatus action="WITHDRAW" reveal={revealActionStatus} />
           )}
         </form>

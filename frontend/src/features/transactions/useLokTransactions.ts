@@ -119,6 +119,26 @@ export function useLokTransactions(): LokTransactionActions {
         });
         return waitForReceipt(hash);
       },
+      async withdrawAll() {
+        requireWallet();
+        const hash = await write.writeContractAsync({
+          address: vault,
+          abi: lokVaultAbi,
+          functionName: "withdrawAll",
+          chainId: LOK_CHAIN_ID,
+        });
+        return waitForReceipt(hash);
+      },
+      async emergencyWithdraw() {
+        requireWallet();
+        const hash = await write.writeContractAsync({
+          address: vault,
+          abi: lokVaultAbi,
+          functionName: "emergencyWithdraw",
+          chainId: LOK_CHAIN_ID,
+        });
+        return waitForReceipt(hash);
+      },
       async advanceDraw(action) {
         requireWallet();
         if (action.kind === "submitTotals") {

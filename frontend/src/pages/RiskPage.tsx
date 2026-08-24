@@ -1,10 +1,17 @@
-import { LockKeyhole, Save, ShieldCheck } from "lucide-react";
+import { LockKeyhole, Save } from "lucide-react";
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
+import { AsyncActionStatus } from "../components/AsyncActionStatus";
 import { SealedValue } from "../components/SealedValue";
 import { riskSettings, type RiskSetting } from "../features/vault/model";
-import { transactionMessage, type LokTransactionActions } from "../features/transactions/model";
+import {
+  awaitingWallet,
+  confirmed,
+  failedAction,
+  type AsyncActionState,
+  type LokTransactionActions,
+} from "../features/transactions/model";
 
 type RiskPageProps = {
   action?: Pick<LokTransactionActions, "pending" | "setRisk">;
@@ -16,20 +23,26 @@ export function RiskPage({
   revealTheta = () => Promise.reject(new Error("Wallet decryption is not ready")),
 }: RiskPageProps = {}) {
   const [risk, setRisk] = useState<RiskSetting>(100);
-  const [message, setMessage] = useState<string | undefined>();
+  const [lastSavedRisk, setLastSavedRisk] = useState<RiskSetting | undefined>();
+  const [actionState, setActionState] = useState<AsyncActionState>({ phase: "idle" });
   const selected = riskSettings.find((setting) => setting.value === risk) ?? riskSettings[0];
 
   async function saveRisk() {
     if (action === undefined) {
-      setMessage("Connect a Sepolia wallet to encrypt and submit this setting.");
+      setActionState({
+        phase: "failed",
+        message: "Connect a Sepolia wallet to encrypt and submit this setting.",
+        retryable: false,
+      });
       return;
     }
-    setMessage("Encrypting this setting for LokVault.");
+    setActionState(awaitingWallet("Confirm the encrypted risk setting in your wallet."));
     try {
       const hash = await action.setRisk(risk);
-      setMessage(`Encrypted setting confirmed (${hash.slice(0, 10)}...).`);
+      setLastSavedRisk(risk);
+      setActionState(confirmed(hash, "Risk setting confirmed."));
     } catch (error) {
-      setMessage(transactionMessage(error));
+      setActionState(failedAction(error));
     }
   }
 
@@ -65,7 +78,7 @@ export function RiskPage({
                 checked={risk === setting.value}
                 onChange={() => {
                   setRisk(setting.value);
-                  setMessage(undefined);
+                  setActionState({ phase: "idle" });
                 }}
               />
               <span>{setting.value}%</span>
@@ -80,17 +93,12 @@ export function RiskPage({
           className="button button--primary"
           type="button"
           onClick={() => void saveRisk()}
-          disabled={action?.pending === true}
+          disabled={action?.pending === true || lastSavedRisk === risk}
         >
           <Save aria-hidden="true" size={18} />
           Save encrypted setting
         </button>
-        {message !== undefined && (
-          <p className="form-message" role="status">
-            <ShieldCheck aria-hidden="true" size={16} />
-            {message}
-          </p>
-        )}
+        {actionState.phase !== "idle" && <AsyncActionStatus state={actionState} onRetry={() => void saveRisk()} />}
       </section>
 
       <section className="principle-note">

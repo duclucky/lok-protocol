@@ -9,6 +9,8 @@ export type LokTransactionActions = Readonly<{
   deposit(amount: string): Promise<Hex>;
   setRisk(percent: number): Promise<Hex>;
   withdraw(amount: string): Promise<Hex>;
+  withdrawAll(): Promise<Hex>;
+  emergencyWithdraw(): Promise<Hex>;
   advanceDraw(action: KeeperExecutableAction): Promise<Hex>;
 }>;
 
@@ -80,6 +82,33 @@ export function failedAction(error: unknown): Extract<AsyncActionState, { phase:
     return {
       phase: "failed",
       message: "This wallet does not have enough Sepolia ETH for network fees. Add test ETH and try again.",
+      technicalDetail,
+      retryable: true,
+    };
+  }
+
+  if (/(switch.*sepolia|wrong network|chain mismatch)/.test(normalized)) {
+    return {
+      phase: "failed",
+      message: "Switch your wallet to Ethereum Sepolia, then try again.",
+      technicalDetail,
+      retryable: true,
+    };
+  }
+
+  if (/(insufficient token|insufficient balance|amount exceeds balance)/.test(normalized)) {
+    return {
+      phase: "failed",
+      message: "There is not enough token balance for this amount. Lower the amount or fund the wallet.",
+      technicalDetail,
+      retryable: true,
+    };
+  }
+
+  if (/(encrypt|relayer|encrypted input|input proof)/.test(normalized)) {
+    return {
+      phase: "failed",
+      message: "Encryption did not complete. Check the FHEVM SDK connection and try again.",
       technicalDetail,
       retryable: true,
     };

@@ -15,6 +15,7 @@ export const lokVaultAbi = parseAbi([
   "function currentDrawEnd() view returns (uint64)",
   "function currentDrawId() view returns (uint64)",
   "function deposit(bytes32 encryptedAmount, bytes inputProof)",
+  "function emergencyWithdraw()",
   "function exit()",
   "function fortuneOf(address user) view returns (bytes32)",
   "function hasPendingSolvencyCheckpoint() view returns (bool)",

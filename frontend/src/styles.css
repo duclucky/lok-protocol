@@ -672,21 +672,16 @@ select {
   align-items: center;
   justify-content: space-between;
   gap: 30px;
-  overflow: hidden;
-  padding: 34px;
+  padding: 30px 0;
   color: var(--ink);
   background: linear-gradient(120deg, #0c1c15, #10241b);
-  border: 1px solid #2b4a3b;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
 }
 .vault-balance::after {
-  position: absolute;
-  inset: 0 0 0 52%;
-  content: "";
-  opacity: 0.22;
-  background: repeating-linear-gradient(132deg, transparent 0 9px, #8ce7bf 10px 11px, transparent 12px 21px);
-  pointer-events: none;
+  display: none;
 }
 .vault-balance > * {
   position: relative;
@@ -855,6 +850,37 @@ select {
 .withdraw-panel .form-message {
   grid-column: 1 / -1;
   margin: 0;
+}
+.recovery-options {
+  grid-column: 1 / -1;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+.recovery-options summary {
+  width: fit-content;
+  min-height: 44px;
+  padding-top: 11px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-weight: 650;
+}
+.recovery-options p {
+  max-width: 68ch;
+  color: var(--text-muted);
+}
+.recovery-options > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.button--danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
+}
+.withdraw-panel > .async-action-status,
+.withdraw-panel > .action-status {
+  grid-column: 1 / -1;
 }
 .content-grid,
 .draw-grid {
@@ -1273,6 +1299,13 @@ select {
 .warning-box p {
   font-size: 0.88rem;
 }
+.step-note {
+  margin: -4px 0 24px;
+  padding: 12px 14px;
+  color: var(--text-muted);
+  background: var(--surface-quiet);
+  border-left: 3px solid var(--action);
+}
 .field-label {
   display: block;
   margin-bottom: 8px;
@@ -1306,6 +1339,16 @@ select {
   padding: 0 16px;
   font-family: var(--font-mono);
   font-size: 0.82rem;
+}
+.field-error {
+  margin-top: 6px;
+  color: var(--danger);
+  font-size: 0.84rem;
+}
+.transaction-panel > .async-action-status,
+.transaction-panel > .action-status,
+.risk-control > .async-action-status {
+  margin-top: 16px;
 }
 .funding-balance {
   display: grid;
@@ -2166,6 +2209,13 @@ select {
     padding-left: 0;
     border-top: 1px solid #bfc0ba;
     border-left: 0;
+  }
+  .async-action-status {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+  .async-action-status > .button {
+    grid-column: 2;
+    justify-self: start;
   }
   .deposit-layout {
     grid-template-columns: 1fr;

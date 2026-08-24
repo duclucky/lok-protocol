@@ -42,6 +42,8 @@ const publicData: LokPublicData = {
   },
 };
 
+const transactionHash = `0x${"34".repeat(32)}` as const;
+
 describe("VaultPage", () => {
   it("renders public pool data immediately while the private balance stays sealed", () => {
     const { container } = render(<VaultPage publicData={publicData} nowMs={1_786_500_000_000} />, {
@@ -66,15 +68,22 @@ describe("VaultPage", () => {
 
     expect(screen.getByRole("spinbutton", { name: "Withdrawal amount" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Submit withdrawal" })).toBeDisabled();
+    expect(screen.getByText("Recovery options")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Withdraw all" })).not.toBeVisible();
   });
 
   it("submits a confidential withdrawal through the wallet action", async () => {
     const user = userEvent.setup();
-    const withdraw = vi.fn().mockResolvedValue("0xwithdraw");
+    const withdraw = vi.fn().mockResolvedValue(transactionHash);
     render(
       <VaultPage
         publicData={publicData}
-        withdrawAction={{ withdraw, pending: false }}
+        withdrawAction={{
+          withdraw,
+          withdrawAll: vi.fn().mockResolvedValue(transactionHash),
+          emergencyWithdraw: vi.fn().mockResolvedValue(transactionHash),
+          pending: false,
+        }}
         revealActionStatus={vi.fn().mockResolvedValue(true)}
       />,
       {
@@ -87,8 +96,41 @@ describe("VaultPage", () => {
     await user.click(screen.getByRole("button", { name: "Submit withdrawal" }));
 
     expect(withdraw).toHaveBeenCalledWith("1.25");
-    expect(await screen.findByText(/transaction confirmed\. reveal the encrypted result/i)).toBeVisible();
+    expect(await screen.findByText("Withdrawal confirmed.")).toBeVisible();
+    expect(screen.getByRole("link", { name: /view transaction/i })).toHaveAttribute(
+      "href",
+      `https://sepolia.etherscan.io/tx/${transactionHash}`,
+    );
     expect(screen.queryByText("Withdrew.")).not.toBeInTheDocument();
+  });
+
+  it("progressively discloses full withdrawal and emergency recovery", async () => {
+    const user = userEvent.setup();
+    const withdrawAll = vi.fn().mockResolvedValue(transactionHash);
+    const emergencyWithdraw = vi.fn().mockResolvedValue(transactionHash);
+    render(
+      <VaultPage
+        publicData={publicData}
+        withdrawAction={{ withdraw: vi.fn(), withdrawAll, emergencyWithdraw, pending: false }}
+      />,
+      { wrapper: MemoryRouter },
+    );
+
+    await user.click(screen.getByRole("button", { name: "Withdraw" }));
+    await user.click(screen.getByText("Recovery options"));
+    expect(screen.getByText(/exceptional recovery remains available regardless of draw state/i)).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "Withdraw all" }));
+    expect(withdrawAll).toHaveBeenCalledOnce();
+    expect(emergencyWithdraw).not.toHaveBeenCalled();
+  });
+
+  it("keeps public metric labels stable while Sepolia data loads", () => {
+    render(<VaultPage publicData={{ status: "loading" }} />, { wrapper: MemoryRouter });
+
+    expect(screen.getByText("Current prize")).toBeVisible();
+    expect(screen.getByText("Next draw")).toBeVisible();
+    expect(screen.getByText("Participants")).toBeVisible();
   });
 });
 
