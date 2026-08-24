@@ -4,6 +4,12 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 describe("Invariant evidence provenance", function () {
+  it("fetches complete Git history in CI before validating ancestor-bound evidence", function () {
+    const workflow = readFileSync(path.resolve(".github/workflows/main.yml"), "utf8");
+
+    expect(workflow).to.match(/actions\/checkout@[\s\S]*fetch-depth:\s*0/);
+  });
+
   it("derives selector calls and settlement coverage from raw Forge output", function () {
     const runner = readFileSync(path.resolve("scripts/run-invariants.ps1"), "utf8");
     const collector = readFileSync(path.resolve("scripts/collect-invariants.ps1"), "utf8");
