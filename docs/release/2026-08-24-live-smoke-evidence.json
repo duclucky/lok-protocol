@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "network": "sepolia",
+  "chainId": 11155111,
+  "sourceCommit": "48dce5ba6f289d3121591fb56ee6b0d883fcb841",
+  "vercelDeploymentId": "dpl_FP6sxVnkTHR33zDESmMEAs77cGEv",
+  "drawId": 5,
+  "budget": {
+    "maxTransactions": 46,
+    "maxGas": 68000000,
+    "maxCostEth": "0.15"
+  },
+  "actual": {
+    "transactions": 43,
+    "gas": 56808227,
+    "costWei": "65384030086851908",
+    "costEth": "0.06538403008685191",
+    "allReceiptsSucceeded": true,
+    "firstBlock": 11554025,
+    "lastBlock": 11554136
+  },
+  "privacy": {
+    "privateBalanceReadSucceeded": true,
+    "privatePrizeCreditReadSucceeded": true,
+    "postWithdrawalPrivateBalanceReadSucceeded": true,
+    "decryptedValuesRecorded": false,
+    "winnerIdentityRecorded": false
+  },
+  "user": {
+    "address": "0xC495ef51618D03267A1f227aFe5b27B38c748272",
+    "transactionCount": 5,
+    "gas": 3049809,
+    "costWei": "7658127237816369",
+    "transactions": [
+      { "action": "mintTestTokens", "hash": "0xd39cb4ea6eba0b6f7152c16f969c69492e40e9028b0ce60af851aaee52874328" },
+      { "action": "shield", "hash": "0xed138131487ce741f996860a31bd3def33a8b2f949e742381b922e7365cbcfa8" },
+      { "action": "setVaultOperator", "hash": "0x1ccd8bde2b5992458304c52f940204cd0331842f6d52fa45642aaebc96d8f264" },
+      { "action": "deposit", "hash": "0x268c612dd57a941579c3e8f2148f6def276a74071b4f0986d0edf750a7332d47" },
+      { "action": "withdraw", "hash": "0xce33247b15e1def0f8cf7b9fa0147c803f987c6b1c98ad20149e5692a9f8337c" }
+    ]
+  },
+  "keeper": {
+    "address": "0x8e7939E23a012143e5182d7173DAD42B2006c2b8",
+    "transactionCount": 38,
+    "gas": 53758418,
+    "costWei": "57725902849035539",
+    "transactions": [
+      { "action": "openDraw", "hash": "0x1a3ce9fe5f7b625a9d3f06f3bf91e3146c80f3514673909e9ca8c447dd302df0" },
+      { "action": "preSyncA", "hash": "0xdc1d99081aaf9a5cb56353bc3265e7121a6d84119d2e3c304c635fb22370883a" },
+      { "action": "preSyncA", "hash": "0xca29ca1ce57d1b996633b3d7bc59f0ffb259c31a20cf0f6adbdb226573925c53" },
+      { "action": "preSyncA", "hash": "0xaf82caa291d9c6c3bb6707e3af30473c61f863bba42f4354e151ded475dbb374" },
+      { "action": "preSyncA", "hash": "0xb318101c571d1de9ee3aeac8be238804594766daee57c9f0670de90669f509b4" },
+      { "action": "preSyncA", "hash": "0x9b367d5e46b856827aa92dedb4d0a075279f7c6600b9185a37e5af3da61d35b4" },
+      { "action": "preSyncA", "hash": "0x97b7b4584ef0463aef13f52657aaa94b8f4b26485e8665e35c311a3c42b929f3" },
+      { "action": "preSyncA", "hash": "0x90d0c74eabd1ce65380bc3ab1bd61f791dc49e1b125082c51848cf056ebc4a93" },
+      { "action": "preSyncA", "hash": "0x37c6954e9d7575e4f7ec610b28c61e2e98dd72f949f748b9425990245c60b017" },
+      { "action": "crankA", "hash": "0x3d4c070aa786b121b63c3a757d674c69418a4aef96d40da4e1cdbb4f55dd2e8b" },
+      { "action": "crankA", "hash": "0x64673b385bf709df7b06181fc9d93cdb12ee7abe6def1226cbaa9491b84e01b3" },
+      { "action": "crankA", "hash": "0x65641004406835b8f93ae59975ad3595c0d109c23a065f983926214e644e2cbe" },
+      { "action": "crankA", "hash": "0x24b1ba9ced1a2060bc14fb273995ce9329fb4c4339d91808d71505d5bc5b069e" },
+      { "action": "crankA", "hash": "0x24099f543b0ae87fe268b40eed27fe2557eb0dc1653fe8c1dd4b10679da1916d" },
+      { "action": "crankA", "hash": "0x5ba280460a2c81957df24eaf7dda9c7b68aad2fe86ebe2ac79b11edfb39d69e1" },
+      { "action": "crankA", "hash": "0x0998511188e8b43d106a1b2a112ae2ef54d638fa144fa0edab503bc8f7d12672" },
+      { "action": "crankA", "hash": "0x48c8ea20ee2e3e0bf5b12e183e81f1c1141090808ac3a0f41292408aa104f3e3" },
+      { "action": "crankA", "hash": "0x905f89ee99c7fbb29a3ffb85a3d03787b9382325a46626b348b91df10d3caeaf" },
+      { "action": "crankA", "hash": "0x547eaa3458238f8836585a9841b056f84df3f1872fd8e7029e2fa5ad91444ad1" },
+      { "action": "crankA", "hash": "0x71f84fc06d7f8071afa77ca1cbc173523b456cdeae29ab5e36be81890f4a4a4c" },
+      { "action": "submitTotals", "hash": "0xaa245ec84823430d3f91cb975c0e8d5033ccc60d9363dac58ed644414cab605e" },
+      { "action": "openRandom", "hash": "0x75c4315a78771f54f8b0d844c6aae095ce1a2b8c7cd694d9808df2765ffc0881" },
+      { "action": "crankB", "hash": "0xa0fbf034caf5dd4a00a08d3656b10eae4354bd2e10604be6cdde20250440d2aa" },
+      { "action": "crankB", "hash": "0xb277d88c52f43fe68e3de3b10e85217c5e93ec200336ed5142322b1cb2c5f904" },
+      { "action": "crankB", "hash": "0x59aead8009781500ecaf855631d1063cbcfc45cb2d9473f0449fbe6a2d817a93" },
+      { "action": "crankB", "hash": "0xc90a793b498d920cc73e95f88d825ac8b4e0dcdc069db44bbd711ff5b456a070" },
+      { "action": "crankB", "hash": "0xe541e554f3897f96a5d709ee52791f1042df94b9a4a63f96fdd3ac749b27182c" },
+      { "action": "crankB", "hash": "0x7234792f086d2d1a05b1dadf00a1068e9696c4c996d1def50a4519d6cf6cfac3" },
+      { "action": "crankB", "hash": "0xf630b54f845c95f6865eb00d642a89f368c0ea65328d4cc91ef5583ba3b7aead" },
+      { "action": "crankB", "hash": "0x35ec5b2bccb369c91969be82cb9601661f239f65ecff9a5462b14e1430465f94" },
+      { "action": "crankB", "hash": "0x6d09053b117020183cebf01b61671d35a28a993a5b70a3640ddc443c5c5be451" },
+      { "action": "crankB", "hash": "0x7c5f5b3f598bcabb780ed53e71f928b19855ec1cbf37ba3eae87b028cb2e5efd" },
+      { "action": "crankB", "hash": "0x6c858c4a724ee6192f57de6754dbc559818ccb2f2acae54eb25a378f64c42eb6" },
+      { "action": "crankB", "hash": "0x90de4a1d67a6618975909045c757fbd6b5cda58ca1f13f5cdf4e79f490d0eeda" },
+      { "action": "crankB", "hash": "0x664528c8c1b8be9821daf9a687ff653ee5fa31a43eb34adb7490422372934d7d" },
+      { "action": "crankB", "hash": "0x2eb16afe52088deb81a51702f274a08a1b0552ff26f905672f36d9621c06c884" },
+      { "action": "crankB", "hash": "0x3eb6c65807e3f56e8234bc3d81899ea4439e1b2597dd7677dfbc05caa48ca021" },
+      { "action": "crankB", "hash": "0xe93659e207ccffa9e030a8f91e44acd59f9b0bfe3af88371c1ef7576878ea1a8" }
+    ]
+  }
+}

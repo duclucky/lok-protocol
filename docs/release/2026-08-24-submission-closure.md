@@ -3,12 +3,13 @@
 ## Scope And Source Binding
 
 - Candidate parent commit: `5e0744738de9b1973447fecc77f40e20b22d2530`.
-- Release source: the commit containing this record. GitHub Actions and the Vercel footer must resolve the exact final
-  SHA before publication is accepted.
+- Released application source: `48dce5ba6f289d3121591fb56ee6b0d883fcb841`.
+- Live-smoke receipt ledger: `docs/release/2026-08-24-live-smoke-evidence.json`.
 - Public repository: [github.com/duclucky/lok-protocol](https://github.com/duclucky/lok-protocol).
 - Canonical application URL: [lok-protocol.vercel.app](https://lok-protocol.vercel.app).
 - Frozen `docs/10-proof-strategy.md` section 3 was not edited.
-- No state-changing Sepolia transaction was signed or sent during this closure run.
+- State-changing live smoke was separately owner-approved with hard caps of 46 transactions, 68,000,000 gas and 0.15
+  Sepolia ETH.
 
 The local shell was Node.js `24.11.1` with npm `11.18.0`. The browser matrix explicitly ran under Node.js 22, the GitHub
 workflow is pinned to Node.js `22.x`, and Vercel uses Node.js `22.x`. Tested protocol dependencies are Hardhat `2.28.6`,
@@ -77,11 +78,27 @@ Result for draw `#4`, settlement block `11493487`, participant snapshot source `
 - The build reads the installed Zama React SDK version and binds `VITE_SOURCE_COMMIT` from `VERCEL_GIT_COMMIT_SHA`.
   Unbound local builds render `unbound-local-build` rather than a fabricated SHA.
 
-## Remaining Publication Gates
+## Publication And Live-Smoke Closure
 
-1. Commit this record and the scoped release changes.
-2. Push the exact commit and require the `Main` GitHub workflow to succeed on Node.js 22.
-3. Confirm Vercel publishes that exact green commit and the canonical alias returns `Ready`.
-4. Run read-only production smoke for headers, WASM MIME, six routes, console health, responsive overflow and footer SHA
-   equality.
-5. Stop for owner approval before any state-changing browser smoke.
+- GitHub Actions `Main` run [#32680627309](https://github.com/duclucky/lok-protocol/actions/runs/32680627309) passed on
+  exact source commit `48dce5ba6f289d3121591fb56ee6b0d883fcb841`.
+- Vercel production deployment `dpl_FP6sxVnkTHR33zDESmMEAs77cGEv` is `Ready`; the canonical alias
+  [lok-protocol.vercel.app](https://lok-protocol.vercel.app) resolves to that deployment.
+- Production returned HTTP 200, `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`
+  and `application/wasm` for the FHEVM WASM asset.
+- Vault, Deposit, Risk, Draw, Proof and Why Encrypted loaded without horizontal overflow or browser console errors. The
+  footer reported FHEVM SDK `3.4.0` and source `48dce5b`.
+- The owner-approved browser smoke used wallet `0xC495ef51618D03267A1f227aFe5b27B38c748272` with Chrome and OKX Wallet.
+  It completed mock-token mint, shielding, vault operator authorization, confidential deposit, private balance read,
+  draw `#5`, private prize-credit read and confidential withdrawal.
+- The draw keeper used `0x8e7939E23a012143e5182d7173DAD42B2006c2b8` and the seeded live-demo manifest. Draw `#5`
+  completed 8 pre-sync batches, 11 PASS-A batches, aggregate public decryption/submission, FHE randomness and 16 PASS-B
+  batches before settlement.
+- All 43 receipts succeeded. Actual usage was 56,808,227 gas and 0.06538403008685191 Sepolia ETH, below every approved
+  cap. Private decrypted balances, prize outcome and winner identity are intentionally omitted.
+
+## Operational Residual
+
+`scripts/crank.ts` performs the full state-derived keeper cycle, but no repository-managed 24/7 scheduler is deployed.
+The public UI retains a permissionless manual fallback. Hosting a recurring signer requires a separate owner decision on
+secret custody, execution frequency, concurrency and recurring Sepolia ETH spend.
