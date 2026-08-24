@@ -76,7 +76,7 @@
     "lint:sol": "solhint --max-warnings 0 \"contracts/**/*.sol\"",
     "lint:ts": "eslint .",
     "postcompile": "npm run typechain",
-    "prettier:check": "prettier --check \"**/*.{js,json,md,sol,ts,yml}\"",
+    "prettier:check": "prettier --check contracts scripts test frontend/src frontend/e2e *.js *.json *.ts *.yml .github/workflows",
     "prettier:write": "prettier --write \"**/*.{js,json,md,sol,ts,yml}\"",
     "privacy:validate": "ts-node scripts/privacy-scan.ts",
     "test": "hardhat test",

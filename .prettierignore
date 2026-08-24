@@ -17,6 +17,7 @@ dist
 node_modules
 frontend/.vercel
 types
+docs/10-proof-strategy.md
 
 # files
 *.env
