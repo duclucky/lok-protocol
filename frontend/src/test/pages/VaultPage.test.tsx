@@ -78,7 +78,7 @@ describe("VaultPage", () => {
         revealActionStatus={vi.fn().mockResolvedValue(true)}
       />,
       {
-      wrapper: MemoryRouter,
+        wrapper: MemoryRouter,
       },
     );
 

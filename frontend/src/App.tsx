@@ -45,15 +45,9 @@ export function App() {
               />
             }
           />
-          <Route
-            path="risk"
-            element={<RiskPage action={transactions} revealTheta={privateValues.revealTheta} />}
-          />
+          <Route path="risk" element={<RiskPage action={transactions} revealTheta={privateValues.revealTheta} />} />
           <Route path="draw" element={<DrawPage publicData={publicData} keeperAction={transactions} />} />
-          <Route
-            path="proof"
-            element={<ProofPage drawId={drawId} revealCredit={privateValues.revealCredit} />}
-          />
+          <Route path="proof" element={<ProofPage drawId={drawId} revealCredit={privateValues.revealCredit} />} />
           <Route path="why-encrypted" element={<WhyEncryptedPage />} />
         </Route>
       </Routes>

@@ -124,7 +124,8 @@ function aclFeature(log: Pp1RawLog, includeGas: boolean): string[] {
 }
 
 function features(transcript: NaturalPp1Transcript, mode: FeatureMode): string[] {
-  if (mode === "gas-only") return transcript.receipts.map((receipt) => `gas:${receipt.receiptIndex}:${receipt.gasUsed}`);
+  if (mode === "gas-only")
+    return transcript.receipts.map((receipt) => `gas:${receipt.receiptIndex}:${receipt.gasUsed}`);
   if (mode.startsWith("gas-receipt-")) {
     const receiptIndex = Number(mode.slice("gas-receipt-".length));
     const receipt = transcript.receipts.find((candidate) => candidate.receiptIndex === receiptIndex);
@@ -133,7 +134,10 @@ function features(transcript: NaturalPp1Transcript, mode: FeatureMode): string[]
   return transcriptLogs(transcript).flatMap((log) => aclFeature(log, mode === "acl-with-gas"));
 }
 
-function trainPredictor(training: Sample[], mode: FeatureMode): { predict: (sample: Sample) => number; topFeatures: unknown[] } {
+function trainPredictor(
+  training: Sample[],
+  mode: FeatureMode,
+): { predict: (sample: Sample) => number; topFeatures: unknown[] } {
   const labelFeatureCounts = Array.from({ length: PARTICIPANT_COUNT }, () => new Map<string, number>());
   const labelTotals = Array(PARTICIPANT_COUNT).fill(0) as number[];
   const vocabulary = new Set<string>();
@@ -241,7 +245,14 @@ function buildSplit(seed: number, transcripts: NaturalPp1Transcript[]): Split {
   return { seed, train: ids.slice(0, midpoint), heldOut: ids.slice(midpoint) };
 }
 
-function commandProvenance(mode: ExperimentMode, count: number, seed: number, outputDirectory: string, start: string, end: string) {
+function commandProvenance(
+  mode: ExperimentMode,
+  count: number,
+  seed: number,
+  outputDirectory: string,
+  start: string,
+  end: string,
+) {
   const packageJson = JSON.parse(readFileSync(path.join(ROOT, "package.json"), "utf8")) as {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
@@ -324,7 +335,10 @@ function collectNaturalTranscripts(input: {
   return collected.transcripts;
 }
 
-function decideConclusion(distributionResult: ReturnType<typeof distribution>, metrics: ClassifierResult[]): Conclusion {
+function decideConclusion(
+  distributionResult: ReturnType<typeof distribution>,
+  metrics: ClassifierResult[],
+): Conclusion {
   if (!balancedEnough(distributionResult)) return "INCONCLUSIVE_IMBALANCED";
   const gasMetrics = metrics.filter(
     (metric) => metric.mode === "gas-only" || metric.mode === "acl-with-gas" || metric.mode.startsWith("gas-receipt-"),
@@ -344,7 +358,9 @@ export function parseNaturalGasExperimentOptions(argv: string[]) {
   const defaultCount = mode === "smoke" ? 50 : 500;
   const count = Number(optionValue("--runs", optionValue("--count", String(defaultCount))));
   if (!Number.isInteger(count) || count < 1) throw new Error("--runs/--count must be a positive integer");
-  const outputDirectory = path.resolve(optionValue("--out", path.join("artifacts", "privacy", "p-p1-natural-gas-experiment")));
+  const outputDirectory = path.resolve(
+    optionValue("--out", path.join("artifacts", "privacy", "p-p1-natural-gas-experiment")),
+  );
   return { mode, seed, count, outputDirectory };
 }
 
@@ -442,7 +458,14 @@ async function main() {
 
   const endMs = Date.now();
   const endUtc = new Date(endMs).toISOString();
-  const provenance = commandProvenance(options.mode, options.count, options.seed, options.outputDirectory, startUtc, endUtc);
+  const provenance = commandProvenance(
+    options.mode,
+    options.count,
+    options.seed,
+    options.outputDirectory,
+    startUtc,
+    endUtc,
+  );
   writeJsonWithHash(options.outputDirectory, "command-provenance.json", provenance, hashes);
   const runtimeSeconds = (endMs - startMs) / 1_000;
   const conclusion = decideConclusion(winnerDistribution.all, classifierMetrics);
@@ -459,8 +482,7 @@ async function main() {
     productionContractsChanged: false,
     docs10ProofStrategyChanged: false,
     frozenPp1Verdict: "WEAKER-THAN-CLAIMED",
-    note:
-      "This experiment uses natural local Hardhat/FHEVM randomness and labels the winner only after settlement. It does not claim P-P1 MATCHES.",
+    note: "This experiment uses natural local Hardhat/FHEVM randomness and labels the winner only after settlement. It does not claim P-P1 MATCHES.",
   };
   writeJsonWithHash(options.outputDirectory, "final-status.json", finalStatus, hashes);
   writeJsonWithHash(options.outputDirectory, "artifact-hashes.json", { ...hashes }, hashes);
@@ -481,7 +503,7 @@ async function main() {
 
 if (require.main === module) {
   main().catch((error: unknown) => {
-    console.error(error instanceof Error ? error.stack ?? error.message : error);
+    console.error(error instanceof Error ? (error.stack ?? error.message) : error);
     process.exitCode = 1;
   });
 }

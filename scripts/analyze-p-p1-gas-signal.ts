@@ -86,7 +86,10 @@ function features(transcript: Pp1Transcript, mode: FeatureMode): string[] {
   return transcriptLogs(transcript).flatMap((log) => aclFeature(log, mode === "acl-with-gas"));
 }
 
-function trainPredictor(training: Sample[], mode: FeatureMode): { predict: (sample: Sample) => number; topFeatures: unknown[] } {
+function trainPredictor(
+  training: Sample[],
+  mode: FeatureMode,
+): { predict: (sample: Sample) => number; topFeatures: unknown[] } {
   const labelFeatureCounts = Array.from({ length: PARTICIPANT_COUNT }, () => new Map<string, number>());
   const labelTotals = Array(PARTICIPANT_COUNT).fill(0) as number[];
   const vocabulary = new Set<string>();

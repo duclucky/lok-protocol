@@ -51,7 +51,8 @@ export function keeperDecision(snapshot: LokPublicSnapshot, nowMs = Date.now()):
     case "SETTLED":
       return {
         label: "Settled draw ready",
-        detail: "This public demo keeps the completed draw available for review. Owner keepers can start another draw when preparing a fresh demo.",
+        detail:
+          "This public demo keeps the completed draw available for review. Owner keepers can start another draw when preparing a fresh demo.",
         disabledReason: "A completed draw is ready for judges.",
       };
     case "OPEN":
@@ -72,7 +73,8 @@ export function keeperDecision(snapshot: LokPublicSnapshot, nowMs = Date.now()):
           action: { kind: "preSyncA", batch: nextBatch },
         };
       }
-      const nextBatch = draw.participantSnapshot === 0n ? 1n : batch(draw.participantSnapshot - draw.cursor, BATCH_A_CAP);
+      const nextBatch =
+        draw.participantSnapshot === 0n ? 1n : batch(draw.participantSnapshot - draw.cursor, BATCH_A_CAP);
       return {
         label: `Crank PASS A ${nextBatch.toString()}`,
         detail: "Build encrypted aggregate weights in a bounded batch.",

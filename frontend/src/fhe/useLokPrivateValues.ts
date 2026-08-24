@@ -141,9 +141,7 @@ export function useLokPrivateValues(drawId?: bigint): {
       throw new Error("No encrypted action result is available for this wallet.");
     }
     await ensureVaultPermit();
-    const result = await sdk.decryption.decryptValues([
-      { encryptedValue: currentHandle, contractAddress: vault },
-    ]);
+    const result = await sdk.decryption.decryptValues([{ encryptedValue: currentHandle, contractAddress: vault }]);
     return clearBoolean(decryptedValue(result, currentHandle));
   }, [actionStatusRead, ensureVaultPermit, sdk.decryption]);
 

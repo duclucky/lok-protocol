@@ -31,7 +31,9 @@ export function WhyEncryptedPage() {
         </div>
         <div className="fhe-boundary__facts">
           <p>Encrypted values are computed on without revealing their clear values to the public.</p>
-          <p>Participant addresses and membership are public; individual balances, risk settings, and credits are not.</p>
+          <p>
+            Participant addresses and membership are public; individual balances, risk settings, and credits are not.
+          </p>
           <p>A shield transaction amount is public. A later Lok deposit uses encrypted cUSDC input.</p>
           <p>The external verifier is separate from this interface; this app does not simulate a verifier response.</p>
         </div>

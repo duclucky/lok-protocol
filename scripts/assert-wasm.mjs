@@ -26,7 +26,9 @@ const emitted = new Map(files.map((path) => [path.split(/[\\/]/).at(-1), path]))
 for (const [name, digest] of expected) {
   const path = emitted.get(name);
   if (path === undefined) throw new Error(`Missing verified FHEVM WASM asset: ${name}`);
-  const actual = createHash("sha256").update(await readFile(path)).digest("hex");
+  const actual = createHash("sha256")
+    .update(await readFile(path))
+    .digest("hex");
   if (actual !== digest) throw new Error(`FHEVM WASM hash mismatch for ${name}`);
 }
 

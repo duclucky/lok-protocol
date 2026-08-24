@@ -45,7 +45,9 @@ test("shell follows the Zama-style light utility system", async ({ page }) => {
   const viewport = page.viewportSize();
 
   await expect(page.getByRole("button", { name: "Connect wallet" }).first()).toBeVisible();
-  const paper = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--paper").trim());
+  const paper = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--paper").trim(),
+  );
   expect(paper.toLowerCase()).toBe("#f1f1f1");
   if ((viewport?.width ?? 0) >= 1024) {
     await expect(page.getByRole("complementary")).toBeVisible();

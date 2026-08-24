@@ -207,12 +207,18 @@ describe("Sepolia deployment manifest", function () {
     }
 
     await expect(
-      loadExistingSepoliaManifest(async () => value, async (address) => codes.get(address.toLowerCase()) ?? "0x"),
+      loadExistingSepoliaManifest(
+        async () => value,
+        async (address) => codes.get(address.toLowerCase()) ?? "0x",
+      ),
     ).to.eventually.deep.equal(value);
 
     codes.set(value.addresses.drawManager.toLowerCase(), "0x");
     await expect(
-      loadExistingSepoliaManifest(async () => value, async (address) => codes.get(address.toLowerCase()) ?? "0x"),
+      loadExistingSepoliaManifest(
+        async () => value,
+        async (address) => codes.get(address.toLowerCase()) ?? "0x",
+      ),
     ).to.be.rejectedWith("Existing Sepolia manifest is stale or bytecode-mismatched");
   });
 });

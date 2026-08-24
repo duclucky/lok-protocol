@@ -85,7 +85,9 @@ describe("DrawPage", () => {
   });
 
   it("defaults to a user-focused draw view before exposing keeper controls", () => {
-    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
+    render(
+      <DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />,
+    );
 
     expect(screen.getByRole("button", { name: /user view/i })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText(/draw automation is running/i)).toBeVisible();
@@ -116,7 +118,9 @@ describe("DrawPage", () => {
 
   it("renders a keeper panel without replacing public state checks", async () => {
     const user = userEvent.setup();
-    render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />);
+    render(
+      <DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />,
+    );
 
     await user.click(screen.getByRole("button", { name: /demo progress/i }));
 

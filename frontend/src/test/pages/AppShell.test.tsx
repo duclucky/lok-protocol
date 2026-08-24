@@ -25,10 +25,7 @@ describe("AppShell", () => {
     const desktopNav = within(sidebar).getByRole("navigation", { name: "Primary navigation" });
     expect(within(desktopNav).getAllByRole("link")).toHaveLength(5);
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
-    expect(within(sidebar).getByRole("link", { name: "Why encrypted?" })).toHaveAttribute(
-      "href",
-      "/why-encrypted",
-    );
+    expect(within(sidebar).getByRole("link", { name: "Why encrypted?" })).toHaveAttribute("href", "/why-encrypted");
     expect(within(sidebar).getByRole("button", { name: "Connect wallet" })).toBeVisible();
     expect(screen.queryByRole("button", { name: /language/i })).not.toBeInTheDocument();
   });

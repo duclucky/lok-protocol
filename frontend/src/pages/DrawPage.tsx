@@ -281,10 +281,16 @@ function KeeperPanel({ decision, keeperAction, message, setMessage, onConfirmed 
       <p>{decision.detail}</p>
       <div className="keeper-status" role="note">
         <strong>Keeper automation handles this for the demo.</strong>
-        <span>The button below is a manual fallback for anyone to advance the same permissionless step if the keeper stalls.</span>
+        <span>
+          The button below is a manual fallback for anyone to advance the same permissionless step if the keeper stalls.
+        </span>
       </div>
       <button className="button button--secondary" type="button" disabled={disabled} onClick={() => void advance()}>
-        {pending ? <LoaderCircle className="spin" aria-hidden="true" size={18} /> : <Play aria-hidden="true" size={18} />}
+        {pending ? (
+          <LoaderCircle className="spin" aria-hidden="true" size={18} />
+        ) : (
+          <Play aria-hidden="true" size={18} />
+        )}
         Manual: {decision.label}
       </button>
       <p className="keeper-note">

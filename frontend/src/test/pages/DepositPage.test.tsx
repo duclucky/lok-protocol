@@ -38,10 +38,7 @@ describe("DepositPage", () => {
     const user = userEvent.setup();
     const revealWalletCusdc = vi.fn().mockResolvedValue("7.50 cUSDC");
     render(
-      <DepositPage
-        walletData={{ status: "ready", publicUsdc: "12.34 USDC" }}
-        revealWalletCusdc={revealWalletCusdc}
-      />,
+      <DepositPage walletData={{ status: "ready", publicUsdc: "12.34 USDC" }} revealWalletCusdc={revealWalletCusdc} />,
       { wrapper: MemoryRouter },
     );
 

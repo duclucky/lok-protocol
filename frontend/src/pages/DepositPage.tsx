@@ -47,7 +47,9 @@ export function DepositPage({
       setMessage("Connect a Sepolia wallet to encrypt and submit this transaction.");
       return;
     }
-    setMessage(path === "private" ? "Encrypting the deposit for LokVault." : "Submitting the public shield transaction.");
+    setMessage(
+      path === "private" ? "Encrypting the deposit for LokVault." : "Submitting the public shield transaction.",
+    );
     setDepositConfirmed(false);
     try {
       const hash = path === "private" ? await actions.deposit(amount) : await actions.shield(amount);
