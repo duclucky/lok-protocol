@@ -24,7 +24,12 @@ export function WhyEncryptedPage() {
   return (
     <div className="page page--why">
       <PageHeader title="Why encrypted?" description="Public integrity without publishing private savings behavior." />
-      <section className="fhe-boundary" aria-labelledby="fhe-boundary-title">
+      <nav className="section-links" aria-label="Encryption page sections">
+        <a href="#fhe-boundary">FHEVM boundary</a>
+        <a href="#disclosure-table">Disclosure table</a>
+        <a href="#guarantees">Guarantees</a>
+      </nav>
+      <section id="fhe-boundary" className="fhe-boundary" aria-labelledby="fhe-boundary-title">
         <div>
           <p className="section-label">FHEVM boundary</p>
           <h2 id="fhe-boundary-title">Encrypted computation, not an invisible blockchain</h2>
@@ -35,10 +40,11 @@ export function WhyEncryptedPage() {
             Participant addresses and membership are public; individual balances, risk settings, and credits are not.
           </p>
           <p>A shield transaction amount is public. A later Lok deposit uses encrypted cUSDC input.</p>
+          <p>Infrastructure still observes public transaction metadata, contract calls, and protocol logs.</p>
           <p>The external verifier is separate from this interface; this app does not simulate a verifier response.</p>
         </div>
       </section>
-      <section className="privacy-ledger" aria-labelledby="privacy-ledger-title">
+      <section id="disclosure-table" className="privacy-ledger" aria-labelledby="privacy-ledger-title">
         <div className="privacy-ledger__title">
           <ShieldCheck aria-hidden="true" size={26} />
           <div>
@@ -46,38 +52,43 @@ export function WhyEncryptedPage() {
             <h2 id="privacy-ledger-title">What the network can learn</h2>
           </div>
         </div>
-        <div className="privacy-table" role="table" aria-label="Data disclosure boundary">
-          <div role="row">
-            <span role="columnheader">Public</span>
-            <span role="columnheader">Sealed</span>
-          </div>
-          <div role="row">
-            <span role="cell">Prize amount</span>
-            <span role="cell">Your balance</span>
-          </div>
-          <div role="row">
-            <span role="cell">Participant membership and addresses</span>
-            <span role="cell">Your risk setting</span>
-          </div>
-          <div role="row">
-            <span role="cell">Shield transaction amount and timing</span>
-            <span role="cell">Later private deposit amount</span>
-          </div>
-          <div role="row">
-            <span role="cell">Aggregate ticket space</span>
-            <span role="cell">Your draw weight</span>
-          </div>
-          <div role="row">
-            <span role="cell">Settlement random value</span>
-            <span role="cell">Your prize credit</span>
-          </div>
-          <div role="row">
-            <span role="cell">Solvency checkpoint boolean</span>
-            <span role="cell">Numeric liabilities and assets</span>
-          </div>
-        </div>
+        <table className="privacy-table">
+          <caption>Public and sealed data</caption>
+          <thead>
+            <tr>
+              <th scope="col">Public</th>
+              <th scope="col">Sealed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Prize amount</td>
+              <td>Your balance</td>
+            </tr>
+            <tr>
+              <td>Participant membership and addresses</td>
+              <td>Your risk setting</td>
+            </tr>
+            <tr>
+              <td>Shield transaction amount and timing</td>
+              <td>Later private deposit amount</td>
+            </tr>
+            <tr>
+              <td>Aggregate ticket space</td>
+              <td>Your draw weight</td>
+            </tr>
+            <tr>
+              <td>Settlement random value</td>
+              <td>Your prize credit</td>
+            </tr>
+            <tr>
+              <td>Solvency checkpoint boolean</td>
+              <td>Numeric liabilities and assets</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
-      <section className="guarantee-list" aria-label="Encryption guarantees">
+      <section id="guarantees" className="guarantee-list" aria-label="Encryption guarantees">
         {guarantees.map(({ Icon, title, body }) => (
           <article key={title}>
             <Icon aria-hidden="true" size={22} />

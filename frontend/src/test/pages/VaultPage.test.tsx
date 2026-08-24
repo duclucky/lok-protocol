@@ -72,6 +72,14 @@ describe("VaultPage", () => {
     expect(screen.getByRole("button", { name: "Withdraw all" })).not.toBeVisible();
   });
 
+  it("opens the withdrawal flow when routed from a private prize result", () => {
+    render(<VaultPage publicData={publicData} />, {
+      wrapper: ({ children }) => <MemoryRouter initialEntries={["/?withdraw=1"]}>{children}</MemoryRouter>,
+    });
+
+    expect(screen.getByRole("spinbutton", { name: "Withdrawal amount" })).toBeVisible();
+  });
+
   it("submits a confidential withdrawal through the wallet action", async () => {
     const user = userEvent.setup();
     const withdraw = vi.fn().mockResolvedValue(transactionHash);

@@ -51,6 +51,16 @@ export class PermitDeclinedError extends Error {
   }
 }
 
+export type DecryptionFailureKind = "wallet_rejected" | "sdk_unavailable" | "timeout" | "network";
+
+export function classifyDecryptionFailure(error: unknown): DecryptionFailureKind {
+  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+  if (/user rejected|user denied|declined|request rejected/.test(message)) return "wallet_rejected";
+  if (/timed out|timeout/.test(message)) return "timeout";
+  if (/sdk|not ready|unavailable|unsupported/.test(message)) return "sdk_unavailable";
+  return "network";
+}
+
 const sharedCache = new Map<string, unknown>();
 const DECRYPTION_FAILURE_MESSAGE = "Couldn't reach the decryption network. Your funds are safe; this read failed.";
 

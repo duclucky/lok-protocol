@@ -35,9 +35,10 @@ test("draw page uses only live public state", async ({ page }) => {
 test("result check stays neutral until local decryption", async ({ page }) => {
   await page.goto("/proof");
 
-  await expect(page.getByRole("button", { name: "Check my result" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Claim / check prize" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Publish proof/ })).toHaveCount(0);
-  await expect(page.getByText(/your credit is sealed/i)).toBeVisible();
+  await expect(page.getByText(/your prize credit is sealed/i)).toBeVisible();
+  await expect(page.getByText(/settlement credits encrypted winnings automatically/i)).toBeVisible();
 });
 
 test("shell follows the Zama-style light utility system", async ({ page }) => {

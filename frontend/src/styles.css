@@ -1746,6 +1746,23 @@ select {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
+.claim-sequence {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 18px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.claim-sequence p {
+  min-width: 0;
+  margin: 0;
+  padding: 14px 18px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.claim-sequence p + p {
+  border-left: 1px solid var(--border);
+}
 .proof-stage p:not(.section-label) {
   max-width: 500px;
   margin: 10px 0 22px;
@@ -1777,30 +1794,25 @@ select {
   font-size: 2.65rem;
   font-variant-numeric: tabular-nums;
 }
-.publish-panel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-  margin-top: 18px;
-  padding: 26px;
-  color: #fff;
-  background: var(--ink);
-  border-radius: var(--radius-md);
-}
-.publish-panel h2 {
-  margin-top: 4px;
-  color: #fff;
-}
-.publish-panel p:not(.section-label) {
-  max-width: 580px;
-  margin-top: 7px;
-  color: #c7c8c2;
-}
-.publish-panel .section-label {
-  color: #ddb7bd;
+.proof-stage .proof-local-note {
+  margin-bottom: 0;
+  font-size: 0.8rem;
 }
 
+.section-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.section-links a {
+  color: var(--patina);
+  font-size: 0.84rem;
+  font-weight: 650;
+  text-underline-offset: 3px;
+}
 .privacy-ledger {
   overflow: hidden;
   background: var(--surface);
@@ -1819,22 +1831,32 @@ select {
 .privacy-ledger__title h2 {
   margin-top: 4px;
 }
-.privacy-table > div {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.privacy-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
-.privacy-table span {
-  min-width: 0;
+.privacy-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.privacy-table th,
+.privacy-table td {
   padding: 14px 24px;
   overflow-wrap: anywhere;
   border-bottom: 1px solid #e0ded6;
+  text-align: left;
 }
-.privacy-table span + span {
+.privacy-table th + th,
+.privacy-table td + td {
   background-color: #e9e5d9;
   background-image: repeating-linear-gradient(45deg, transparent 0 8px, rgb(122 31 43 / 0.08) 9px 10px);
   border-left: 1px solid var(--border);
 }
-.privacy-table div:first-child span {
+.privacy-table th {
   color: #fff;
   background: var(--ink);
   border-bottom-color: var(--ink);
@@ -2014,19 +2036,8 @@ select {
   background: var(--patina);
   border-color: #a9cfc4;
 }
-.publish-panel {
-  color: var(--ink);
-  background: var(--surface);
-  border: 1px dashed #bdbdb8;
-}
-.publish-panel h2 {
-  color: var(--ink);
-}
-.publish-panel p:not(.section-label),
-.publish-panel .section-label {
-  color: var(--muted);
-}
-.privacy-table span + span {
+.privacy-table th + th,
+.privacy-table td + td {
   background-color: var(--surface-quiet);
   background-image: repeating-linear-gradient(45deg, transparent 0 8px, rgb(41 41 41 / 0.05) 9px 10px);
 }
@@ -2329,11 +2340,15 @@ select {
   .settled-band dl {
     flex-wrap: wrap;
   }
-  .publish-panel {
-    align-items: stretch;
-    flex-direction: column;
+  .claim-sequence {
+    grid-template-columns: 1fr;
   }
-  .privacy-table span {
+  .claim-sequence p + p {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+  .privacy-table th,
+  .privacy-table td {
     padding: 12px 10px;
     font-size: 0.78rem;
   }

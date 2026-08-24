@@ -1,6 +1,6 @@
 import { ArrowDownToLine, ArrowUpFromLine, Clock3, ExternalLink, Gauge, History } from "lucide-react";
 import { type FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { PageHeader } from "../components/PageHeader";
 import { ActionStatus } from "../components/ActionStatus";
@@ -31,7 +31,8 @@ export function VaultPage({
   withdrawAction,
   revealActionStatus,
 }: VaultPageProps) {
-  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [withdrawOpen, setWithdrawOpen] = useState(() => searchParams.get("withdraw") === "1");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawState, setWithdrawState] = useState<AsyncActionState>({ phase: "idle" });
   const [lastWithdrawal, setLastWithdrawal] = useState<"amount" | "all" | "emergency">("amount");

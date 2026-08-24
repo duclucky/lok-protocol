@@ -2,6 +2,7 @@ import { BadgeCheck, Eye, LoaderCircle, LockKeyhole, ShieldAlert } from "lucide-
 import { useState } from "react";
 
 import { PageHeader } from "../components/PageHeader";
+import { classifyDecryptionFailure, type DecryptionFailureKind } from "../fhe/decryption-machine";
 
 type ProofPageProps = { revealCredit?: () => Promise<bigint>; drawId?: bigint };
 
@@ -13,6 +14,7 @@ export function ProofPage({
 }: ProofPageProps) {
   const [state, setState] = useState<ResultState>("sealed");
   const [credit, setCredit] = useState<bigint>(0n);
+  const [failureKind, setFailureKind] = useState<DecryptionFailureKind>("network");
 
   async function checkResult() {
     setState("decrypting");
@@ -20,7 +22,8 @@ export function ProofPage({
       const value = await revealCredit();
       setCredit(value);
       setState(value > 0n ? "winner" : "none");
-    } catch {
+    } catch (error) {
+      setFailureKind(classifyDecryptionFailure(error));
       setState("failed");
     }
   }
@@ -28,6 +31,12 @@ export function ProofPage({
   return (
     <div className="page page--proof">
       <PageHeader title="Claim privately" description="The same EIP-712 decrypt flow for every participant." />
+
+      <section className="claim-sequence" aria-label="Private prize flow">
+        <p>Settlement credits encrypted winnings automatically.</p>
+        <p>Checking decrypts only your connected wallet's credit.</p>
+        <p>Withdrawal moves principal and credited winnings as confidential cUSDC.</p>
+      </section>
 
       <section className={`proof-stage proof-stage--${state}`} aria-live="polite">
         {(state === "sealed" || state === "decrypting") && (
@@ -61,6 +70,9 @@ export function ProofPage({
             <p className="section-label">{drawId === undefined ? "Current draw" : `Draw ${drawId.toString()}`}</p>
             <h2>No prize this draw</h2>
             <p>Your principal remains in the vault and your next draw stays private.</p>
+            <a className="button button--primary" href="/deposit">
+              Deposit for next draw
+            </a>
           </>
         )}
         {state === "winner" && (
@@ -72,6 +84,12 @@ export function ProofPage({
             <h2>Prize available</h2>
             <strong className="winner-amount">{(Number(credit) / 1_000_000).toFixed(2)} cUSDC</strong>
             <p>The credit was assigned during settlement and is visible only through your wallet decryption.</p>
+            <a className="button button--primary" href="/?withdraw=1">
+              Withdraw winnings
+            </a>
+            <p className="proof-local-note">
+              Public proof publication is not available in this build. Your revealed result remains on this device.
+            </p>
           </>
         )}
         {state === "failed" && (
@@ -80,23 +98,39 @@ export function ProofPage({
               <ShieldAlert aria-hidden="true" size={32} />
             </div>
             <h2>Result unavailable</h2>
-            <p>The decryption network did not respond. Your funds and result are unchanged.</p>
-            <button className="button button--secondary" type="button" onClick={() => void checkResult()}>
-              Retry check
-            </button>
+            <p>{failureCopy[failureKind].message}</p>
+            <p>This read failure did not change your funds or credit.</p>
+            {failureKind === "sdk_unavailable" ? (
+              <button className="button button--secondary" type="button" onClick={() => window.location.reload()}>
+                Reload private reads
+              </button>
+            ) : (
+              <button className="button button--secondary" type="button" onClick={() => void checkResult()}>
+                {failureCopy[failureKind].action}
+              </button>
+            )}
           </>
         )}
       </section>
-
-      {state === "winner" && (
-        <section className="publish-panel" aria-labelledby="publish-title">
-          <div>
-            <p className="section-label">Public proof</p>
-            <h2 id="publish-title">Private result only</h2>
-            <p>Public proof publication is not available in this build. Your revealed result remains on this device.</p>
-          </div>
-        </section>
-      )}
     </div>
   );
 }
+
+const failureCopy: Record<DecryptionFailureKind, Readonly<{ message: string; action: string }>> = {
+  wallet_rejected: {
+    message: "The private-read request was declined in your wallet.",
+    action: "Try again",
+  },
+  sdk_unavailable: {
+    message: "Private reads are unavailable in this browser session.",
+    action: "Reload private reads",
+  },
+  timeout: {
+    message: "The decryption request timed out before a result was returned.",
+    action: "Retry decryption",
+  },
+  network: {
+    message: "The decryption network did not return a result.",
+    action: "Retry check",
+  },
+};
