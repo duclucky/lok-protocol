@@ -52,10 +52,13 @@ describe("Invariant evidence provenance", function () {
   });
 
   it("parses a versioned raw Forge selector-table fixture instead of trusting summary metadata", function () {
+    const powershell = process.platform === "win32" ? "powershell.exe" : "pwsh";
     const output = execFileSync(
-      "powershell.exe",
+      powershell,
       [
         "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
         "-Command",
         ". .\\scripts\\invariant-evidence.ps1; $raw=Get-Content -Raw -Encoding UTF8 test\\fixtures\\forge-invariant-output.txt; Read-ForgeInvariantOutput $raw | ConvertTo-Json -Depth 5 -Compress",
       ],
