@@ -48,14 +48,14 @@ test("shell follows the Zama-style light utility system", async ({ page }) => {
   const paper = await page.evaluate(() =>
     getComputedStyle(document.documentElement).getPropertyValue("--paper").trim(),
   );
-  expect(paper.toLowerCase()).toBe("#f1f1f1");
+  expect(paper.toLowerCase()).toBe("#f3f4f1");
   if ((viewport?.width ?? 0) >= 1024) {
     await expect(page.getByRole("complementary")).toBeVisible();
     const activeBackground = await page
       .getByRole("complementary")
       .getByRole("link", { name: "Vault" })
       .evaluate((element) => getComputedStyle(element).backgroundColor);
-    expect(activeBackground).toBe("rgb(255, 229, 106)");
+    expect(activeBackground).toBe("rgb(240, 217, 90)");
   } else {
     await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
   }
@@ -88,4 +88,28 @@ test("every route fits the target viewport", async ({ page }, testInfo) => {
     await page.screenshot({ path: testInfo.outputPath(`${name}.png`), fullPage: true });
   }
   expect(runtimeErrors).toEqual([]);
+});
+
+test("every route fits a 320 pixel viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  const routes = ["/", "/deposit", "/risk", "/draw", "/proof", "/why-encrypted"];
+
+  for (const route of routes) {
+    await page.goto(route);
+    const layout = await page.evaluate(() => ({
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
+      overflowing: [...document.querySelectorAll<HTMLElement>("body *")]
+        .filter((element) => {
+          const bounds = element.getBoundingClientRect();
+          return bounds.left < -0.5 || bounds.right > window.innerWidth + 0.5;
+        })
+        .slice(0, 8)
+        .map((element) => `${element.tagName.toLowerCase()}.${element.className}`),
+    }));
+
+    expect(layout.documentWidth, `${route}: ${layout.overflowing.join(", ")}`).toBeLessThanOrEqual(
+      layout.viewportWidth,
+    );
+  }
 });

@@ -1,5 +1,6 @@
 import { BadgeCheck, CircleDollarSign, Dices, Gauge, Landmark, LockKeyhole } from "lucide-react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { sepoliaDeploymentAddresses } from "../contracts/addresses";
 import { WalletButton } from "./WalletButton";
@@ -11,6 +12,9 @@ const primaryNavigation = [
   { to: "/draw", label: "Draw", Icon: Dices },
   { to: "/proof", label: "Proof", Icon: BadgeCheck },
 ] as const;
+
+const FHEVM_SDK_VERSION = "3.4.0";
+const sourceCommit = (import.meta.env.VITE_SOURCE_COMMIT ?? "local").slice(0, 7);
 
 function shortAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -34,9 +38,24 @@ function PrimaryNav({ className, label }: { className: string; label: string }) 
   );
 }
 
+function RouteFocus() {
+  const { pathname } = useLocation();
+  const previousPathname = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPathname.current !== pathname) {
+      document.querySelector<HTMLElement>("#main-content")?.focus();
+      previousPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  return null;
+}
+
 export function AppShell() {
   return (
     <div className="app-shell">
+      <RouteFocus />
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
@@ -75,9 +94,10 @@ export function AppShell() {
         </main>
         <footer className="app-footer">
           <span className="app-footer__status">
-            <span className="network-dot" aria-hidden="true" /> Live on Ethereum Sepolia
+            <span className="network-dot" aria-hidden="true" /> Ethereum Sepolia
           </span>
-          <span className="app-footer__label">Verified deployment</span>
+          <span>FHEVM SDK {FHEVM_SDK_VERSION}</span>
+          <span className="app-footer__label">Source {sourceCommit}</span>
           <a
             href={`https://sepolia.etherscan.io/address/${sepoliaDeploymentAddresses.vault}`}
             target="_blank"

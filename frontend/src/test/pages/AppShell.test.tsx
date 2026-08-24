@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
+import { Link, MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
 import { AppShell } from "../../components/AppShell";
@@ -41,7 +42,10 @@ describe("AppShell", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getAllByText("Sepolia").length).toBeGreaterThan(0);
+    const footer = screen.getByRole("contentinfo");
+    expect(within(footer).getByText("Ethereum Sepolia")).toBeVisible();
+    expect(within(footer).getByText("FHEVM SDK 3.4.0")).toBeVisible();
+    expect(within(footer).getByText(/^Source /)).toBeVisible();
     expect(screen.getByRole("link", { name: /Vault 0xAA7B/i })).toHaveAttribute(
       "href",
       `https://sepolia.etherscan.io/address/${sepoliaDeploymentAddresses.vault}`,
@@ -50,5 +54,23 @@ describe("AppShell", () => {
       "href",
       `https://sepolia.etherscan.io/address/${sepoliaDeploymentAddresses.drawManager}`,
     );
+  });
+
+  it("moves focus to route content after navigation", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<Link to="/draw">Open draw</Link>} />
+            <Route path="draw" element={<p>Draw content</p>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByRole("link", { name: "Open draw" }));
+
+    expect(screen.getByRole("main")).toHaveFocus();
   });
 });

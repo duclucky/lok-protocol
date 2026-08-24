@@ -18,6 +18,7 @@ export function WalletButton() {
       <button
         className="wallet-button wallet-button--network"
         type="button"
+        aria-label="Switch to Sepolia"
         onClick={() => switchChain({ chainId: LOK_CHAIN_ID })}
         disabled={isSwitching}
       >
@@ -29,11 +30,23 @@ export function WalletButton() {
 
   if (isConnected && address !== undefined) {
     return (
-      <button className="wallet-button wallet-button--connected" type="button" onClick={() => disconnect()}>
-        <span className="network-dot" aria-hidden="true" />
-        <span className="mono">{shortAddress(address)}</span>
-        <LogOut aria-hidden="true" size={16} />
-      </button>
+      <div className="wallet-button-group" role="group" aria-label="Connected wallet controls">
+        <div className="wallet-button wallet-button--connected" title={address}>
+          <span className="network-dot" aria-hidden="true" />
+          <span className="wallet-button__address mono" title={address}>
+            {shortAddress(address)}
+          </span>
+        </div>
+        <button
+          className="wallet-button__disconnect"
+          type="button"
+          aria-label="Disconnect wallet"
+          title="Disconnect wallet"
+          onClick={() => disconnect()}
+        >
+          <LogOut aria-hidden="true" size={17} />
+        </button>
+      </div>
     );
   }
 
@@ -42,6 +55,7 @@ export function WalletButton() {
     <button
       className="wallet-button"
       type="button"
+      aria-label="Connect wallet"
       onClick={() => connector !== undefined && connect({ connector })}
       disabled={connector === undefined || isPending}
     >

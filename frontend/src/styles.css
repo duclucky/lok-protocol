@@ -1,30 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #292929;
-  --paper: #f1f1f1;
+  --canvas: #f3f4f1;
   --surface: #ffffff;
-  --surface-quiet: #f6f6f6;
-  --seal: #ffe56a;
-  --seal-dark: #f5d94c;
-  --patina: #0b7159;
+  --surface-quiet: #f7f8f6;
+  --text-primary: #171a18;
+  --text-muted: #5f6863;
+  --action: #0b7159;
+  --action-hover: #085b48;
+  --seal: #f0d95a;
+  --border: #d8ddd9;
+  --warning: #8a5b00;
+  --danger: #b42318;
+  --focus: #0b7159;
+  --radius-card: 8px;
+  --radius-control: 6px;
+  --motion-fast: 160ms;
+  --motion-normal: 240ms;
+
+  /* Compatibility aliases for existing feature selectors. */
+  --ink: var(--text-primary);
+  --paper: var(--canvas);
+  --seal-dark: #d8bf36;
+  --patina: var(--action);
   --patina-light: #e7f4ef;
-  --gold: #9a7020;
-  --veil: #f4f4f2;
-  --muted: #747474;
-  --border: #ddddda;
-  --warning: #75540e;
+  --gold: var(--warning);
+  --veil: var(--surface-quiet);
+  --muted: var(--text-muted);
   --warning-bg: #fff8dc;
   --danger-bg: #fbe9e9;
   --font-display: "IBM Plex Sans Variable", Arial, sans-serif;
   --font-body: "IBM Plex Sans Variable", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", Consolas, monospace;
-  --radius-sm: 4px;
-  --radius-md: 16px;
+  --radius-sm: var(--radius-control);
+  --radius-md: var(--radius-card);
   --shadow-sm: 0 8px 24px rgb(0 0 0 / 0.04);
   --shadow-md: 0 16px 40px rgb(0 0 0 / 0.07);
-  --motion-fast: 160ms;
-  --motion-base: 240ms;
+  --motion-base: var(--motion-normal);
   color: var(--ink);
   background: var(--paper);
   font-family: var(--font-body);
@@ -133,7 +145,7 @@ select {
   padding: 0 38px 0 12px;
 }
 :focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -371,7 +383,7 @@ select {
   padding: 18px 10px 10px;
   background: rgb(255 255 255 / 0.92);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(16px);
 }
@@ -474,14 +486,14 @@ select {
   min-width: 0;
   max-width: 100%;
   justify-content: center;
-  overflow: hidden;
   color: white;
-  background: linear-gradient(#343434, #1f1f1f);
-  border-color: #151515;
-  border-radius: 999px;
-  box-shadow: 0 5px 12px rgb(0 0 0 / 0.16);
+  background: var(--action);
+  border-color: var(--action);
+  border-radius: var(--radius-control);
+  box-shadow: none;
 }
-.wallet-button .mono {
+.wallet-button__address {
+  display: block;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -491,13 +503,43 @@ select {
   flex: 0 0 auto;
 }
 .wallet-button:hover {
-  background: #111;
+  background: var(--action-hover);
 }
 .wallet-button--connected {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr);
   color: var(--ink);
   background: var(--surface);
   border-color: var(--border);
   box-shadow: none;
+}
+.wallet-button--connected:hover {
+  background: var(--surface);
+}
+.wallet-button-group {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 6px;
+}
+.wallet-button__disconnect {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding: 0;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+.wallet-button__disconnect:hover {
+  color: white;
+  background: var(--action-hover);
+  border-color: var(--action-hover);
 }
 .wallet-button--network {
   color: var(--ink);
@@ -1699,14 +1741,14 @@ select {
 .button--primary,
 .button--seal {
   color: white;
-  background: linear-gradient(#343434, #1f1f1f);
-  border-color: #151515;
-  box-shadow: 0 5px 12px rgb(0 0 0 / 0.14);
+  background: var(--action);
+  border-color: var(--action);
+  box-shadow: none;
 }
 .button--primary:hover,
 .button--seal:hover {
   color: white;
-  background: #111;
+  background: var(--action-hover);
 }
 .text-button,
 .text-link {
@@ -1895,6 +1937,9 @@ select {
   .topbar .wallet-button {
     width: auto;
   }
+  .topbar .wallet-button-group {
+    width: min(220px, 42vw);
+  }
   .page {
     width: min(100% - 48px, 920px);
   }
@@ -1931,7 +1976,7 @@ select {
     box-shadow: 0 -4px 14px rgb(245 217 76 / 0.24);
   }
   .main-content {
-    padding-bottom: 74px;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
   }
   .app-footer {
     margin-bottom: 72px;
@@ -1953,6 +1998,9 @@ select {
   .wallet-button {
     max-width: 190px;
     padding: 0 11px;
+  }
+  .topbar .wallet-button-group {
+    width: min(190px, calc(100vw - 92px));
   }
   .page {
     width: calc(100% - 32px);
@@ -2124,6 +2172,9 @@ select {
   .wallet-button {
     max-width: 170px;
     font-size: 0.78rem;
+  }
+  .topbar .wallet-button-group {
+    width: min(170px, calc(100vw - 88px));
   }
   .vault-actions {
     grid-template-columns: 1fr;
