@@ -1,7 +1,6 @@
 import { BadgeCheck, Eye, LoaderCircle, LockKeyhole, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 
-import { PageHeader } from "../components/PageHeader";
 import { classifyDecryptionFailure, type DecryptionFailureKind } from "../fhe/decryption-machine";
 
 type ProofPageProps = { revealCredit?: () => Promise<bigint>; drawId?: bigint };
@@ -30,7 +29,28 @@ export function ProofPage({
 
   return (
     <div className="page page--proof">
-      <PageHeader title="Claim privately" description="The same EIP-712 decrypt flow for every participant." />
+      <section className="proof-hero" aria-labelledby="proof-hero-title">
+        <p className="section-label">Private result</p>
+        <h1 id="proof-hero-title">Check your sealed result</h1>
+        <p>
+          Every participant uses the same EIP-712 wallet read. The page reveals only your own encrypted credit.
+        </p>
+      </section>
+
+      <section className="result-facts" aria-label="Private result guarantees">
+        <article>
+          <strong>Same button for every participant</strong>
+          <span>No winner-only claim path is exposed.</span>
+        </article>
+        <article>
+          <strong>Wallet-only decrypt</strong>
+          <span>The relayer returns your connected wallet's prize credit.</span>
+        </article>
+        <article>
+          <strong>Confidential withdrawal</strong>
+          <span>Any prize credit exits with principal as cUSDC.</span>
+        </article>
+      </section>
 
       <section className="claim-sequence" aria-label="Private prize flow">
         <p>Settlement credits encrypted winnings automatically.</p>

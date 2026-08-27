@@ -5,6 +5,15 @@ import { describe, expect, it, vi } from "vitest";
 import { ProofPage } from "../../pages/ProofPage";
 
 describe("ProofPage", () => {
+  it("frames result checking as a private wallet read, not a public winner claim", () => {
+    render(<ProofPage />);
+
+    expect(screen.getByRole("heading", { name: /check your sealed result/i })).toBeVisible();
+    expect(screen.getByText(/same button for every participant/i)).toBeVisible();
+    expect(screen.getByText(/wallet-only decrypt/i)).toBeVisible();
+    expect(screen.getByText(/confidential withdrawal/i)).toBeVisible();
+  });
+
   it.each([0n, 250_000n])("uses the same check action before a %s credit is known", (credit) => {
     render(<ProofPage revealCredit={vi.fn().mockResolvedValue(credit)} />);
 

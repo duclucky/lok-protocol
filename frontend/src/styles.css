@@ -1895,6 +1895,45 @@ select {
   margin: 4px 0 0;
 }
 
+.proof-hero {
+  margin-bottom: 18px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+.proof-hero h1 {
+  margin-top: 8px;
+}
+.proof-hero p:not(.section-label) {
+  max-width: 690px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+.result-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.result-facts article {
+  min-width: 0;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.result-facts strong,
+.result-facts span {
+  display: block;
+}
+.result-facts span {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
 .proof-stage {
   display: flex;
   min-height: 400px;
