@@ -2315,6 +2315,19 @@ select {
   .page {
     width: min(100% - 48px, 920px);
   }
+  .vault-hero,
+  .deposit-hero {
+    grid-template-columns: 1fr;
+  }
+  .vault-hero {
+    align-items: start;
+  }
+  .vault-hero__actions {
+    justify-content: start;
+  }
+  .vault-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .content-grid,
   .draw-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -2389,6 +2402,26 @@ select {
     flex-direction: column;
     gap: 16px;
     margin-bottom: 24px;
+  }
+  .vault-hero,
+  .deposit-hero,
+  .proof-hero {
+    padding: 22px;
+  }
+  .vault-dashboard,
+  .result-facts {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-card--private {
+    grid-column: auto;
+  }
+  .vault-hero__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .draw-view-control {
+    justify-items: stretch;
   }
   .draw-view-switch {
     width: 100%;
@@ -2581,6 +2614,13 @@ select {
   }
   .vault-actions {
     grid-template-columns: 1fr;
+  }
+  .vault-hero__actions {
+    grid-template-columns: 1fr;
+  }
+  .deposit-steps li,
+  .result-facts article {
+    padding: 14px;
   }
   .pool-strip {
     grid-template-columns: 1fr;
