@@ -10,6 +10,16 @@ const shieldHash = `0x${"22".repeat(32)}` as const;
 const depositHash = `0x${"33".repeat(32)}` as const;
 
 describe("DepositPage", () => {
+  it("frames deposit as a guided private savings flow", () => {
+    render(<DepositPage />, { wrapper: MemoryRouter });
+
+    expect(screen.getByRole("heading", { name: /save privately with encrypted cusdc/i })).toBeVisible();
+    expect(screen.getByText(/wallet signs each onchain step/i)).toBeVisible();
+    expect(screen.getByText("1. Choose source")).toBeVisible();
+    expect(screen.getByText("2. Enter amount")).toBeVisible();
+    expect(screen.getByText("3. Confirm wallet")).toBeVisible();
+  });
+
   it("defaults to the private cUSDC path", () => {
     render(<DepositPage />, { wrapper: MemoryRouter });
 

@@ -1352,6 +1352,54 @@ select {
   gap: 32px;
   align-items: start;
 }
+.deposit-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+  align-items: stretch;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+.deposit-hero h1 {
+  max-width: 650px;
+  margin-top: 8px;
+}
+.deposit-hero p:not(.section-label) {
+  max-width: 680px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+.deposit-steps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.deposit-steps li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  padding: 13px 14px;
+  background: var(--surface-quiet);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.deposit-steps li.is-active {
+  border-color: var(--seal);
+  box-shadow: inset 4px 0 0 var(--seal);
+}
+.deposit-steps span {
+  font-weight: 750;
+}
+.deposit-steps small {
+  color: var(--muted);
+  line-height: 1.45;
+}
 .path-selector {
   display: grid;
   gap: 10px;

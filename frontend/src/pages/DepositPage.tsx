@@ -1,7 +1,6 @@
 import { ArrowRight, Coins, Info, ShieldCheck, TestTube2 } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
-import { PageHeader } from "../components/PageHeader";
 import { ActionStatus } from "../components/ActionStatus";
 import { AsyncActionStatus } from "../components/AsyncActionStatus";
 import { SealedValue } from "../components/SealedValue";
@@ -107,7 +106,30 @@ export function DepositPage({
 
   return (
     <div className="page page--deposit">
-      <PageHeader title="Deposit" description="Choose how your funds enter the sealed vault." />
+      <section className="deposit-hero" aria-labelledby="deposit-hero-title">
+        <div>
+          <p className="section-label">Deposit</p>
+          <h1 id="deposit-hero-title">Save privately with encrypted cUSDC</h1>
+          <p>
+            Wallet signs each onchain step because mint, shield, and vault deposit are separate Sepolia
+            transactions.
+          </p>
+        </div>
+        <ol className="deposit-steps" aria-label="Deposit steps">
+          <li className="is-active">
+            <span>1. Choose source</span>
+            <small>Start with cUSDC, or mint public USDC for demo.</small>
+          </li>
+          <li className={path === "public" ? "is-active" : undefined}>
+            <span>2. Enter amount</span>
+            <small>Only the shield step publishes a public USDC amount.</small>
+          </li>
+          <li className={actionState.phase === "awaiting-wallet" || actionState.phase === "confirmed" ? "is-active" : undefined}>
+            <span>3. Confirm wallet</span>
+            <small>The vault receives encrypted cUSDC.</small>
+          </li>
+        </ol>
+      </section>
 
       <form className="deposit-layout" onSubmit={submit}>
         <fieldset className="path-selector">
