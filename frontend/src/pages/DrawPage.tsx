@@ -354,6 +354,12 @@ function UserDrawPanel({ state }: Readonly<{ state: DrawState }>) {
         <ShieldCheck aria-hidden="true" size={22} />
       </div>
       <p className="user-draw-block__summary">{detail.summary}</p>
+      <p className="user-draw-block__note">Draw automation is running through permissionless onchain keeper steps.</p>
+      {state === "SETTLED" && (
+        <a className="button button--primary" href="/proof">
+          Check private result
+        </a>
+      )}
       <dl className="user-draw-facts">
         <div>
           <dt>Your action</dt>
@@ -364,12 +370,6 @@ function UserDrawPanel({ state }: Readonly<{ state: DrawState }>) {
           <dd>{detail.nextStep}</dd>
         </div>
       </dl>
-      <p className="user-draw-block__note">Draw automation is running through permissionless onchain keeper steps.</p>
-      {state === "SETTLED" && (
-        <a className="button button--primary" href="/proof">
-          Check private result
-        </a>
-      )}
     </section>
   );
 }
