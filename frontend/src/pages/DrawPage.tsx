@@ -252,13 +252,20 @@ function DrawViewSwitch({
   setViewMode,
 }: Readonly<{ viewMode: DrawViewMode; setViewMode(mode: DrawViewMode): void }>) {
   return (
-    <div className="draw-view-switch" aria-label="Draw page view">
-      <button type="button" aria-pressed={viewMode === "user"} onClick={() => setViewMode("user")}>
-        User view
-      </button>
-      <button type="button" aria-pressed={viewMode === "demo"} onClick={() => setViewMode("demo")}>
-        Demo progress
-      </button>
+    <div className="draw-view-control">
+      <div className="draw-view-switch" aria-label="Draw page view">
+        <button type="button" aria-pressed={viewMode === "user"} onClick={() => setViewMode("user")}>
+          Live user mode
+        </button>
+        <button type="button" aria-pressed={viewMode === "demo"} onClick={() => setViewMode("demo")}>
+          Demo progress mode
+        </button>
+      </div>
+      <p className="draw-view-hint">
+        {viewMode === "user"
+          ? "What judges normally see: a calm depositor-facing status with no keeper controls."
+          : "Manual fallback for demos: automation should run the draw, but this browser can advance the next keeper step."}
+      </p>
     </div>
   );
 }

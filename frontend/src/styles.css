@@ -992,10 +992,15 @@ select {
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr);
   gap: 18px;
 }
+.draw-view-control {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-bottom: 18px;
+}
 .draw-view-switch {
   display: inline-flex;
   gap: 4px;
-  margin-bottom: 18px;
   padding: 4px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1020,6 +1025,11 @@ select {
 .draw-view-switch button:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--patina) 40%, transparent);
   outline-offset: 2px;
+}
+.draw-view-hint {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 .section-block {
   min-width: 0;

@@ -120,7 +120,8 @@ describe("DrawPage", () => {
       <DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={keeperActions()} nowMs={1_787_256_624_000} />,
     );
 
-    expect(screen.getByRole("button", { name: /user view/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /live user mode/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText(/what judges normally see/i)).toBeVisible();
     expect(screen.getByText(/draw automation is running/i)).toBeVisible();
     expect(screen.getByText(/no action is required from depositors/i)).toBeVisible();
     expect(screen.getByText(/next protocol step/i)).toBeVisible();
@@ -145,9 +146,10 @@ describe("DrawPage", () => {
     const actions = keeperActions();
     render(<DrawPage publicData={publicData("AWAIT_TOTAL")} keeperAction={actions} nowMs={1_787_256_624_000} />);
 
-    await user.click(screen.getByRole("button", { name: /demo progress/i }));
+    await user.click(screen.getByRole("button", { name: /demo progress mode/i }));
 
-    expect(screen.getByRole("button", { name: /demo progress/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /demo progress mode/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText(/manual fallback for demos/i)).toBeVisible();
     expect(screen.getByLabelText(/draw progress/i)).toBeVisible();
     expect(screen.getByLabelText(/draw state sequence/i)).toBeVisible();
     expect(screen.getByRole("heading", { name: /sweep progress/i })).toBeVisible();
