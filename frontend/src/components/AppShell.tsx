@@ -10,7 +10,7 @@ const primaryNavigation = [
   { to: "/deposit", label: "Deposit", Icon: CircleDollarSign },
   { to: "/risk", label: "Risk", Icon: Gauge },
   { to: "/draw", label: "Draw", Icon: Dices },
-  { to: "/proof", label: "Proof", Icon: BadgeCheck },
+  { to: "/proof", label: "Result", Icon: BadgeCheck },
 ] as const;
 
 const FHEVM_SDK_VERSION = import.meta.env.VITE_FHEVM_SDK_VERSION ?? "unbound";

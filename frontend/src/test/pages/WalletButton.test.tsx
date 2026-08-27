@@ -43,7 +43,9 @@ describe("WalletButton", () => {
 
     const { container } = render(<WalletButton />);
 
+    const group = container.querySelector(".wallet-button-group");
     const address = container.querySelector(".wallet-button__address");
+    expect(group).toHaveClass("wallet-button-group");
     expect(address).toHaveTextContent("0xC495...8272");
     expect(address).toHaveAttribute("title", walletState.address);
     expect(screen.getByRole("button", { name: "Disconnect wallet" })).toHaveClass("wallet-button__disconnect");

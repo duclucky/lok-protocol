@@ -11,6 +11,21 @@ vi.mock("../../components/WalletButton", () => ({
 }));
 
 describe("AppShell", () => {
+  it("labels the private result route as Result instead of proof-first language", () => {
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<p>Route content</p>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getAllByRole("link", { name: /result/i }).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("link", { name: /^Proof$/i })).not.toBeInTheDocument();
+  });
+
   it("uses a desktop utility sidebar and a separate mobile bottom navigation", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
