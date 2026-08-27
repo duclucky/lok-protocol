@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -45,15 +45,39 @@ const publicData: LokPublicData = {
 const transactionHash = `0x${"34".repeat(32)}` as const;
 
 describe("VaultPage", () => {
+  it("presents the vault as a savings app with obvious primary actions", () => {
+    render(<VaultPage publicData={publicData} nowMs={1_786_500_000_000} />, {
+      wrapper: MemoryRouter,
+    });
+
+    expect(screen.getByRole("heading", { name: /private prize savings on sepolia/i })).toBeVisible();
+    expect(screen.getByRole("link", { name: /deposit privately/i })).toHaveAttribute("href", "/deposit");
+    expect(screen.getByRole("button", { name: /reveal your balance/i })).toBeVisible();
+    expect(screen.getByRole("button", { name: /^Withdraw$/i })).toBeVisible();
+    expect(screen.getByText(/withdraw anytime/i)).toBeVisible();
+    expect(screen.getByText(/automation/i)).toBeVisible();
+  });
+
+  it("keeps the savings dashboard labels stable while Sepolia data loads", () => {
+    render(<VaultPage publicData={{ status: "loading" }} />, { wrapper: MemoryRouter });
+
+    const dashboard = screen.getByLabelText("Savings dashboard");
+    expect(within(dashboard).getByText("Private balance")).toBeVisible();
+    expect(within(dashboard).getByText("Current prize")).toBeVisible();
+    expect(within(dashboard).getByText("Draw automation")).toBeVisible();
+    expect(within(dashboard).getByText("Principal recovery")).toBeVisible();
+  });
+
   it("renders public pool data immediately while the private balance stays sealed", () => {
     const { container } = render(<VaultPage publicData={publicData} nowMs={1_786_500_000_000} />, {
       wrapper: MemoryRouter,
     });
 
-    expect(screen.getByText(/current prize/i)).toBeVisible();
-    expect(screen.getAllByText("5.00 cUSDC funded")).toHaveLength(2);
+    const publicMetrics = screen.getByLabelText("Public pool data");
+    expect(within(publicMetrics).getByText(/current prize/i)).toBeVisible();
+    expect(screen.getAllByText("5.00 cUSDC funded")).toHaveLength(3);
     expect(screen.getByText("30")).toBeVisible();
-    expect(screen.getByText("Draw 1")).toBeVisible();
+    expect(screen.getAllByText("Draw 1")).toHaveLength(2);
     expect(screen.queryByText("38")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /reveal your balance/i })).toBeVisible();
     expect(screen.queryByText("12,480.00 cUSDC")).not.toBeInTheDocument();
@@ -136,9 +160,10 @@ describe("VaultPage", () => {
   it("keeps public metric labels stable while Sepolia data loads", () => {
     render(<VaultPage publicData={{ status: "loading" }} />, { wrapper: MemoryRouter });
 
-    expect(screen.getByText("Current prize")).toBeVisible();
-    expect(screen.getByText("Next draw")).toBeVisible();
-    expect(screen.getByText("Participants")).toBeVisible();
+    const publicMetrics = screen.getByLabelText("Public pool data");
+    expect(within(publicMetrics).getByText("Current prize")).toBeVisible();
+    expect(within(publicMetrics).getByText("Next draw")).toBeVisible();
+    expect(within(publicMetrics).getByText("Participants")).toBeVisible();
   });
 });
 

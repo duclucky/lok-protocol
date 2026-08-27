@@ -1,8 +1,7 @@
-import { ArrowDownToLine, ArrowUpFromLine, Clock3, ExternalLink, Gauge, History } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Clock3, ExternalLink, Gauge, History, ShieldCheck } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-import { PageHeader } from "../components/PageHeader";
 import { ActionStatus } from "../components/ActionStatus";
 import { AsyncActionStatus } from "../components/AsyncActionStatus";
 import { SealedValue } from "../components/SealedValue";
@@ -79,31 +78,36 @@ export function VaultPage({
   const draw = snapshot?.draw;
   const readLabel = publicData.status === "error" ? "Sepolia read unavailable" : "Reading Sepolia";
   const prizeLabel = snapshot === undefined ? readLabel : currentPrizeLabel(snapshot);
+  const drawStatus =
+    draw === undefined
+      ? snapshot === undefined
+        ? readLabel
+        : "No active draw"
+      : draw.settled
+        ? "Settled"
+        : draw.state === "OPEN"
+          ? "Waiting for draw close"
+          : "Running";
 
   return (
     <div className="page page--vault">
-      <PageHeader
-        title="Your vault"
-        description="Private savings, public draw integrity."
-        action={
-          snapshot === undefined ? (
-            <span className="status status--pending">{readLabel}</span>
-          ) : (
-            <SolvencyStatus status={snapshot.solvency} epoch={Number(snapshot.riskEpoch)} />
-          )
-        }
-      />
-
-      <section className="vault-balance" aria-labelledby="balance-title">
+      <section className="vault-hero" aria-labelledby="vault-hero-title">
         <div>
-          <p className="section-label">Your balance</p>
-          <h2 id="balance-title">Sealed to your wallet</h2>
-          <SealedValue label="your balance" reveal={revealBalance} />
+          <p className="section-label">Lok Protocol</p>
+          <h1 id="vault-hero-title">Private prize savings on Sepolia</h1>
+          <p>Deposit cUSDC, keep your balance sealed, and stay withdrawable while draws run onchain.</p>
+          <div className="vault-hero__status">
+            {snapshot === undefined ? (
+              <span className="status status--pending">{readLabel}</span>
+            ) : (
+              <SolvencyStatus status={snapshot.solvency} epoch={Number(snapshot.riskEpoch)} />
+            )}
+          </div>
         </div>
-        <div className="vault-actions">
+        <div className="vault-hero__actions">
           <Link className="button button--primary" to="/deposit">
             <ArrowDownToLine aria-hidden="true" size={18} />
-            Deposit
+            Deposit privately
           </Link>
           <button
             className="button button--secondary"
@@ -116,6 +120,38 @@ export function VaultPage({
             Withdraw
           </button>
         </div>
+      </section>
+
+      <section className="vault-dashboard" aria-label="Savings dashboard">
+        <article className="dashboard-card dashboard-card--private">
+          <div className="dashboard-card__heading">
+            <div>
+              <p className="section-label">Private balance</p>
+              <h2 id="balance-title">Sealed to your wallet</h2>
+            </div>
+            <ShieldCheck aria-hidden="true" size={22} />
+          </div>
+          <SealedValue label="your balance" reveal={revealBalance} />
+          <p>Sign an EIP-712 permit only when you choose to reveal this value.</p>
+        </article>
+
+        <article className="dashboard-card">
+          <p className="section-label">Current prize</p>
+          <strong className="prize-figure">{prizeLabel}</strong>
+          <span>{snapshot?.participantCount.toString() ?? readLabel} participants</span>
+        </article>
+
+        <article className="dashboard-card">
+          <p className="section-label">Draw automation</p>
+          <strong>{drawStatus}</strong>
+          <span>{draw === undefined ? "Deposits and withdrawals stay available." : `Draw ${draw.id.toString()}`}</span>
+        </article>
+
+        <article className="dashboard-card">
+          <p className="section-label">Principal recovery</p>
+          <strong>Withdraw anytime</strong>
+          <span>Move encrypted cUSDC back to your wallet in every draw state.</span>
+        </article>
       </section>
 
       {withdrawOpen && (
